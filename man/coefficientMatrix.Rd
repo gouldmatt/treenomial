@@ -16,5 +16,9 @@ The resulting coefficient matrix or matrices.
 Converts trees (objects of class "phylo") to coefficient matrices
 }
 \examples{
-# example goes here
+library(ape)
+# generate a tree
+tree <- rtree(n = 500, rooted = TRUE)
+# get the coefficient matrix describing the polynomial for this tree
+coefficientMatrix(tree)
 }
