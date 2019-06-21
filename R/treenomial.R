@@ -25,7 +25,7 @@ coefficientMatrix <- function(tree, complexMode = FALSE) {
     coefficientMat <- singleCoeffMat(tree, loadingOn = TRUE)
   } else {
     # need to test more for best time to go multicore
-    if (length(tree) >= 300 && tree[[1]]$Nnode > 400) {
+    if (length(tree) >= 100 && tree[[1]]$Nnode > 400) {
       cl <- makeCluster(detectCores())
       # print("multicore")
       coefficientMat <- vector("list", length = length(tree))

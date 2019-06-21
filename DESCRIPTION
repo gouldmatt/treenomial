@@ -17,6 +17,11 @@ Imports: Rcpp (>= 1.0.1),
          Matrix,
          ape,
          RcppArmadillo, 
-         plotly
+         plotly, 
+         ggplot2,
+         parallel,
+         parallelDist,
+         gtools,
+         pbapply
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.1.1
