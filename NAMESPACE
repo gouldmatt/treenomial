@@ -3,7 +3,7 @@
 export(allTrees)
 export(coefficientDist)
 export(coefficientMatrix)
-export(treenomialMDS)
+export(coefficientMds)
 export(wedge)
 import(Matrix)
 import(RcppArmadillo)

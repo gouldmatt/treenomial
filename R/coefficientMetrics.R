@@ -40,7 +40,7 @@ coefficientDist <- function(coefficientMatrices, method = "canberra") {
 #' Either calculates or recieves coefficient matrix data of phylo objects and uses a distance method
 #' on the coefficients to construct an mds plot.
 #' @param trees data frame of phylo objects used to calculate coefficient matrices
-#' @param coefficientMatrices list of coefficient matrices
+#' @param coefficientMatrices list of coefficient matrices if not passing trees data
 #' @param method method to use when caculating coefficient distances
 #' @param dim number of dims of resulting mds plot
 #' @return 2d or 3d MDS plot
@@ -67,15 +67,15 @@ coefficientDist <- function(coefficientMatrices, method = "canberra") {
 #' allTrees <- lapply(unlist(allTrees, recursive=FALSE), as.phylo)
 #'
 #' # construct the 2d MDS on the trees using the "canberra" distance method
-#' mds2D <- treenomialMDS(trees = allTrees, method = "canberra", dim = 2)
+#' mds2D <- coefficientMds(trees = allTrees, method = "canberra", dim = 2)
 #'
 #' # first construct the coefficient matrices and use them to create two MDS plots
 #' coeffMats <- coefficientMatrix(allTrees)
-#' mds2dTwoStep <- treenomialMDS(coefficientMatrices = coeffMats, method = "canberra", dim = 2)
-#' mds3dTwoStep <- treenomialMDS(coefficientMatrices = coeffMats, method = "canberra", dim = 3)
+#' mds2dTwoStep <- coefficientMds(coefficientMatrices = coeffMats, method = "canberra", dim = 2)
+#' mds3dTwoStep <- coefficientMds(coefficientMatrices = coeffMats, method = "canberra", dim = 3)
 #'
 #' @export
-treenomialMDS <- function(trees, coefficientMatrices, method = "canberra", dim = 2) {
+coefficientMds <- function(trees, coefficientMatrices, method = "canberra", dim = 2) {
   # check what data was supplied
   if (missing(coefficientMatrices)) {
     treeLab <- names(trees)
