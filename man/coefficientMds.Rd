@@ -8,11 +8,11 @@ coefficientMds(trees, coefficientMatrices, method = "canberra",
   dim = 2)
 }
 \arguments{
-\item{trees}{data frame of phylo objects used to calculate coefficient matrices}
+\item{trees}{list of phylo objects used to calculate coefficient matrices}
 
-\item{coefficientMatrices}{list of coefficient matrices}
+\item{coefficientMatrices}{list of coefficient matrices if not passing list of trees}
 
-\item{method}{method to use when caculating coefficient distances}
+\item{method}{method to use when calculating coefficient distances}
 
 \item{dim}{number of dims of resulting mds plot}
 }

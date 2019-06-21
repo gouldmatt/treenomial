@@ -39,8 +39,8 @@ coefficientDist <- function(coefficientMatrices, method = "canberra") {
 #'
 #' Either calculates or recieves coefficient matrix data of phylo objects and uses a distance method
 #' on the coefficients to construct an mds plot.
-#' @param trees data frame of phylo objects used to calculate coefficient matrices
-#' @param coefficientMatrices list of coefficient matrices if not passing trees data
+#' @param trees list of phylo objects used to calculate coefficient matrices
+#' @param coefficientMatrices list of coefficient matrices if not passing list of trees
 #' @param method method to use when calculating coefficient distances
 #' @param dim number of dims of resulting mds plot
 #' @return 2d or 3d MDS plot
