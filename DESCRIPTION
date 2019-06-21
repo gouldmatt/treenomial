@@ -1,0 +1,22 @@
+Package: treenomial
+Type: Package
+Title: Exploration of rooted bifurcating phylogenetic trees using a tree defining polynomial 
+Version: 0.0.1
+Authors: Matthew Gould
+Authors@R: c(
+  person("Matthew", "Gould", email = "yourself@somewhere.net", 
+  role = c("aut", "cre")),
+  person("Pengyu", "Liu", email = "yourself@somewhere.net", 
+  role = c("ctb")))
+Maintainer: Matthew Gould <yourself@somewhere.net>
+Description: Description 
+License: license is it under
+Encoding: UTF-8
+LazyData: true
+Imports: Rcpp (>= 1.0.1),
+         Matrix,
+         ape,
+         RcppArmadillo, 
+         plotly
+LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 6.1.1
