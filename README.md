@@ -2,10 +2,12 @@
 
 ### Install instructions (for now) 
 
-Generate a personal access token and copy to clipboard from here: 
+Generate a personal access token from here using repo scope: 
 https://github.com/settings/tokens
 
-Call this replacing “foo” with the token 
+Copy the token to the clipboard 
+
+Call this function in R replacing “foo” with the token 
 
 ```
 devtools::install_github(repo = "mattgou1d/treenomial", ref = "master", auth_token = “foo” )
