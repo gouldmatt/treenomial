@@ -50,6 +50,7 @@ coefficientDist <- function(coefficientMatrices, method = "canberra") {
 #' @importFrom plotly %>%
 #' @import ggplot2
 #' @examples
+#' library(apTreeshape)
 #' # generate some forests
 #' numTrees <- 50
 #' numTips <- 500

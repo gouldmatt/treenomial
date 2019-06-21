@@ -3,15 +3,14 @@
 #' Calculates the result from the wedge operation of two coefficient matrices.
 #' @param coefficientMatrixA First tree coefficient matrix
 #' @param coefficientMatrixB Second tree coefficient matrix
-#' @return The resulting polynomail matrix.
+#' @return The resulting polynomial matrix.
 #' @import Matrix
 #' @useDynLib treenomial
 #' @importFrom Rcpp sourceCpp
 #' @examples
+#' library(Matrix)
 #' leaf <- sparseMatrix(1, 2, x = 1)
 #' wedge(leaf, leaf)
-#' [1,] . . 1
-#' [2,] 1 . .
 #' @export
 wedge <- function(coefficientMatrixA, coefficientMatrixB) {
 

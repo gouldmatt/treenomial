@@ -7,6 +7,7 @@
 #' @import parallel
 #' @import ape
 #' @examples
+#' library(ape)
 #' # generate a tree
 #' tree <- rtree(n = 500, rooted = TRUE)
 #' # get the coefficient matrix describing the polynomial for this tree
