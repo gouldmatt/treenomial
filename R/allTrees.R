@@ -1,4 +1,4 @@
-#' Calculate all coefficient matrices for trees with n tips
+#' Calculate the coefficient matrices of all trees up to n tips
 #'
 #' Return coefficient matrices for all possible full binary trees with 2 to n tips.
 #' @param numtips the max number of tips to find all coefficient matrices for
