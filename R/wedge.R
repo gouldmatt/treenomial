@@ -3,7 +3,7 @@
 #' Calculates the result from the wedge operation of two coefficient matrices.
 #' @param coefficientMatrixA First tree coefficient matrix
 #' @param coefficientMatrixB Second tree coefficient matrix
-#' @return The resulting polynomial matrix.
+#' @return The resulting coefficient matrix.
 #' @import Matrix
 #' @useDynLib treenomial
 #' @importFrom Rcpp sourceCpp
