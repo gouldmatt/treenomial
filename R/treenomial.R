@@ -7,9 +7,12 @@
 #' @import parallel
 #' @import ape
 #' @examples
-#' # example goes here
+#' # generate a tree
+#' tree <- rtree(n = 500, rooted = TRUE)
+#' # get the coefficient matrix describing the polynomial for this tree
+#' coefficientMatrix(tree)
 #' @export
-coefficientMatrix <- function(tree, complexMode = FALSE) {
+coefficientMatrix <- function(tree) {
   # determine what the incoming trees look like
   tryCatch({
     tree <<- as.phylo(tree)

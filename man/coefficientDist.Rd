@@ -16,6 +16,7 @@ distance matrix calculated from argument coefficient matrices
 }
 \description{
 Uses a specified method to construct a distance matrix from coefficient matrices.
+For a list of methods see \link[parallelDist]{parDist}.
 }
 \examples{
 # example goes here

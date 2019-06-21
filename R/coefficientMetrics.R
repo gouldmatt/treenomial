@@ -1,6 +1,7 @@
 #' Calculates the distance matrix of multiple coefficient matrices
 #'
 #' Uses a specified method to construct a distance matrix from coefficient matrices.
+#' For a list of methods see \link[parallelDist]{parDist}.
 #' @param coefficientMatrices list of coefficient matrices
 #' @param method method to use when calculating coefficient distances
 #' @return distance matrix calculated from argument coefficient matrices
@@ -64,17 +65,20 @@ coefficientDist <- function(coefficientMatrices, method = "canberra") {
 #' # convert to phylo type
 #' allTrees <- lapply(unlist(allTrees, recursive=FALSE), as.phylo)
 #'
-#' # construct the 2d and 3d mds on the coefficients using the "canberra" distance method
+#' # construct the 2d MDS on the trees using the "canberra" distance method
 #' mds2D <- treenomialMDS(allTrees, method = "canberra", dim = 2)
-#' mds3D <- treenomialMDS(allTrees, method = "canberra", dim = 2)
+#'
+#' # first construct the coefficient matrices and use them to create two MDS plots
+#' coeffMats <- coefficientMatrix(allTrees)
+#' mds2dTwoStep <- treenomialMDS(coeffMats, method = "canberra", dim = 2)
+#' mds3dTwoStep <- treenomialMDS(coeffMats, method = "canberra", dim = 3)
 #'
 #' @export
 treenomialMDS <- function(trees, coefficientMatrices, method = "canberra", dim = 2) {
-
   # check what data was supplied
   if (missing(coefficientMatrices)) {
     treeLab <- names(trees)
-    coeffMats <- coefficientMatrix(trees, complexMode = FALSE)
+    coeffMats <- coefficientMatrix(trees)
 
     distMatrix <- as.matrix(coefficientDist(coeffMats, method))
   } else if (missing(trees)) {

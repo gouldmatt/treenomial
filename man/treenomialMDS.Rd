@@ -23,5 +23,27 @@ Either calculates or recieves coefficient matrix data of phylo objects and uses 
 on the coefficients to construct an mds plot.
 }
 \examples{
-# example goes here
+# generate some forests
+numTrees <- 50
+numTips <- 500
+
+pdaTrees <- rtreeshape(numTrees,tip.number=numTips,model="pda")
+yuleTrees <- rtreeshape(numTrees,tip.number=numTips,model="yule")
+aldousTrees <- rtreeshape(numTrees,tip.number=numTips,model="aldous")
+biasedTrees <- rtreeshape(numTrees,tip.number=numTips,model="biased")
+
+# place into a list
+allTrees <- list(pdaTrees = pdaTrees, yuleTrees = yuleTrees, aldousTrees = aldousTrees, biasedTrees, biasedTrees)
+
+# convert to phylo type
+allTrees <- lapply(unlist(allTrees, recursive=FALSE), as.phylo)
+
+# construct the 2d MDS on the trees using the "canberra" distance method
+mds2D <- treenomialMDS(allTrees, method = "canberra", dim = 2)
+
+# first construct the coefficient matrices and use them to create two MDS plots
+coeffMats <- coefficientMatrix(allTrees)
+mds2dTwoStep <- treenomialMDS(coeffMats, method = "canberra", dim = 2)
+mds3dTwoStep <- treenomialMDS(coeffMats, method = "canberra", dim = 3)
+
 }

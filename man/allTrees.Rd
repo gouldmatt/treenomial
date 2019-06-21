@@ -2,7 +2,7 @@
 % Please edit documentation in R/allTrees.R
 \name{allTrees}
 \alias{allTrees}
-\title{Calculate all coefficient matrices for trees with n tips}
+\title{Calculate the coefficient matrices of all trees up to n tips}
 \usage{
 allTrees(numTips)
 }
