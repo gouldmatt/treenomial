@@ -12,14 +12,13 @@ wedge(coefficientMatrixA, coefficientMatrixB)
 \item{coefficientMatrixB}{Second tree coefficient matrix}
 }
 \value{
-The resulting polynomail matrix.
+The resulting coefficient matrix.
 }
 \description{
 Calculates the result from the wedge operation of two coefficient matrices.
 }
 \examples{
+library(Matrix)
 leaf <- sparseMatrix(1, 2, x = 1)
 wedge(leaf, leaf)
-[1,] . . 1
-[2,] 1 . .
 }

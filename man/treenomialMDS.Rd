@@ -23,6 +23,7 @@ Either calculates or recieves coefficient matrix data of phylo objects and uses 
 on the coefficients to construct an mds plot.
 }
 \examples{
+library(apTreeshape)
 # generate some forests
 numTrees <- 50
 numTips <- 500
@@ -39,11 +40,11 @@ allTrees <- list(pdaTrees = pdaTrees, yuleTrees = yuleTrees, aldousTrees = aldou
 allTrees <- lapply(unlist(allTrees, recursive=FALSE), as.phylo)
 
 # construct the 2d MDS on the trees using the "canberra" distance method
-mds2D <- treenomialMDS(allTrees, method = "canberra", dim = 2)
+mds2D <- treenomialMDS(trees = allTrees, method = "canberra", dim = 2)
 
 # first construct the coefficient matrices and use them to create two MDS plots
 coeffMats <- coefficientMatrix(allTrees)
-mds2dTwoStep <- treenomialMDS(coeffMats, method = "canberra", dim = 2)
-mds3dTwoStep <- treenomialMDS(coeffMats, method = "canberra", dim = 3)
+mds2dTwoStep <- treenomialMDS(coefficientMatrices = coeffMats, method = "canberra", dim = 2)
+mds3dTwoStep <- treenomialMDS(coefficientMatrices = coeffMats, method = "canberra", dim = 3)
 
 }
