@@ -51,7 +51,7 @@ singleCoeffMat <- function(tree, loadingOn) {
   ChildMatrix <- t(sapply(nodeids, function(x) tree$edge[tree$edge[, 1] == x, 2]))
   ChildMatrix <- cbind(nodeids, ChildMatrix) #  first col are the internal nodes
 
-  # determine the order of wedges needed to generate the trees polynomial matrix
+  # determine the order of wedges needed to generate the trees coefficient matrix
   numTips <- ChildMatrix[1, 1] - 1
   wedgeOrder <- ifelse(unique(rev(as.vector(t(ChildMatrix)))) <= numTips, "0", "1")
 
@@ -62,14 +62,13 @@ singleCoeffMat <- function(tree, loadingOn) {
   }
 
   done <- F
-  hash <- 4
 
   # intialize first two entries for leaves and cherries
-  subPolys <- list()
+  subCoeffMats <- list()
 
 
-  subPolys[["0"]] <- sparseMatrix(1, 2, x = 1) # leaf
-  subPolys[["001"]] <- sparseMatrix(c(1, 2), c(3, 1), x = c(1, 1)) # cherry
+  subCoeffMats[["0"]] <- sparseMatrix(1, 2, x = 1) # leaf
+  subCoeffMats[["001"]] <- sparseMatrix(c(1, 2), c(3, 1), x = c(1, 1)) # cherry
 
 
   # continue while there is still stuff left to wedge
@@ -87,23 +86,23 @@ singleCoeffMat <- function(tree, loadingOn) {
     }
 
     # calculate the pattern
-    hash <- paste(operand1, operand2, "1", sep = "")
+    subPattern <- paste(operand1, operand2, "1", sep = "")
     old <- paste(wedgeOrder, collapse = " ", sep = ",")
     oldTest <- paste(wedgeOrder, collapse = "")
 
     # calculate wedge
-    subPolys[[as.character(hash)]] <- wedge(subPolys[[operand1]], subPolys[[operand2]])
+    subCoeffMats[[as.character(subPattern)]] <- wedge(subCoeffMats[[operand1]], subCoeffMats[[operand2]])
 
 
     # replace subsequent operations of the same wedge
-    wedgeOrder <- patternCheck(wedgeOrder, hash, operand1, operand2, "1")
+    wedgeOrder <- patternCheck(wedgeOrder, subPattern, operand1, operand2, "1")
 
     if (loadingOn) {
       ## loading bar stuff
       setTxtProgressBar(pb, maxLength - length(wedgeOrder))
     }
   }
-  resPolyMat <- as.matrix(subPolys[[wedgeOrder]])
+  resPolyMat <- as.matrix(subCoeffMats[[wedgeOrder]])
 
   return(resPolyMat)
 }
