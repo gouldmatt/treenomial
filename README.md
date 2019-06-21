@@ -15,7 +15,7 @@ devtools::install_github(repo = "mattgou1d/treenomial", ref = "master", auth_tok
 
 ### Functions overview
 
-* __`coefficientMatrix`__: convert trees to tree distinguishing polynomials described with a coefficient matrix
+* __`coefficientMatrix`__: convert trees to tree distinguishing polynomials described with coefficient matrices
 * __`coefficientDist`__: construct a distance matrix from multiple coefficient matrices
 * __`coefficientMds`__: construct 2d/3d mds plots based on tree/coefficient matrix data 
 * __`wedge`__: perform the wedge operation on two coefficient matrices 
