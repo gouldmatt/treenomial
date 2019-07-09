@@ -4,7 +4,7 @@
 \alias{coefficientMatrix}
 \title{Converts trees (objects of class "phylo") to coefficient matrices}
 \usage{
-coefficientMatrix(tree)
+coefficientMatrix(tree, complex = FALSE)
 }
 \arguments{
 \item{tree}{an object or list of class "phylo"}

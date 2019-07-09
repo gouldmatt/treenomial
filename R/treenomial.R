@@ -13,7 +13,7 @@
 #' # get the coefficient matrix describing the polynomial for this tree
 #' coefficientMatrix(tree)
 #' @export
-coefficientMatrix <- function(tree) {
+coefficientMatrix <- function(tree, complex = FALSE) {
   # determine what the incoming trees look like
   tryCatch({
     tree <<- as.phylo(tree)
@@ -26,27 +26,27 @@ coefficientMatrix <- function(tree) {
   # call appropiately for the number and size of the input trees
   if (singleTree) {
     # print("singleTree")
-    coefficientMat <- singleCoeffMat(tree, loadingOn = TRUE)
+    coefficientMat <- singleCoeffMat(tree,complex = complex, loadingOn = TRUE)
   } else {
     # need to test more for best time to go multicore
     if (length(tree) >= 100 && tree[[1]]$Nnode > 400) {
       cl <- makeCluster(detectCores())
       # print("multicore")
       coefficientMat <- vector("list", length = length(tree))
-      coefficientMat <- pblapply(tree, singleCoeffMat, loadingOn = FALSE, cl = cl)
+      coefficientMat <- pblapply(tree, singleCoeffMat,complex = complex, loadingOn = FALSE, cl = cl)
 
       stopCluster(cl)
     } else {
       # print("singleMulti")
       coefficientMat <- vector("list", length = length(tree))
-      coefficientMat <- pblapply(tree, singleCoeffMat, loadingOn = FALSE)
+      coefficientMat <- pblapply(tree, singleCoeffMat,complex = complex, loadingOn = FALSE)
     }
   }
 
   return(coefficientMat)
 }
 
-singleCoeffMat <- function(tree, loadingOn) {
+singleCoeffMat <- function(tree,complex = FALSE, loadingOn) {
 
   # construct the child matrix of the tree
   nnodes <- tree$Nnode # number of internal nodes
@@ -70,10 +70,13 @@ singleCoeffMat <- function(tree, loadingOn) {
   # intialize first two entries for leaves and cherries
   subCoeffMats <- list()
 
-
-  subCoeffMats[["0"]] <- sparseMatrix(1, 2, x = 1) # leaf
-  subCoeffMats[["001"]] <- sparseMatrix(c(1, 2), c(3, 1), x = c(1, 1)) # cherry
-
+  if(complex){
+    subCoeffMats[["0"]] <- c(0,1) # leaf
+    subCoeffMats[["001"]] <- c(1i,0,1) # cherry
+  } else {
+    subCoeffMats[["0"]] <- sparseMatrix(1, 2, x = 1) # leaf
+    subCoeffMats[["001"]] <- sparseMatrix(c(1, 2), c(3, 1), x = c(1, 1)) # cherry
+  }
 
   # continue while there is still stuff left to wedge
   while (!(length(wedgeOrder) == 1)) {
@@ -95,7 +98,11 @@ singleCoeffMat <- function(tree, loadingOn) {
     oldTest <- paste(wedgeOrder, collapse = "")
 
     # calculate wedge
-    subCoeffMats[[as.character(subPattern)]] <- wedge(subCoeffMats[[operand1]], subCoeffMats[[operand2]])
+    if(complex){
+      subCoeffMats[[as.character(subPattern)]] <- wedgeC(subCoeffMats[[operand1]], subCoeffMats[[operand2]])
+    } else {
+      subCoeffMats[[as.character(subPattern)]] <- wedge(subCoeffMats[[operand1]], subCoeffMats[[operand2]])
+    }
 
 
     # replace subsequent operations of the same wedge
@@ -106,7 +113,11 @@ singleCoeffMat <- function(tree, loadingOn) {
       setTxtProgressBar(pb, maxLength - length(wedgeOrder))
     }
   }
-  resPolyMat <- as.matrix(subCoeffMats[[wedgeOrder]])
+  if(complex){
+    resPolyMat <- subCoeffMats[[wedgeOrder]]
+  } else {
+    resPolyMat <- as.matrix(subCoeffMats[[wedgeOrder]])
+  }
 
   return(resPolyMat)
 }

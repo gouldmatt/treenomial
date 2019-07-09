@@ -1,0 +1,39 @@
+---
+title: "Introduction to treenomial"
+author: "Matthew Gould"
+date: "09/07/2019"
+output: html_document
+---
+
+### test  test 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(treenomial)
+library(apTreeshape)
+# generate some forests
+numTrees <- 10
+numTips <- 200
+
+pdaTrees <- rtreeshape(numTrees, tip.number = numTips, model = "pda")
+yuleTrees <- rtreeshape(numTrees, tip.number = numTips, model = "yule")
+aldousTrees <- rtreeshape(numTrees, tip.number = numTips, model = "aldous")
+biasedTrees <- rtreeshape(numTrees, tip.number = numTips, model = "biased")
+
+# place into a list
+allTrees <- list(pdaTrees = pdaTrees, yuleTrees = yuleTrees, aldousTrees = aldousTrees, biasedTrees = biasedTrees)
+
+# convert to phylo type
+allTrees <- lapply(unlist(allTrees, recursive = FALSE), as.phylo)
+
+# first construct the coefficient matrices and use them to create two MDS plots
+coeffMats <- coefficientMatrix(allTrees)
+mds3dTwoStep <- coefficientMds(coefficientMatrices = coeffMats, dim = 3)
+mds3dTwoStep
+```
+
+
