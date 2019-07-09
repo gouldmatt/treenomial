@@ -99,7 +99,7 @@ singleCoeffMat <- function(tree,complex = FALSE, loadingOn) {
 
     # calculate wedge
     if(complex){
-      subCoeffMats[[as.character(subPattern)]] <- wedgeC(subCoeffMats[[operand1]], subCoeffMats[[operand2]])
+      subCoeffMats[[as.character(subPattern)]] <- wedgeComplex(subCoeffMats[[operand1]], subCoeffMats[[operand2]])
     } else {
       subCoeffMats[[as.character(subPattern)]] <- wedge(subCoeffMats[[operand1]], subCoeffMats[[operand2]])
     }

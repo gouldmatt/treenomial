@@ -37,7 +37,7 @@ test_that("test distance matrix of same trees is zero", {
 })
 
 test_that("ensure distance matrix is symmetric", {
-  numTrees <- 1
+  numTrees <- 100
   numTips <- 200
 
   pdaTrees <- rtreeshape(numTrees, tip.number = numTips, model = "pda")
@@ -52,6 +52,6 @@ test_that("ensure distance matrix is symmetric", {
 
   distanceMatrix <- coefficientDist(coeffMats)
 
-  expect_equal(distanceMatrix,t(distanceMatrix))
+  expect_true(all(distanceMatrix == t(distanceMatrix)))
 })
 
