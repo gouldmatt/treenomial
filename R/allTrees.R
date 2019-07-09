@@ -45,7 +45,7 @@ allTrees <- function(numTips, complex = FALSE) {
         tree1 <- nTipsTrees[[treesToWedge[i, 1]]][[treeOptions[j, 1]]]
         tree2 <- nTipsTrees[[treesToWedge[i, 2]]][[treeOptions[j, 2]]]
         if(complex){
-          nTipsTrees[[currTips]][[treeCount]] <- wedgeC(nTipsTrees[[treesToWedge[i,1]]][[treeOptions[j,1]]], nTipsTrees[[treesToWedge[i,2]]][[treeOptions[j,2]]])
+          nTipsTrees[[currTips]][[treeCount]] <- wedgeComplex(nTipsTrees[[treesToWedge[i,1]]][[treeOptions[j,1]]], nTipsTrees[[treesToWedge[i,2]]][[treeOptions[j,2]]])
         } else {
           nTipsTrees[[currTips]] <- append(nTipsTrees[[currTips]], wedge(tree1, tree2))
         }

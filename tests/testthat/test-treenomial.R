@@ -2,6 +2,8 @@ library(ape)
 library(apTreeshape)
 library(Matrix)
 
+
+##### tests involving construction of coefficient matrices ######
 test_that("Check wedging two cherries result", {
   cherry <- sparseMatrix(c(1, 2), c(3, 1), x = c(1, 1))
   cherryWedged <- sparseMatrix(c(3, 2, 2, 1), c(1, 1, 3, 5), x = c(1, 1, 2, 1))
@@ -26,12 +28,30 @@ test_that("test complex all trees up to 16 tips", {
   expect_equal(wadNum,lengths(allTrees))
 })
 
+##### tests involving metric on coefficient matrices ######
+test_that("test distance matrix of same trees is zero", {
+  tree <- list(rtree(10))
+  identicalForest <- rep(tree,10)
+  distanceMatrix <- coefficientDist(coefficientMatrix(identicalForest))
+  expect_true(all(distanceMatrix == 0))
+})
 
+test_that("ensure distance matrix is symmetric", {
+  numTrees <- 1
+  numTips <- 200
 
-# test with labelled data
+  pdaTrees <- rtreeshape(numTrees, tip.number = numTips, model = "pda")
+  yuleTrees <- rtreeshape(numTrees, tip.number = numTips, model = "yule")
+  aldousTrees <- rtreeshape(numTrees, tip.number = numTips, model = "aldous")
+  biasedTrees <- rtreeshape(numTrees, tip.number = numTips, model = "biased")
 
-# test on plotting
+  modelTrees <- list(pda = pdaTrees, yule = yuleTrees,aldous =aldousTrees, biased = biasedTrees)
+  modelTrees <- lapply(unlist(modelTrees, recursive=FALSE), as.phylo)
 
-# test on error conditions
+  coeffMats <- coefficientMatrix(modelTrees)
 
-# R0 tests
+  distanceMatrix <- coefficientDist(coeffMats)
+
+  expect_equal(distanceMatrix,t(distanceMatrix))
+})
+

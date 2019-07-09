@@ -95,11 +95,11 @@ coefficientMds <- function(trees, coefficientMatrices, method = "sumLogDiff", di
       methodResults <- data.frame(fit)
     }
 
-    ggplot(methodResults, aes(x = X1, y = X2, shape = method, color = method)) +
+    ggplot(methodResults, aes(x = X1, y = X2, color = color)) +
       geom_point() +
-      ggtitle(method) +
-      labs(fill = legendTitle) +
-      theme(plot.title = element_text(hjust = 0.5))
+      ggtitle(title) +
+      theme(plot.title = element_text(hjust = 0.5)) +
+      labs(color = legendTitle)
   } else {
     fit <- cmdscale(distMatrix, k = 3) # k is the number of dim
 

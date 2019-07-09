@@ -32,8 +32,8 @@ allTrees <- lapply(unlist(allTrees, recursive = FALSE), as.phylo)
 
 # first construct the coefficient matrices and use them to create two MDS plots
 coeffMats <- coefficientMatrix(allTrees)
-mds3dTwoStep <- coefficientMds(coefficientMatrices = coeffMats, dim = 3)
-mds3dTwoStep
+coefficientMds(coefficientMatrices = coeffMats, dim = 3, title = "Coefficient MDS on different tree models", legendTitle = "tree model")
+coefficientMds(coefficientMatrices = coeffMats, dim = 2, title = "Coefficient MDS on different tree models", legendTitle = "tree model")
 ```
 
 
