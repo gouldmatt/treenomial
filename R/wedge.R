@@ -33,3 +33,29 @@ wedge <- function(coefficientMatrixA, coefficientMatrixB) {
 
   return(resPolyMat)
 }
+
+#' #' Performs the wedge operation on two coefficient matrices
+#' #'Rmpfr
+#' #' \#' wedgeExact <- function(coefficientMatrixA, coefficientMatrixB) {
+#'   resPolyMat <- matrix(data = 0, nrow = nrow(coefficientMatrixB) + nrow(coefficientMatrixA), ncol = 3)
+#'   wedgeFillExact(coefficientMatrixA, coefficientMatrixB, resPolyMat)
+#'   return(resPolyMat)
+#' }
+
+#' Performs the wedge operation on two complex coefficient matrices
+#'
+#' Calculates the result from the wedge operation of two complex coefficient matrices.
+#' @param op1 First tree complex coefficient matrix
+#' @param op2 Second tree complex coefficient matrix
+#' @return The resulting coefficient matrix.
+#' @importFrom pracma conv
+#' @examples
+#' example here
+#' @export
+wedgeComplex <- function(op1,op2){
+  res <- conv(op1,op2)
+  res[1] <- res[1] + 1i
+  res[abs(res)<10^(-13)] <- 0
+  return(res)
+}
+

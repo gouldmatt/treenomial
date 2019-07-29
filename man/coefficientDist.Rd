@@ -4,7 +4,7 @@
 \alias{coefficientDist}
 \title{Calculates the distance matrix of multiple coefficient matrices}
 \usage{
-coefficientDist(coefficientMatrices, method = "canberra")
+coefficientDist(coefficientMatrices, method = "sumLogDiff")
 }
 \arguments{
 \item{coefficientMatrices}{list of coefficient matrices}
@@ -15,8 +15,7 @@ coefficientDist(coefficientMatrices, method = "canberra")
 distance matrix calculated from argument coefficient matrices
 }
 \description{
-Uses a specified method to construct a distance matrix from coefficient matrices.
-For a list of methods see \link[parallelDist]{parDist}.
+Calculates the distance matrix of multiple coefficient matrices
 }
 \examples{
 # example goes here

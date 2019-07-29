@@ -7,14 +7,18 @@
 #' @examples
 #' # example goes here
 #' @export
-allTrees <- function(numTips) {
-  # wadNum <- c(1,1,1,2,3,6, 11, 23, 46, 98, 207, 451,
-  #             983, 2179, 4850, 10905, 24631, 56011, 127912,
-  #             293547, 676157, 1563372, 3626149, 8436379, 19680277,
-  #             46026618, 107890609)
+allTrees <- function(numTips, complex = FALSE) {
+  wadNum <- c(1,1,1,2,3,6, 11, 23, 46, 98, 207, 451,
+              983, 2179, 4850, 10905, 24631, 56011, 127912,
+              293547, 676157, 1563372, 3626149, 8436379, 19680277,
+              46026618, 107890609)
 
   nTipsTrees <- vector("list", length = numTips)
-  nTipsTrees[[1]] <- list(sparseMatrix(1, 2, x = 1))
+  if(complex){
+    nTipsTrees[[1]] <- list(c(0,1))
+  } else {
+    nTipsTrees[[1]] <- list(sparseMatrix(1, 2, x = 1))
+  }
   currTips <- 2
 
   while (currTips != (numTips + 1)) {
@@ -40,7 +44,11 @@ allTrees <- function(numTips) {
         treeCount <- treeCount + 1
         tree1 <- nTipsTrees[[treesToWedge[i, 1]]][[treeOptions[j, 1]]]
         tree2 <- nTipsTrees[[treesToWedge[i, 2]]][[treeOptions[j, 2]]]
-        nTipsTrees[[currTips]] <- append(nTipsTrees[[currTips]], wedge(tree1, tree2))
+        if(complex){
+          nTipsTrees[[currTips]][[treeCount]] <- wedgeComplex(nTipsTrees[[treesToWedge[i,1]]][[treeOptions[j,1]]], nTipsTrees[[treesToWedge[i,2]]][[treeOptions[j,2]]])
+        } else {
+          nTipsTrees[[currTips]] <- append(nTipsTrees[[currTips]], wedge(tree1, tree2))
+        }
       }
     }
 

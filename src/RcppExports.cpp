@@ -6,6 +6,42 @@
 
 using namespace Rcpp;
 
+// sumLogDiff
+double sumLogDiff(const NumericMatrix coeffMatA, const NumericMatrix coeffMatB);
+RcppExport SEXP _treenomial_sumLogDiff(SEXP coeffMatASEXP, SEXP coeffMatBSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix >::type coeffMatA(coeffMatASEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type coeffMatB(coeffMatBSEXP);
+    rcpp_result_gen = Rcpp::wrap(sumLogDiff(coeffMatA, coeffMatB));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sumLogDiffComplex
+double sumLogDiffComplex(const ComplexVector coeffMatA, const ComplexVector coeffMatB);
+RcppExport SEXP _treenomial_sumLogDiffComplex(SEXP coeffMatASEXP, SEXP coeffMatBSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const ComplexVector >::type coeffMatA(coeffMatASEXP);
+    Rcpp::traits::input_parameter< const ComplexVector >::type coeffMatB(coeffMatBSEXP);
+    rcpp_result_gen = Rcpp::wrap(sumLogDiffComplex(coeffMatA, coeffMatB));
+    return rcpp_result_gen;
+END_RCPP
+}
+// binaryDistance
+double binaryDistance(const NumericVector coeffMatA, const NumericVector coeffMatB);
+RcppExport SEXP _treenomial_binaryDistance(SEXP coeffMatASEXP, SEXP coeffMatBSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericVector >::type coeffMatA(coeffMatASEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type coeffMatB(coeffMatBSEXP);
+    rcpp_result_gen = Rcpp::wrap(binaryDistance(coeffMatA, coeffMatB));
+    return rcpp_result_gen;
+END_RCPP
+}
 // wedgeFill
 void wedgeFill(NumericMatrix baseMat, NumericMatrix shiftsMat, NumericMatrix resMat);
 RcppExport SEXP _treenomial_wedgeFill(SEXP baseMatSEXP, SEXP shiftsMatSEXP, SEXP resMatSEXP) {
@@ -18,9 +54,25 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// wedgeFillExact
+void wedgeFillExact(NumericMatrix baseMat, NumericMatrix shiftsMat, NumericMatrix resMat);
+RcppExport SEXP _treenomial_wedgeFillExact(SEXP baseMatSEXP, SEXP shiftsMatSEXP, SEXP resMatSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type baseMat(baseMatSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type shiftsMat(shiftsMatSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type resMat(resMatSEXP);
+    wedgeFillExact(baseMat, shiftsMat, resMat);
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_treenomial_sumLogDiff", (DL_FUNC) &_treenomial_sumLogDiff, 2},
+    {"_treenomial_sumLogDiffComplex", (DL_FUNC) &_treenomial_sumLogDiffComplex, 2},
+    {"_treenomial_binaryDistance", (DL_FUNC) &_treenomial_binaryDistance, 2},
     {"_treenomial_wedgeFill", (DL_FUNC) &_treenomial_wedgeFill, 3},
+    {"_treenomial_wedgeFillExact", (DL_FUNC) &_treenomial_wedgeFillExact, 3},
     {NULL, NULL, 0}
 };
 

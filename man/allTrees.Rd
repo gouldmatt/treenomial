@@ -4,7 +4,7 @@
 \alias{allTrees}
 \title{Calculate the coefficient matrices of all trees up to n tips}
 \usage{
-allTrees(numTips)
+allTrees(numTips, complex = FALSE)
 }
 \arguments{
 \item{numtips}{the max number of tips to find all coefficient matrices for}

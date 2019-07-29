@@ -4,8 +4,8 @@
 \alias{coefficientMds}
 \title{Builds a 2d or 3d mds plot from tree or coefficient matrix data}
 \usage{
-coefficientMds(trees, coefficientMatrices, method = "canberra",
-  dim = 2)
+coefficientMds(trees, coefficientMatrices, method = "sumLogDiff",
+  dim = 2, title = method, legendTitle = " ")
 }
 \arguments{
 \item{trees}{list of phylo objects used to calculate coefficient matrices}
@@ -29,16 +29,16 @@ library(apTreeshape)
 numTrees <- 10
 numTips <- 500
 
-pdaTrees <- rtreeshape(numTrees,tip.number=numTips,model="pda")
-yuleTrees <- rtreeshape(numTrees,tip.number=numTips,model="yule")
-aldousTrees <- rtreeshape(numTrees,tip.number=numTips,model="aldous")
-biasedTrees <- rtreeshape(numTrees,tip.number=numTips,model="biased")
+pdaTrees <- rtreeshape(numTrees, tip.number = numTips, model = "pda")
+yuleTrees <- rtreeshape(numTrees, tip.number = numTips, model = "yule")
+aldousTrees <- rtreeshape(numTrees, tip.number = numTips, model = "aldous")
+biasedTrees <- rtreeshape(numTrees, tip.number = numTips, model = "biased")
 
 # place into a list
 allTrees <- list(pdaTrees = pdaTrees, yuleTrees = yuleTrees, aldousTrees = aldousTrees, biasedTrees, biasedTrees)
 
 # convert to phylo type
-allTrees <- lapply(unlist(allTrees, recursive=FALSE), as.phylo)
+allTrees <- lapply(unlist(allTrees, recursive = FALSE), as.phylo)
 
 # construct the 2d MDS on the trees using the "canberra" distance method
 mds2D <- coefficientMds(trees = allTrees, method = "canberra", dim = 2)
@@ -47,5 +47,4 @@ mds2D <- coefficientMds(trees = allTrees, method = "canberra", dim = 2)
 coeffMats <- coefficientMatrix(allTrees)
 mds2dTwoStep <- coefficientMds(coefficientMatrices = coeffMats, method = "canberra", dim = 2)
 mds3dTwoStep <- coefficientMds(coefficientMatrices = coeffMats, method = "canberra", dim = 3)
-
 }
