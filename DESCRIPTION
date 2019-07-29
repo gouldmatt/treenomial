@@ -16,11 +16,11 @@ LazyData: true
 Imports: Rcpp (>= 1.0.1),
          Matrix,
          ape,
-         RcppArmadillo, 
+         Rcpp,
+         TreeSim,
          plotly, 
          ggplot2,
          parallel,
-         parallelDist,
          gtools,
          pbapply
 LinkingTo: Rcpp, RcppArmadillo

@@ -9,7 +9,15 @@ sumLogDiffComplex <- function(coeffMatA, coeffMatB) {
     .Call('_treenomial_sumLogDiffComplex', PACKAGE = 'treenomial', coeffMatA, coeffMatB)
 }
 
+binaryDistance <- function(coeffMatA, coeffMatB) {
+    .Call('_treenomial_binaryDistance', PACKAGE = 'treenomial', coeffMatA, coeffMatB)
+}
+
 wedgeFill <- function(baseMat, shiftsMat, resMat) {
     invisible(.Call('_treenomial_wedgeFill', PACKAGE = 'treenomial', baseMat, shiftsMat, resMat))
+}
+
+wedgeFillExact <- function(baseMat, shiftsMat, resMat) {
+    invisible(.Call('_treenomial_wedgeFillExact', PACKAGE = 'treenomial', baseMat, shiftsMat, resMat))
 }
 

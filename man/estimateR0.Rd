@@ -4,7 +4,8 @@
 \alias{estimateR0}
 \title{Estimates R0}
 \usage{
-estimateR0(tree, start = 1.5, end = 8.5, step = 1, numSim = 100)
+estimateR0(tree, start = 1.5, end = 8.5, step = 1,
+  numStepSim = 100, numTotalSim = 10)
 }
 \arguments{
 \item{tree}{list of coefficient matrices}

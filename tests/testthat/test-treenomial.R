@@ -1,4 +1,3 @@
-library(ape)
 library(apTreeshape)
 library(Matrix)
 
@@ -38,7 +37,7 @@ test_that("test distance matrix of same trees is zero", {
 
 test_that("ensure distance matrix is symmetric", {
   numTrees <- 100
-  numTips <- 200
+  numTips <- 20
 
   pdaTrees <- rtreeshape(numTrees, tip.number = numTips, model = "pda")
   yuleTrees <- rtreeshape(numTrees, tip.number = numTips, model = "yule")

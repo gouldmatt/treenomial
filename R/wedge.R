@@ -34,6 +34,14 @@ wedge <- function(coefficientMatrixA, coefficientMatrixB) {
   return(resPolyMat)
 }
 
+#' #' Performs the wedge operation on two coefficient matrices
+#' #'Rmpfr
+#' #' \#' wedgeExact <- function(coefficientMatrixA, coefficientMatrixB) {
+#'   resPolyMat <- matrix(data = 0, nrow = nrow(coefficientMatrixB) + nrow(coefficientMatrixA), ncol = 3)
+#'   wedgeFillExact(coefficientMatrixA, coefficientMatrixB, resPolyMat)
+#'   return(resPolyMat)
+#' }
+
 #' Performs the wedge operation on two complex coefficient matrices
 #'
 #' Calculates the result from the wedge operation of two complex coefficient matrices.

@@ -24,3 +24,31 @@ void wedgeFill(NumericMatrix baseMat, NumericMatrix shiftsMat, NumericMatrix res
       }
   }
 }
+
+// [[Rcpp::export]]
+void wedgeFillExact(NumericMatrix baseMat, NumericMatrix shiftsMat, NumericMatrix resMat) {
+
+  int baseRows = baseMat.nrow();
+  int shiftsRows = shiftsMat.nrow();
+  int rowRes = 0;
+  int colRes = 0;
+  long double coeffRes = 0;
+
+  // add the extra + y term
+  // resMat(1,0) = 1;
+  // loop through all combinations of each coordinate list (nonzero elements of each matrix)
+  int t = 0;
+  for(int bRow = 0; bRow<baseRows; bRow++){
+    for(int sRow = 0; sRow<shiftsRows; sRow++){
+      rowRes = baseMat(bRow,0) + shiftsMat(sRow,0) - 1; // look at changing to .at() syntax safer?
+      colRes = baseMat(bRow,1) + shiftsMat(sRow,1) - 1;
+      std::cout << "brow|srow" << bRow << "|" << sRow << std::endl <<  rowRes << " " << colRes << " " << std::endl;
+      resMat(t,0) = rowRes;
+      resMat(t,1) = colRes;
+      resMat(t,2) = 1;
+      t++;
+    }
+  }
+
+
+}

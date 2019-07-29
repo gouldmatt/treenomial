@@ -19,14 +19,31 @@ coefficientDist <- function(coefficientMatrices, method = "sumLogDiff") {
   # set the max times the progress bar is updated
   pboptions(nout = 50)
 
+  isDouble <- is.double(coefficientMatrices[[1]])
+  isComplex <- is.complex(coefficientMatrices[[1]])
+
   # determine if coefficients are real or imaginary
-  if (is.double(coefficientMatrices[[1]])) {
+  if (isDouble && method == "sumLogDiff") {
     distMat[upperDist] <- pbapply(upperDist, MARGIN = 1, FUN = function(i) {
       sumLogDiff(coefficientMatrices[[i[1]]], coefficientMatrices[[i[2]]])
     })
-  } else if (is.complex(coefficientMatrices[[1]])) {
+  } else if (isComplex && method == "sumLogDiff") {
     distMat[upperDist] <- pbapply(upperDist, MARGIN = 1, FUN = function(i) {
       sumLogDiffComplex(coefficientMatrices[[i[1]]], coefficientMatrices[[i[2]]])
+    })
+  } else if (isComplex || isDouble && method == "fager") {
+    coefficientMatrices <- lapply(coefficientMatrices, as.logical)
+    distMat[upperDist] <- pbapply(upperDist, MARGIN = 1, FUN = function(i) {
+      coeffMatA <- coefficientMatrices[[i[1]]]
+      coeffMatB <- coefficientMatrices[[i[2]]]
+
+      c <- as.numeric(length(coeffMatA[coeffMatA == TRUE & coeffMatB == FALSE]))
+      b <- as.numeric(length(coeffMatA[coeffMatA == FALSE & coeffMatB == TRUE]))
+      d <- as.numeric(length(coeffMatA[coeffMatA == FALSE & coeffMatB == FALSE]))
+      a <- as.numeric(length(coeffMatA[coeffMatA == TRUE & coeffMatB == TRUE]))
+
+      return((a/sqrt((a+b)*(a+c))) - sqrt(a+c)/2)
+
     })
   } else {
     # error
@@ -90,7 +107,7 @@ coefficientMds <- function(trees, coefficientMatrices, method = "sumLogDiff", di
   if (dim == 2) {
     fit <- cmdscale(distMatrix, k = 2)
     if (!is.null(treeLab)) {
-      methodResults <- data.frame("method" = treeLab, fit, "color" = gsub("[[:digit:]]+", "", treeLab))
+      methodResults <- data.frame("method" = treeLab, fit, "color" = treeLab)
     } else {
       methodResults <- data.frame(fit)
     }
@@ -104,7 +121,7 @@ coefficientMds <- function(trees, coefficientMatrices, method = "sumLogDiff", di
     fit <- cmdscale(distMatrix, k = 3) # k is the number of dim
 
     if (!is.null(treeLab)) {
-      mdsRes <- data.frame("method" = treeLab, fit, "color" = gsub("[[:digit:]]+", "", treeLab))
+      mdsRes <- data.frame("method" = treeLab, fit, "color" = treeLab)
     } else {
       mdsRes <- data.frame(fit)
     }

@@ -5,7 +5,7 @@
 #' @import Matrix
 #' @import pbapply
 #' @import parallel
-#' @import ape
+#' @importFrom ape as.phylo
 #' @examples
 #' library(ape)
 #' # generate a tree
@@ -26,7 +26,7 @@ coefficientMatrix <- function(tree, complex = FALSE) {
   # call appropiately for the number and size of the input trees
   if (singleTree) {
     # print("singleTree")
-    coefficientMat <- singleCoeffMat(tree,complex = complex, loadingOn = TRUE)
+    coefficientMat <- singleCoeffMat(tree,complex = complex, loadingOn = FALSE)
   } else {
     # need to test more for best time to go multicore
     if (length(tree) >= 100 && tree[[1]]$Nnode > 400) {
