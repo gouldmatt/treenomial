@@ -109,21 +109,24 @@ estimateP <- function(tree, start = 1.5, end = 8.5, step = 1, numStepSim = 100, 
 
 #' @export
 bdTreesDistance <- function(targetTree, r0, sampleSize){
-
+  print("generating sample")
   # simulate sample size number of trees with argument R0 and twice the # of tips as the target tree
   unprunedSampleTrees <- sim.bd.taxa(n= 2*(targetTree$Nnode + 1), numbsim= sampleSize, mu=1, lambda= r0,complete = TRUE)
 
   # prune the sample trees
   prunedSampleTrees <- lapply(unprunedSampleTrees, function(x) prunetosize(x,(targetTree$Nnode + 1)))
 
+  print("generating coefficients")
   # generate the coefficient matrices for the sample and the target
-  bdTreesCoeff <- coefficientMatrix(prunedSampleTrees, complex = TRUE)
-  treeCoeff <- coefficientMatrix(targetTree, complex = TRUE)
+  pboptions(type = "txt")
+  bdTreesCoeff <- coefficientMatrix(prunedSampleTrees, complex = FALSE)
+  treeCoeff <- coefficientMatrix(targetTree, complex = FALSE)
 
+  print("finding distances to sample")
   # find the distance between each sample and the target
   distances <- vector(mode = "numeric", length = sampleSize)
   for(i in 1:sampleSize){
-    distances[i] <- sumLogDiffComplex(treeCoeff,bdTreesCoeff[[i]])
+    distances[i] <- sumLogDiff(treeCoeff,bdTreesCoeff[[i]])
   }
 
   # printout and return average
