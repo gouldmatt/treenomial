@@ -4,18 +4,29 @@
 \alias{coefficientDist}
 \title{Calculates the distance matrix of multiple coefficient matrices}
 \usage{
-coefficientDist(coefficientMatrices, method = "sumLogDiff")
+coefficientDist(coefficientMatrices, method = "sumLogDiff",
+  normalize = FALSE, progressBar = FALSE,
+  smallDistanceMatrix = FALSE)
 }
 \arguments{
 \item{coefficientMatrices}{list of coefficient matrices}
 
 \item{method}{method to use when calculating coefficient distances}
+
+\item{normalize}{whether or not to use a row sum normilization of the coefficients}
+
+\item{progressBar}{add a progress bar to track performance}
+
+\item{smallDistanceMatrix}{whether to return a distance matrix (TRUE) or a distance value (FALSE) if only two coefficient matrices are given}
 }
 \value{
 distance matrix calculated from argument coefficient matrices
 }
 \description{
 Calculates the distance matrix of multiple coefficient matrices
+}
+\note{
+by default a list of two coefficient matrices will return a distance value rather than a 2*2 distance matrix
 }
 \examples{
 # example goes here

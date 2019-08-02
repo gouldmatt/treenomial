@@ -5,12 +5,12 @@ sumLogDiff <- function(coeffMatA, coeffMatB) {
     .Call('_treenomial_sumLogDiff', PACKAGE = 'treenomial', coeffMatA, coeffMatB)
 }
 
-sumLogDiffComplex <- function(coeffMatA, coeffMatB) {
-    .Call('_treenomial_sumLogDiffComplex', PACKAGE = 'treenomial', coeffMatA, coeffMatB)
+sumLogDiffNormalize <- function(coeffMatA, coeffMatB) {
+    .Call('_treenomial_sumLogDiffNormalize', PACKAGE = 'treenomial', coeffMatA, coeffMatB)
 }
 
-binaryDistance <- function(coeffMatA, coeffMatB) {
-    .Call('_treenomial_binaryDistance', PACKAGE = 'treenomial', coeffMatA, coeffMatB)
+sumLogDiffComplex <- function(coeffMatA, coeffMatB) {
+    .Call('_treenomial_sumLogDiffComplex', PACKAGE = 'treenomial', coeffMatA, coeffMatB)
 }
 
 wedgeFill <- function(baseMat, shiftsMat, resMat) {

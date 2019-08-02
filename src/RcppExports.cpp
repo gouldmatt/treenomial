@@ -18,6 +18,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sumLogDiffNormalize
+double sumLogDiffNormalize(const NumericMatrix coeffMatA, const NumericMatrix coeffMatB);
+RcppExport SEXP _treenomial_sumLogDiffNormalize(SEXP coeffMatASEXP, SEXP coeffMatBSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix >::type coeffMatA(coeffMatASEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type coeffMatB(coeffMatBSEXP);
+    rcpp_result_gen = Rcpp::wrap(sumLogDiffNormalize(coeffMatA, coeffMatB));
+    return rcpp_result_gen;
+END_RCPP
+}
 // sumLogDiffComplex
 double sumLogDiffComplex(const ComplexVector coeffMatA, const ComplexVector coeffMatB);
 RcppExport SEXP _treenomial_sumLogDiffComplex(SEXP coeffMatASEXP, SEXP coeffMatBSEXP) {
@@ -27,18 +39,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const ComplexVector >::type coeffMatA(coeffMatASEXP);
     Rcpp::traits::input_parameter< const ComplexVector >::type coeffMatB(coeffMatBSEXP);
     rcpp_result_gen = Rcpp::wrap(sumLogDiffComplex(coeffMatA, coeffMatB));
-    return rcpp_result_gen;
-END_RCPP
-}
-// binaryDistance
-double binaryDistance(const NumericVector coeffMatA, const NumericVector coeffMatB);
-RcppExport SEXP _treenomial_binaryDistance(SEXP coeffMatASEXP, SEXP coeffMatBSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericVector >::type coeffMatA(coeffMatASEXP);
-    Rcpp::traits::input_parameter< const NumericVector >::type coeffMatB(coeffMatBSEXP);
-    rcpp_result_gen = Rcpp::wrap(binaryDistance(coeffMatA, coeffMatB));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -69,8 +69,8 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_treenomial_sumLogDiff", (DL_FUNC) &_treenomial_sumLogDiff, 2},
+    {"_treenomial_sumLogDiffNormalize", (DL_FUNC) &_treenomial_sumLogDiffNormalize, 2},
     {"_treenomial_sumLogDiffComplex", (DL_FUNC) &_treenomial_sumLogDiffComplex, 2},
-    {"_treenomial_binaryDistance", (DL_FUNC) &_treenomial_binaryDistance, 2},
     {"_treenomial_wedgeFill", (DL_FUNC) &_treenomial_wedgeFill, 3},
     {"_treenomial_wedgeFillExact", (DL_FUNC) &_treenomial_wedgeFillExact, 3},
     {NULL, NULL, 0}

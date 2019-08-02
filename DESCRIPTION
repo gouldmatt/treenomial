@@ -7,7 +7,7 @@ Authors@R: c(
   person("Matthew", "Gould", email = "yourself@somewhere.net", 
   role = c("aut", "cre")),
   person("Pengyu", "Liu", email = "yourself@somewhere.net", 
-  role = c("ctb")))
+  role = c("aut")))
 Maintainer: Matthew Gould <yourself@somewhere.net>
 Description: Description 
 License: license is it under
@@ -22,6 +22,7 @@ Imports: Rcpp (>= 1.0.1),
          ggplot2,
          parallel,
          gtools,
-         pbapply
+         pbapply,
+         pracma
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.1.1

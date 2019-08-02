@@ -1,26 +1,106 @@
+#' Aligns a list of coefficent matrices to the max size in the argument list
+#'
+#'
+#' @param coeffMats list of real or complex coefficient matrices of different sizes to be aligned
+#' @return the aligned list of coefficient matrices
+#' @examples
+#' # example goes here
+#' @export
+coefficientAlign <- function(coeffMats){
+  # check for complex poly
+  if(is.complex(coeffMats[[1]])){
+    coeffsLengths <- lengths(coeffMats)
+
+    # determine the size of the largest matrix in the list
+    maxSize <- max(coeffsLengths)
+
+    # check there exists at least one smaller matrix
+    if(!any(coeffsLengths < maxSize)){
+      return(coeffMats)
+    }
+
+    # go through and align smaller complex vectors
+    coeffMats <- lapply(coeffMats, function(x){
+      # check if alignment is neccessary
+      if(length(x) < maxSize){
+        # align
+        alignedVector <- vector(mode = "complex", length = maxSize)
+        alignedVector[(maxSize - length(x) + 1):maxSize] <- x
+        return(alignedVector)
+      } else {
+        return(x)
+      }
+
+    })
+    return(coeffMats)
+  }
+
+  colSizes <- vapply(coeffMats, ncol, FUN.VALUE =  numeric(1))
+
+  # determine the size of the largest matrix in the list
+  maxSize <- max(colSizes)
+  maxRows <- ceiling(maxSize/2)
+
+  # check there exists at least one smaller matrix
+  if(!any(colSizes < maxSize)){
+    return(coeffMats)
+  }
+
+  # go through and align smaller matrices
+  coeffMats <- lapply(coeffMats, function(x){
+    # check if alignment is neccessary
+    if(ncol(x) < maxSize){
+      # align
+      alignedMatrix <- matrix(data = 0, nrow = maxRows, ncol = maxSize)
+      alignedMatrix[1:nrow(x),(maxSize - ncol(x) + 1):maxSize] <- x
+      return(alignedMatrix)
+    } else {
+      return(x)
+    }
+
+  })
+  return(coeffMats)
+}
+
+
 #' Calculates the distance matrix of multiple coefficient matrices
 #'
 #'
 #' @param coefficientMatrices list of coefficient matrices
 #' @param method method to use when calculating coefficient distances
+#' @param normalize whether or not to use a row sum normilization of the coefficients
+#' @param progressBar add a progress bar to track performance
+#' @param smallDistanceMatrix whether to return a distance matrix (TRUE) or a distance value (FALSE) if only two coefficient matrices are given
 #' @return distance matrix calculated from argument coefficient matrices
+#' @note by default a list of two coefficient matrices will return a distance value rather than a 2*2 distance matrix
 #' @import Matrix
 #' @importFrom utils combn
 #' @import pbapply
 #' @examples
 #' # example goes here
 #' @export
-coefficientDist <- function(coefficientMatrices, method = "sumLogDiff") {
+coefficientDist <- function(coefficientMatrices, method = "sumLogDiff", normalize = FALSE, progressBar = FALSE, smallDistanceMatrix = FALSE) {
+  # align if needed
+  coefficientMatrices <- coefficientAlign(coefficientMatrices)
 
   # determine and define the places to calculate in the distance matrix
   upperDist <- t(combn(length(coefficientMatrices), 2))
   distMat <- matrix(data = 0, nrow = length(coefficientMatrices), ncol = length(coefficientMatrices))
 
-  # set the max times the progress bar is updated
-  pboptions(nout = 50)
+  # set the max times the progress bar is updated and check if user wants a progress bar
+  pboptions(nout = 50, type = ifelse(progressBar, "timer", "none"))
 
   isDouble <- is.double(coefficientMatrices[[1]])
   isComplex <- is.complex(coefficientMatrices[[1]])
+
+  # normalize if selected
+  if(normalize && isDouble){
+    coefficientMatrices <- lapply(coefficientMatrices, function(x){
+      rowSum <- rowSums(x)
+      x[rowSum != 0,] <- x[rowSum != 0,]/rowSum[rowSum != 0]
+      return(x)
+    })
+  }
 
   # determine if coefficients are real or imaginary
   if (isDouble && method == "sumLogDiff") {
@@ -47,6 +127,10 @@ coefficientDist <- function(coefficientMatrices, method = "sumLogDiff") {
     })
   } else {
     # error
+  }
+
+  if(smallDistanceMatrix == FALSE && length(coefficientMatrices) == 2){
+    return(distMat[1,2])
   }
 
   distMat <- t(distMat) + distMat
