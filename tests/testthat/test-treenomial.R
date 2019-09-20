@@ -1,6 +1,14 @@
 library(apTreeshape)
 library(Matrix)
 
+#####
+# tests to add
+#   ===> error cases
+#   ===> alltrees
+#   ===> wedge
+#   ===>
+#
+
 
 ##### tests involving construction of coefficient matrices ######
 test_that("Check wedging two cherries result", {

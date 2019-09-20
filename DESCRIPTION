@@ -1,6 +1,6 @@
 Package: treenomial
 Type: Package
-Title: Exploration of rooted bifurcating phylogenetic trees using a tree defining polynomial 
+Title: Comparison of trees using using a tree defining polynomial 
 Version: 0.0.1
 Authors: Matthew Gould
 Authors@R: c(
@@ -17,12 +17,8 @@ Imports: Rcpp (>= 1.0.1),
          Matrix,
          ape,
          Rcpp,
-         TreeSim,
-         plotly, 
-         ggplot2,
-         parallel,
          gtools,
          pbapply,
          pracma
-LinkingTo: Rcpp, RcppArmadillo
+LinkingTo: Rcpp
 RoxygenNote: 6.1.1

@@ -4,10 +4,17 @@
 \alias{coefficientMatrix}
 \title{Converts trees (objects of class "phylo") to coefficient matrices}
 \usage{
-coefficientMatrix(tree, complex = FALSE)
+coefficientMatrix(tree, complex = FALSE, tipLabel = FALSE,
+  normalize = FALSE, progressBar = FALSE, cl = NULL)
 }
 \arguments{
 \item{tree}{an object or list of class "phylo"}
+
+\item{complex}{whether or not to return the polynomial with y = i}
+
+\item{normalize}{whether or not to use a row sum normilization of the coefficients}
+
+\item{progressBar}{add a progress bar to track performance}
 }
 \value{
 The resulting coefficient matrix or matrices.

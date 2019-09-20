@@ -8,8 +8,8 @@ double sumLogDiff(const NumericMatrix coeffMatA, const NumericMatrix coeffMatB) 
 }
 
 // [[Rcpp::export]]
-double sumLogDiffNormalize(const NumericMatrix coeffMatA, const NumericMatrix coeffMatB) {
-  return(sum((log(1+abs(coeffMatA - coeffMatB)))));
+double sumLogDiffLabels(const ComplexMatrix coeffMatA, const ComplexMatrix coeffMatB) {
+  return(sum((log(1+Mod(coeffMatA - coeffMatB)))));
 }
 
 // [[Rcpp::export]]

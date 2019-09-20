@@ -34,13 +34,27 @@ wedge <- function(coefficientMatrixA, coefficientMatrixB) {
   return(resPolyMat)
 }
 
-#' #' Performs the wedge operation on two coefficient matrices
-#' #'Rmpfr
-#' #' \#' wedgeExact <- function(coefficientMatrixA, coefficientMatrixB) {
-#'   resPolyMat <- matrix(data = 0, nrow = nrow(coefficientMatrixB) + nrow(coefficientMatrixA), ncol = 3)
-#'   wedgeFillExact(coefficientMatrixA, coefficientMatrixB, resPolyMat)
-#'   return(resPolyMat)
-#' }
+tipLabelWedge <- function(coefficientMatrixA, coefficientMatrixB) {
+
+  newCols <- ncol(coefficientMatrixA) + ncol(coefficientMatrixB) - 1
+  newRows <- nrow(coefficientMatrixB) + nrow(coefficientMatrixA) - 1
+
+  # convert operands from sparse matrix to coordinate list matrix => [row, col, val]
+  nonzeroA <- unname(which(coefficientMatrixA != 0, arr.ind = T))
+  nonzeroB <- unname(which(coefficientMatrixB != 0, arr.ind = T))
+
+  coefficientMatrixA <- as.matrix(cbind(nonzeroA,coefficientMatrixA[nonzeroA]))
+  coefficientMatrixB <- as.matrix(cbind(nonzeroB,coefficientMatrixB[nonzeroB]))
+
+  # perform the wedge operation on the elements of coefficientMatrixA and coefficientMatrixB filling resPolyMat
+  resPolyMat <- matrix(data = 0i, nrow = newRows, ncol = newCols)
+  wedgeFillComplex(coefficientMatrixA, coefficientMatrixB, resPolyMat)
+
+  # convert result to sparse matrix
+  # resPolyMat <- as(resPolyMat, "sparseMatrix")
+
+  return(resPolyMat)
+}
 
 #' Performs the wedge operation on two complex coefficient matrices
 #'
@@ -54,8 +68,7 @@ wedge <- function(coefficientMatrixA, coefficientMatrixB) {
 #' @export
 wedgeComplex <- function(op1,op2){
   res <- conv(op1,op2)
-  res[1] <- res[1] + 1i
-  res[abs(res)<10^(-13)] <- 0
+  res[1] <- res[1] + 1i + 1
   return(res)
 }
 

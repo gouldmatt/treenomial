@@ -2,14 +2,7 @@
 % Please edit documentation in R/wedge.R
 \name{wedgeComplex}
 \alias{wedgeComplex}
-\title{#' Performs the wedge operation on two coefficient matrices
-#'Rmpfr
-#' \#' wedgeExact <- function(coefficientMatrixA, coefficientMatrixB) {
-  resPolyMat <- matrix(data = 0, nrow = nrow(coefficientMatrixB) + nrow(coefficientMatrixA), ncol = 3)
-  wedgeFillExact(coefficientMatrixA, coefficientMatrixB, resPolyMat)
-  return(resPolyMat)
-}
-Performs the wedge operation on two complex coefficient matrices}
+\title{Performs the wedge operation on two complex coefficient matrices}
 \usage{
 wedgeComplex(op1, op2)
 }

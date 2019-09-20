@@ -5,8 +5,8 @@ sumLogDiff <- function(coeffMatA, coeffMatB) {
     .Call('_treenomial_sumLogDiff', PACKAGE = 'treenomial', coeffMatA, coeffMatB)
 }
 
-sumLogDiffNormalize <- function(coeffMatA, coeffMatB) {
-    .Call('_treenomial_sumLogDiffNormalize', PACKAGE = 'treenomial', coeffMatA, coeffMatB)
+sumLogDiffLabels <- function(coeffMatA, coeffMatB) {
+    .Call('_treenomial_sumLogDiffLabels', PACKAGE = 'treenomial', coeffMatA, coeffMatB)
 }
 
 sumLogDiffComplex <- function(coeffMatA, coeffMatB) {
@@ -17,7 +17,7 @@ wedgeFill <- function(baseMat, shiftsMat, resMat) {
     invisible(.Call('_treenomial_wedgeFill', PACKAGE = 'treenomial', baseMat, shiftsMat, resMat))
 }
 
-wedgeFillExact <- function(baseMat, shiftsMat, resMat) {
-    invisible(.Call('_treenomial_wedgeFillExact', PACKAGE = 'treenomial', baseMat, shiftsMat, resMat))
+wedgeFillComplex <- function(baseMat, shiftsMat, resMat) {
+    invisible(.Call('_treenomial_wedgeFillComplex', PACKAGE = 'treenomial', baseMat, shiftsMat, resMat))
 }
 

@@ -5,15 +5,12 @@
 \title{Calculates the distance matrix of multiple coefficient matrices}
 \usage{
 coefficientDist(coefficientMatrices, method = "sumLogDiff",
-  normalize = FALSE, progressBar = FALSE,
-  smallDistanceMatrix = FALSE)
+  progressBar = FALSE, smallDistanceMatrix = FALSE, cl = NULL)
 }
 \arguments{
 \item{coefficientMatrices}{list of coefficient matrices}
 
 \item{method}{method to use when calculating coefficient distances}
-
-\item{normalize}{whether or not to use a row sum normilization of the coefficients}
 
 \item{progressBar}{add a progress bar to track performance}
 
