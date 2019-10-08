@@ -2,23 +2,38 @@
 % Please edit documentation in R/wedge.R
 \name{wedge}
 \alias{wedge}
-\title{Performs the wedge operation on two coefficient matrices}
+\title{Performs the wedge operation}
 \usage{
-wedge(coefficientMatrixA, coefficientMatrixB)
+wedge(A, B, type = "real")
 }
 \arguments{
-\item{coefficientMatrixA}{First tree coefficient matrix}
+\item{A}{First coefficient matrix or phylo object}
 
-\item{coefficientMatrixB}{Second tree coefficient matrix}
+\item{B}{Second coefficient matrix or phylo object}
+
+\item{type}{The type of objects to wedge: "real", "complex" or "phylo"}
 }
 \value{
-The resulting coefficient matrix.
+Wedge result coefficient matrix or phylo object
 }
 \description{
-Calculates the result from the wedge operation of two coefficient matrices.
+Calculates the result from the wedge operation on two real coefficient
+matrices, two complex coefficient matrices or two phylo objects.
 }
 \examples{
-library(Matrix)
+require(Matrix)
+require(ape)
+
+# wedge two real coefficient matrices
 leaf <- sparseMatrix(1, 2, x = 1)
-wedge(leaf, leaf)
+wedge(leaf, leaf, type = "real")
+
+# wedge two complex coefficient matrices
+leaf <- as.complex(c(0,1))
+wedge(leaf, leaf, type = "complex")
+
+# wedge two phylo objects
+leaf <- "leaf"
+wedge(leaf, leaf, type = "phylo")
+
 }

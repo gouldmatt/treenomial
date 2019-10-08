@@ -1,7 +1,7 @@
 Package: treenomial
 Type: Package
 Title: Comparison of trees using using a tree defining polynomial 
-Version: 0.0.1
+Version: 0.0.7
 Authors: Matthew Gould
 Authors@R: c(
   person("Matthew", "Gould", email = "yourself@somewhere.net", 

@@ -5,39 +5,27 @@
 
 using namespace Rcpp;
 
-// sumLogDiff
-double sumLogDiff(const NumericMatrix coeffMatA, const NumericMatrix coeffMatB);
-RcppExport SEXP _treenomial_sumLogDiff(SEXP coeffMatASEXP, SEXP coeffMatBSEXP) {
+// logL1
+double logL1(const NumericMatrix coeffMatA, const NumericMatrix coeffMatB);
+RcppExport SEXP _treenomial_logL1(SEXP coeffMatASEXP, SEXP coeffMatBSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const NumericMatrix >::type coeffMatA(coeffMatASEXP);
     Rcpp::traits::input_parameter< const NumericMatrix >::type coeffMatB(coeffMatBSEXP);
-    rcpp_result_gen = Rcpp::wrap(sumLogDiff(coeffMatA, coeffMatB));
+    rcpp_result_gen = Rcpp::wrap(logL1(coeffMatA, coeffMatB));
     return rcpp_result_gen;
 END_RCPP
 }
-// sumLogDiffLabels
-double sumLogDiffLabels(const ComplexMatrix coeffMatA, const ComplexMatrix coeffMatB);
-RcppExport SEXP _treenomial_sumLogDiffLabels(SEXP coeffMatASEXP, SEXP coeffMatBSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const ComplexMatrix >::type coeffMatA(coeffMatASEXP);
-    Rcpp::traits::input_parameter< const ComplexMatrix >::type coeffMatB(coeffMatBSEXP);
-    rcpp_result_gen = Rcpp::wrap(sumLogDiffLabels(coeffMatA, coeffMatB));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sumLogDiffComplex
-double sumLogDiffComplex(const ComplexVector coeffMatA, const ComplexVector coeffMatB);
-RcppExport SEXP _treenomial_sumLogDiffComplex(SEXP coeffMatASEXP, SEXP coeffMatBSEXP) {
+// logL1Complex
+double logL1Complex(const ComplexVector coeffMatA, const ComplexVector coeffMatB);
+RcppExport SEXP _treenomial_logL1Complex(SEXP coeffMatASEXP, SEXP coeffMatBSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const ComplexVector >::type coeffMatA(coeffMatASEXP);
     Rcpp::traits::input_parameter< const ComplexVector >::type coeffMatB(coeffMatBSEXP);
-    rcpp_result_gen = Rcpp::wrap(sumLogDiffComplex(coeffMatA, coeffMatB));
+    rcpp_result_gen = Rcpp::wrap(logL1Complex(coeffMatA, coeffMatB));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -53,25 +41,11 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// wedgeFillComplex
-void wedgeFillComplex(ComplexMatrix baseMat, ComplexMatrix shiftsMat, ComplexMatrix resMat);
-RcppExport SEXP _treenomial_wedgeFillComplex(SEXP baseMatSEXP, SEXP shiftsMatSEXP, SEXP resMatSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< ComplexMatrix >::type baseMat(baseMatSEXP);
-    Rcpp::traits::input_parameter< ComplexMatrix >::type shiftsMat(shiftsMatSEXP);
-    Rcpp::traits::input_parameter< ComplexMatrix >::type resMat(resMatSEXP);
-    wedgeFillComplex(baseMat, shiftsMat, resMat);
-    return R_NilValue;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_treenomial_sumLogDiff", (DL_FUNC) &_treenomial_sumLogDiff, 2},
-    {"_treenomial_sumLogDiffLabels", (DL_FUNC) &_treenomial_sumLogDiffLabels, 2},
-    {"_treenomial_sumLogDiffComplex", (DL_FUNC) &_treenomial_sumLogDiffComplex, 2},
+    {"_treenomial_logL1", (DL_FUNC) &_treenomial_logL1, 2},
+    {"_treenomial_logL1Complex", (DL_FUNC) &_treenomial_logL1Complex, 2},
     {"_treenomial_wedgeFill", (DL_FUNC) &_treenomial_wedgeFill, 3},
-    {"_treenomial_wedgeFillComplex", (DL_FUNC) &_treenomial_wedgeFillComplex, 3},
     {NULL, NULL, 0}
 };
 
