@@ -5,51 +5,32 @@
 #' @param progressBar add a progress bar to track progress
 #' @param smallDistanceMatrix whether to return a distance matrix (TRUE) or a distance value (FALSE) if only two coefficient matrices are given
 #' @return distance matrix calculated from argument coefficient matrices
-#' @note the complex coefficient vector only support the "logL1" method
+#' @note the complex coefficient vector only supports the "logL1" method
 #' @note by default a list of two coefficient matrices will return a distance value rather than a 2*2 distance matrix
 #' @import Matrix
 #' @importFrom utils combn
 #' @import pbapply
 #' @examples
-#' # example goes here
+#'
+#'
+#'
+#'
 #' @export
-coefficientDist <- function(coefficientMatrices, method = "logL1", progressBar = FALSE, smallDistanceMatrix = FALSE) {
-  ############ change to using symmetric matrix from Matrix package for distance matrix
+coeffDist <- function(coefficientMatrices, method = "logL1", progressBar = FALSE, smallDistanceMatrix = FALSE) {
 
-  numCoeffs <- as.numeric(length(coefficientMatrices))
-
-  u <-  rep(0, (numCoeffs*numCoeffs-numCoeffs)/2 + numCoeffs)
-  u[(1:numCoeffs)*((1:numCoeffs)+1)/2] <- 0
-
-  distMat <- new("dspMatrix", Dim = as.integer(c(numCoeffs,numCoeffs)), x = u, uplo = "U")
-  rownames(distMat) <- names(coefficientMatrices)
-  colnames(distMat) <- names(coefficientMatrices)
-
-  # determine and define the places to calculate in the distance matrix
-  # upperDist <- t(combn(length(coefficientMatrices), 2))
-  # distMat <- symm(data = 0, nrow = length(coefficientMatrices), ncol = length(coefficientMatrices), sparse = FALSE, )
-
-  # vapply((1:4), function(i){ c(rep(i,5-i),(i+1):5)}, FUN.VALUE = list())
-
-
-  i <- Vectorize(FUN = function(i,numCoeffs){ rep(i,numCoeffs-i)})
-  j <- Vectorize(FUN = function(i,numCoeffs){ (i+1):numCoeffs})
-  i <- unlist(i(1:(numCoeffs-1),numCoeffs = numCoeffs))
-  j <- unlist(j(1:(numCoeffs-1),numCoeffs = numCoeffs))
-
-  upperDist <- cbind(i,j)
-
-  # set the max times the progress bar is updated and check if user wants a progress bar
-  pboptions(nout = ceiling(length(coefficientMatrices)/4), type = ifelse(progressBar, "txt", "none"))
-
-  # check input arguments
+   # check input arguments
   if(class(coefficientMatrices) == "list"){
     if(class(coefficientMatrices[[1]]) == "dgCMatrix"){
-      complex <- FALSE
+      coefficientMatrices <- lapply(coefficientMatrices, function(i){as.matrix(i)})
+      distMat <- coeffDistRcpp(coefficientMatrices, method = method, progressBar = progressBar)
+
+    } else if(class(coefficientMatrices[[1]]) == "matrix"){
+
+      distMat <- coeffDistRcpp(coefficientMatrices, method = method, progressBar = progressBar)
 
     } else if(class(coefficientMatrices[[1]]) == "complex"){
+      distMat <- coeffDistRcpp(coefficientMatrices, method = "logL1Complex", progressBar = progressBar)
 
-      complex <- TRUE
     } else {
       stop("input must be a list of coefficient matrices")
     }
@@ -58,116 +39,98 @@ coefficientDist <- function(coefficientMatrices, method = "logL1", progressBar =
     stop("input must be a list of coefficient matrices")
   }
 
-
-  if (complex) {
-    if(method != "logL1"){
-      warning("only the logL1 method is available for the complex coefficients, using this method")
-    }
-
-    distMat[upperDist] <- pbapply(upperDist, MARGIN = 1, FUN = function(i) {
-      logL1Complex(coefficientMatrices[[i[1]]], coefficientMatrices[[i[2]]])
-    })
-
-  } else if (method == "logL1") {
-    coefficientMatrices <- lapply(coefficientMatrices, function(i){as.matrix(i)})
-    distMat[upperDist] <- pbapply(upperDist, MARGIN = 1, FUN = function(i) {
-      logL1(coefficientMatrices[[i[1]]],coefficientMatrices[[i[2]]])
-    })
+  # align
+  coefficientMatrices <- coefficientAlign(coefficientMatrices)
 
 
-  } else if (method == "c") {
-    coefficientMatrices <- lapply(coefficientMatrices, function(i){as.logical(i)})
-    distMat[upperDist] <- pbapply(upperDist, MARGIN = 1, FUN = function(i) {
+  # distMat <- new("dspMatrix", Dim = as.integer(c(numCoeffs,numCoeffs)), x = u, uplo = "U")
+  rownames(distMat) <- names(coefficientMatrices)
+  colnames(distMat) <- names(coefficientMatrices)
 
-      coeffMatA <- coefficientMatrices[[i[1]]]
-      coeffMatB <- coefficientMatrices[[i[2]]]
-
-      # return the c disimliarity
-      as.numeric(length(coeffMatA[coeffMatA == TRUE & coeffMatB == FALSE]))
-    })
-
-  } else if (method == "b") {
-    coefficientMatrices <- lapply(coefficientMatrices, function(i){ as.vector( as.logical(i))})
-    distMat[upperDist] <- pbapply(upperDist, MARGIN = 1, FUN = function(i) {
-
-      coeffMatA <- coefficientMatrices[[i[1]]]
-      coeffMatB <- coefficientMatrices[[i[2]]]
-
-      # return the b disiliarity
-      as.numeric(length(coeffMatA[coeffMatA == FALSE & coeffMatB == TRUE]))
-
-    })
-
-  } else if(method == "wLogL1"){
-    coefficientMatrices <- lapply(coefficientMatrices, function(i){as.matrix(i)})
-    distMat[upperDist] <- pbapply(upperDist, MARGIN = 1, FUN = function(i) {
-
-
-      logDiffMat <- rowSums(log(1 + abs(coefficientMatrices[[i[1]]]-coefficientMatrices[[i[2]]])))
-
-      weightVect <- c(1,(1:(nrow(coefficientMatrices[[1]])-1))^(-2))
-
-      sum(logDiffMat*weightVect)
-
-    })
-
-  } else {
-    stop("missing or incorrect method, see documentation for available methods")
-  }
-
-  if(smallDistanceMatrix == FALSE && length(coefficientMatrices) == 2){
+  if(!smallDistanceMatrix && length(coefficientMatrices) == 2){
     return(distMat[1,2])
   }
-
-
-  # symmetric
-  distMat <- t(distMat) + distMat
 
   return(distMat)
 }
 
-#' Calculates the distance matrix from a list of trees
-#'
-#' @param trees list of phylo objects
-#' @param method method to use when calculating coefficient distances: "logL1", "wLogL1", "b"  or "c"
-#' @param progressBar add a progress bar to track progress
-#' @param cl a cluster object created by makeCluster
-#' @param smallDistanceMatrix whether to return a distance matrix (TRUE) or a distance value (FALSE) if only two coefficient matrices are given
-#' @return distance matrix calculated from argument coefficient matrices
-#' @note the complex coefficient vector only support the "logL1" method
-#' @note by default a list of two coefficient matrices will return a distance value rather than a 2*2 distance matrix
+#' Calculates the distance matrix from a list of phylo objects
+#' @param type type of the polynomial one of:
+#' "real" to use real polynomials \cr
+#' "complex" to use the real polynomial with y = 1 + i \cr
+#' "tipLabel" to use polynomial that utilize binary trait tip labels on the phylo objects \cr
+#' @inheritParams coeffDist
+#' @inheritParams coeffMatrix
+#' @return a distance matrix
 #' @examples
+#' #' require(ape)
+#  # distance matrix for 10 trees of 30 tips
+#' phyloDist(trees,method = "logL1", type = "tipLabel")
+#'
 #' @export
 phyloDist <- function(trees, method = "logL1", type = "real", progressBar = FALSE, smallDistanceMatrix = FALSE, cl = NULL){
 
-  coefficientDist(coefficientMatrix(trees, type = type ,progressBar,cl), method = method, progressBar = progressBar, smallDistanceMatrix = smallDistanceMatrix)
-
+  if(type == "tipLabel"){
+    coeffDist(coefficientMatrices = coeffMatrix(trees, type = "tipLabel" ,progressBar,cl), method = type, progressBar = progressBar, smallDistanceMatrix = smallDistanceMatrix)
+  } else {
+    coeffDist(coeffMatrix(trees, type = type ,progressBar,cl), method = method, progressBar = progressBar, smallDistanceMatrix = smallDistanceMatrix)
+  }
 }
 
+#' Plot the min/max distance tree from a target tree in a distance matrix
+#'
+#' @param trees list of phylo objects
+#' @param distMatrix
+#' @param target
+#' @param comparison find the "min" or the "max" distance tree in the distance matrix
+#' @param plotFacing whether to plot the trees with the tips facing each other
+#' @param returnNearestInfo whether to return the smallest/max distance phylo object and its distance to target (TRUE) or have the function return no value (FALSE)
+#' @return
+#' @examples
+#'
 #' @export
-distPlot <- function(trees, distanceMatrix, target, comparison = "min"){
+phyloDistPlot <- function(trees, distMatrix, target, comparison = "min", plotFacing = FALSE, returnNearestInfo = FALSE){
 
+  facing = ifelse(plotFacing,"leftwards","rightwards")
 
+  if(class(target) == "character"){
+    targetName = target
+    target = which(rownames(distMatrix) == target)
+  } else {
+    targetName = target
+  }
 
   if(comparison == "min"){
-    minTreeIndex <- which.min(distanceMatrix[target,(distanceMatrix[target,] != 0)]) + 1
-    par(mfrow=c(1,2))
+    minTreeIndex <- which.min(distMatrix[target,-target])
+    if(minTreeIndex > target){
+       minTreeIndex <- minTreeIndex + 1
+    }
 
-    plot.phylo(ladderize(as.phylo(trees[[target]])), show.tip.label = FALSE, main = target, use.edge.length = F)
-    plot.phylo(ladderize(as.phylo(trees[[minTreeIndex]])), show.tip.label = FALSE, main = names(minTreeIndex), use.edge.length = F)
-    mtext(paste("Distance Value:",as.character(distanceMatrix[target,minTreeIndex])), outer = FALSE, cex = NA, side = 1)
+    par(mfrow=c(1,2), oma=c(2,0,2,0))
+    plot.phylo(ladderize(as.phylo(trees[[target]])), show.tip.label = FALSE, main = paste("Target:",targetName), use.edge.length = F)
+    plot.phylo(ladderize(as.phylo(trees[[minTreeIndex]])), show.tip.label = FALSE, main = paste("Min. Dist. Tree:",names(minTreeIndex)), use.edge.length = F, direction = facing)
+
+    mtext(side=1, paste("Distance Value:",as.character(distMatrix[target,minTreeIndex])), outer=TRUE)
+
+    if(returnNearestInfo){
+      list(minTree = trees[[minTreeIndex]], distance = distMatrix[target,minTreeIndex])
+    }
 
   } else if(comparison == "max"){
 
-    maxTreeIndex <- which.max(distanceMatrix[target,(distanceMatrix[target,] != 0)]) + 1
-    par(mfrow=c(1,2))
+    maxTreeIndex <- which.max(distMatrix[target,])
 
-    plot.phylo(ladderize(as.phylo(trees[[target]])), show.tip.label = FALSE, main = target, use.edge.length = F)
-    plot.phylo(ladderize(as.phylo(trees[[maxTreeIndex]])), show.tip.label = FALSE, main = names(maxTreeIndex), use.edge.length = F)
-    mtext(paste("Distance Value:",as.character(distanceMatrix[target,maxTreeIndex])), outer = FALSE, cex = NA, side = 1)
+    par(mfrow=c(1,2), oma=c(2,0,2,0))
+    plot.phylo(ladderize(as.phylo(trees[[target]])), show.tip.label = FALSE, main = paste("Target:",targetName), use.edge.length = F)
+    plot.phylo(ladderize(as.phylo(trees[[maxTreeIndex]])), show.tip.label = FALSE, main = paste("Max. Dist. Tree:",names(maxTreeIndex)), use.edge.length = F, direction = facing)
+
+    mtext(side=1, paste("Distance Value:",as.character(distMatrix[target,maxTreeIndex])), outer=TRUE)
+
+    if(returnNearestInfo){
+      list(maxTree = trees[[maxTreeIndex]], distance = distMatrix[target,maxTreeIndex])
+    }
+
   }
-
-
 
 }
 
@@ -241,4 +204,5 @@ coefficientAlign <- function(coeffMats){
   })
   return(coeffMats)
 }
+
 

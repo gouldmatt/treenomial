@@ -5,27 +5,16 @@
 
 using namespace Rcpp;
 
-// logL1
-double logL1(const NumericMatrix coeffMatA, const NumericMatrix coeffMatB);
-RcppExport SEXP _treenomial_logL1(SEXP coeffMatASEXP, SEXP coeffMatBSEXP) {
+// coeffDistRcpp
+NumericMatrix coeffDistRcpp(const List coeffs, String method, bool progressBar);
+RcppExport SEXP _treenomial_coeffDistRcpp(SEXP coeffsSEXP, SEXP methodSEXP, SEXP progressBarSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericMatrix >::type coeffMatA(coeffMatASEXP);
-    Rcpp::traits::input_parameter< const NumericMatrix >::type coeffMatB(coeffMatBSEXP);
-    rcpp_result_gen = Rcpp::wrap(logL1(coeffMatA, coeffMatB));
-    return rcpp_result_gen;
-END_RCPP
-}
-// logL1Complex
-double logL1Complex(const ComplexVector coeffMatA, const ComplexVector coeffMatB);
-RcppExport SEXP _treenomial_logL1Complex(SEXP coeffMatASEXP, SEXP coeffMatBSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const ComplexVector >::type coeffMatA(coeffMatASEXP);
-    Rcpp::traits::input_parameter< const ComplexVector >::type coeffMatB(coeffMatBSEXP);
-    rcpp_result_gen = Rcpp::wrap(logL1Complex(coeffMatA, coeffMatB));
+    Rcpp::traits::input_parameter< const List >::type coeffs(coeffsSEXP);
+    Rcpp::traits::input_parameter< String >::type method(methodSEXP);
+    Rcpp::traits::input_parameter< bool >::type progressBar(progressBarSEXP);
+    rcpp_result_gen = Rcpp::wrap(coeffDistRcpp(coeffs, method, progressBar));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -41,11 +30,23 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// wedgeFillComplex
+void wedgeFillComplex(ComplexMatrix baseMat, ComplexMatrix shiftsMat, ComplexMatrix resMat);
+RcppExport SEXP _treenomial_wedgeFillComplex(SEXP baseMatSEXP, SEXP shiftsMatSEXP, SEXP resMatSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< ComplexMatrix >::type baseMat(baseMatSEXP);
+    Rcpp::traits::input_parameter< ComplexMatrix >::type shiftsMat(shiftsMatSEXP);
+    Rcpp::traits::input_parameter< ComplexMatrix >::type resMat(resMatSEXP);
+    wedgeFillComplex(baseMat, shiftsMat, resMat);
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_treenomial_logL1", (DL_FUNC) &_treenomial_logL1, 2},
-    {"_treenomial_logL1Complex", (DL_FUNC) &_treenomial_logL1Complex, 2},
+    {"_treenomial_coeffDistRcpp", (DL_FUNC) &_treenomial_coeffDistRcpp, 3},
     {"_treenomial_wedgeFill", (DL_FUNC) &_treenomial_wedgeFill, 3},
+    {"_treenomial_wedgeFillComplex", (DL_FUNC) &_treenomial_wedgeFillComplex, 3},
     {NULL, NULL, 0}
 };
 

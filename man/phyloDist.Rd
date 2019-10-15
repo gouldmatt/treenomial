@@ -2,30 +2,35 @@
 % Please edit documentation in R/distFunctions.R
 \name{phyloDist}
 \alias{phyloDist}
-\title{Calculates the distance matrix from a list of trees}
+\title{Calculates the distance matrix from a list of phylo objects}
 \usage{
 phyloDist(trees, method = "logL1", type = "real",
   progressBar = FALSE, smallDistanceMatrix = FALSE, cl = NULL)
 }
 \arguments{
-\item{trees}{list of phylo objects}
+\item{trees}{an object or list of class "phylo"}
 
 \item{method}{method to use when calculating coefficient distances: "logL1", "wLogL1", "b"  or "c"}
+
+\item{type}{type of the polynomial one of:
+"real" to use real polynomials \cr
+"complex" to use the real polynomial with y = 1 + i \cr
+"tipLabel" to use polynomial that utilize binary trait tip labels on the phylo objects \cr}
 
 \item{progressBar}{add a progress bar to track progress}
 
 \item{smallDistanceMatrix}{whether to return a distance matrix (TRUE) or a distance value (FALSE) if only two coefficient matrices are given}
 
-\item{cl}{a cluster object created by makeCluster}
+\item{cl}{A cluster object created by makeCluster, from the parallel package}
 }
 \value{
-distance matrix calculated from argument coefficient matrices
+a distance matrix
 }
 \description{
-Calculates the distance matrix from a list of trees
+Calculates the distance matrix from a list of phylo objects
 }
-\note{
-the complex coefficient vector only support the "logL1" method
+\examples{
+#' require(ape)
+phyloDist(rmtree(10,30), progressBar = TRUE)
 
-by default a list of two coefficient matrices will return a distance value rather than a 2*2 distance matrix
 }

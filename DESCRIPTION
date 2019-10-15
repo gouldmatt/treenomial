@@ -1,7 +1,7 @@
 Package: treenomial
 Type: Package
 Title: Comparison of trees using using a tree defining polynomial 
-Version: 0.0.7
+Version: 0.0.8
 Authors: Matthew Gould
 Authors@R: c(
   person("Matthew", "Gould", email = "yourself@somewhere.net", 
@@ -14,11 +14,16 @@ License: license is it under
 Encoding: UTF-8
 LazyData: true
 Imports: Rcpp (>= 1.0.1),
+         RcppProgress (>= 0.1),
          Matrix,
          ape,
          Rcpp,
          gtools,
          pbapply,
          pracma
-LinkingTo: Rcpp
+LinkingTo: Rcpp, RcppProgress
 RoxygenNote: 6.1.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

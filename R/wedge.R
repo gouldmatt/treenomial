@@ -1,13 +1,12 @@
 #' Performs the wedge operation
 #'
 #' Calculates the result from the wedge operation on two real coefficient
-#' matrices, two complex coefficient matrices or two phylo objects.
+#' matrices (class "dgCMatrix"), two complex coefficient vectors or two phylo objects.
 #'
 #'
-#' @param A First coefficient matrix or phylo object
-#' @param B Second coefficient matrix or phylo object
-#' @param type The type of objects to wedge: "real", "complex" or "phylo"
-#' @return Wedge result coefficient matrix or phylo object
+#' @param A,B Two real coefficient matrices, complex coefficient vectors or phylo objects.
+#' @param type The type of objects to wedge: "real", "complex" or "phylo".
+#' @return The wedge result.
 #' @import Matrix
 #' @importFrom pracma conv
 #' @useDynLib treenomial
@@ -25,8 +24,8 @@
 #' wedge(leaf, leaf, type = "complex")
 #'
 #' # wedge two phylo objects
-#' leaf <- "leaf"
-#' wedge(leaf, leaf, type = "phylo")
+#' cherry <- rtree(2, br = NULL)
+#' wedge(cherry, cherry, type = "phylo")
 #'
 #' @export
 wedge <- function(A, B, type = "real") {
@@ -71,4 +70,28 @@ wedge <- function(A, B, type = "real") {
       # error missing wedge type
       stop("missing or incorrect wedge type")
     }
+}
+
+
+
+tipLabelWedge <- function(coefficientMatrixA, coefficientMatrixB) {
+
+  newCols <- ncol(coefficientMatrixA) + ncol(coefficientMatrixB) - 1
+  newRows <- nrow(coefficientMatrixB) + nrow(coefficientMatrixA) - 1
+
+  # convert operands from sparse matrix to coordinate list matrix => [row, col, val]
+  nonzeroA <- unname(which(coefficientMatrixA != 0, arr.ind = T))
+  nonzeroB <- unname(which(coefficientMatrixB != 0, arr.ind = T))
+
+  coefficientMatrixA <- as.matrix(cbind(nonzeroA,coefficientMatrixA[nonzeroA]))
+  coefficientMatrixB <- as.matrix(cbind(nonzeroB,coefficientMatrixB[nonzeroB]))
+
+  # perform the wedge operation on the elements of coefficientMatrixA and coefficientMatrixB filling resPolyMat
+  resPolyMat <- matrix(data = 0i, nrow = newRows, ncol = newCols)
+  wedgeFillComplex(coefficientMatrixA, coefficientMatrixB, resPolyMat)
+
+  # convert result to sparse matrix
+  # resPolyMat <- as(resPolyMat, "sparseMatrix")
+
+  return(resPolyMat)
 }

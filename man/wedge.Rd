@@ -7,18 +7,16 @@
 wedge(A, B, type = "real")
 }
 \arguments{
-\item{A}{First coefficient matrix or phylo object}
+\item{A, B}{Two real coefficient matrices, complex coefficient vectors or phylo objects.}
 
-\item{B}{Second coefficient matrix or phylo object}
-
-\item{type}{The type of objects to wedge: "real", "complex" or "phylo"}
+\item{type}{The type of objects to wedge: "real", "complex" or "phylo".}
 }
 \value{
-Wedge result coefficient matrix or phylo object
+The wedge result.
 }
 \description{
 Calculates the result from the wedge operation on two real coefficient
-matrices, two complex coefficient matrices or two phylo objects.
+matrices (class "dgCMatrix"), two complex coefficient vectors or two phylo objects.
 }
 \examples{
 require(Matrix)
@@ -33,7 +31,7 @@ leaf <- as.complex(c(0,1))
 wedge(leaf, leaf, type = "complex")
 
 # wedge two phylo objects
-leaf <- "leaf"
-wedge(leaf, leaf, type = "phylo")
+cherry <- rtree(2, br = NULL)
+wedge(cherry, cherry, type = "phylo")
 
 }

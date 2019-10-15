@@ -1,16 +1,23 @@
 #' Calculate all full unordered binary trees up to n tips
 #'
-#' Return complex coefficient matrices, real coefficient matrices or phylo objects for all possible full binary trees up to n tips.
+#' Return complex coefficient matrices, real coefficient matrices or phylo objects for all possible unordered full binary trees up to n tips.
 #' @param numtips max number of tips
 #' @param type "real", "complex" or "phylo"
+#' @param progressBar add a progress bar
+#' @param startingPoint provide a previous list of all the possible unordered full binary trees to start the calculation from
 #' @importFrom gtools combinations
 #' @return list of lists containing the trees
 #' @examples
 #'
-#' # phylo type example
-# allBinSix <- allBinaryTreeShapes(6, type = "phylo")[[6]]
-# par(mfrow=c(1,6))
-# lapply(allBinSix, function(t) plot.phylo(ladderize(t), direction = "downwards", show.tip.label = FALSE))
+#' # generate coefficient matrices describing the polynomials of all possible unordered full binary trees
+#' # up to 10 tips and print out the number of matrices at each tip number.
+#' allBinTenRealCoeff <- allBinaryTreeShapes(10, type = "phylo")
+#' lengths(allBinTenRealCoeff)
+#'
+#' # phylo type example, plot all 6 tip unordered full binary trees
+#' allBinSixPhylo <- allBinaryTreeShapes(6, type = "phylo")[[6]]
+#' par(mfrow=c(1,6))
+#' lapply(allBinSixPhylo, function(t) plot.phylo(ladderize(t), direction = "downwards", show.tip.label = FALSE))
 #'
 #' @export
 allBinaryTreeShapes <- function(numTips, type = "real", progressBar = FALSE, startingPoint) {
