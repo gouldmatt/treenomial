@@ -1,29 +1,27 @@
 Package: treenomial
 Type: Package
 Title: Comparison of trees using using a tree defining polynomial 
-Version: 0.0.8
-Authors: Matthew Gould
-Authors@R: c(
-  person("Matthew", "Gould", email = "yourself@somewhere.net", 
-  role = c("aut", "cre")),
-  person("Pengyu", "Liu", email = "yourself@somewhere.net", 
-  role = c("aut")))
-Maintainer: Matthew Gould <yourself@somewhere.net>
-Description: Description 
-License: license is it under
+Version: 0.0.9
+Authors@R: 
+  c(person(given = "Matthew",
+           family = "Gould",
+           role = c("aut", "cre"),
+           email = "mgould@sfu.ca"),
+    person(given = "Pengyu",
+           family = "Liu",
+           role = "ctb")) 
+Maintainer: Matthew Gould <mgould@sfu.ca>
+Description: This package is an application of polynomials that uniquely describe trees. It provides tools for tree anaylsis and comparison based on polynomials. 
+Depends: R (>= 3.5.0)
+License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
 Imports: Rcpp (>= 1.0.1),
-         RcppProgress (>= 0.1),
-         Matrix,
-         ape,
-         Rcpp,
-         gtools,
-         pbapply,
-         pracma
-LinkingTo: Rcpp, RcppProgress
+         ape
+LinkingTo: Rcpp, RcppArmadillo, RcppThread
 RoxygenNote: 6.1.1
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr

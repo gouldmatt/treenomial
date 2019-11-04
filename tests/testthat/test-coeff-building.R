@@ -1,0 +1,116 @@
+context("Building coefficient matrices")
+library(treenomial)
+library(ape)
+
+## tests on treeToPoly ##
+test_that("Test consistency of treeToPoly runs tips = 500", {
+  numTips <- 500
+  tree <- rtree(n = numTips)
+  expect_equal(treeToPoly(tree), treeToPoly(tree))
+})
+
+## tests on allTrees ##
+test_that("ensure that number of trees from allTrees match Wedderburn-Etherington numbers up to 13 tips", {
+  wadNum <- c(1,1,1,2,3,6, 11, 23, 46, 98, 207, 451,983)
+
+  # 2179, 4850, 10905)
+
+  # check real version
+  allTrees <- allTrees(13)
+  allTrees <- unique(allTrees)
+  expect_equal(wadNum,lengths(allTrees))
+
+  # check complex version
+  allTrees <- allTrees(13, type = "complex")
+  allTrees <- unique(allTrees)
+  expect_equal(wadNum,lengths(allTrees))
+
+  allTrees <- allTrees(13, type = "phylo")
+  allTrees <- unique(allTrees)
+  expect_equal(wadNum,lengths(allTrees))
+})
+
+## tests on alignment ##
+test_that("test different size trees to real polynomials", {
+  differentSizeTrees <- c(rtree(2), rmtree(10,10))
+
+  coeffs <- treeToPoly(differentSizeTrees)
+  coeffs <- alignPoly(coeffs)
+
+  firstDims <- dim(coeffs[[1]])
+
+  res <- lapply(coeffs, function(i)  expect_equal(dim(i), firstDims))
+})
+
+test_that("test different size trees to complex polynomials", {
+  differentSizeTrees <- c(rtree(2), rmtree(10,10))
+
+  coeffs <- treeToPoly(differentSizeTrees, type = "complex")
+  coeffs <- alignPoly(coeffs)
+
+  firstDims <- dim(coeffs[[1]])
+
+  res <- lapply(coeffs, function(i)  expect_equal(dim(i), firstDims))
+})
+
+
+test_that("test different size trees with binary trait labels", {
+
+  largerTree <- rtree(30)
+  largerTree$tip.label <- sample(c("t1","t2"),size = 30 , replace = T)
+
+  smallerTree <- rtree(2)
+
+  coeffs <- treeToPoly(c(largerTree,smallerTree), type = "tipLabel")
+
+  coeffs <- alignPoly(coeffs)
+
+  firstDims <- dim(coeffs[[1]])
+
+  res <- lapply(coeffs, function(i)  expect_equal(dim(i), firstDims))
+
+
+  largerTrees <- rmtree(10,10)
+
+  largerTrees <- lapply(largerTrees, function(i){
+    i$tip.label <- sample(c("t1","t2"),size = 10 , replace = T)
+    return(i)
+  })
+
+  differentSizeTrees <- c(largerTrees, list(rtree(2)))
+
+  coeffs <- treeToPoly(differentSizeTrees, type = "tipLabel")
+
+  coeffs <- alignPoly(coeffs)
+
+  firstDims <- dim(coeffs[[1]])
+
+  res <- lapply(coeffs, function(i)  expect_equal(dim(i), firstDims))
+
+
+  largerTrees <- rmtree(10,10)
+
+  largerTrees <- lapply(largerTrees, function(i){
+    i$tip.label <- sample(c("t1","t2"),size = 10 , replace = T)
+    return(i)
+  })
+
+  smallerTrees <- rmtree(50,5)
+
+  smallerTrees <- lapply(smallerTrees, function(i){
+    i$tip.label <- sample(c("t1","t2"),size = 5, replace = T)
+    return(i)
+  })
+
+  differentSizeTrees <- c(largerTrees, smallerTrees)
+
+  coeffs <- treeToPoly(differentSizeTrees, type = "tipLabel")
+
+  coeffs <- alignPoly(coeffs)
+
+  firstDims <- dim(coeffs[[1]])
+
+  res <- lapply(coeffs, function(i)  expect_equal(dim(i), firstDims))
+
+})
+

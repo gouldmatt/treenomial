@@ -1,35 +1,107 @@
+#' Calculates the distance between coefficient matrices
+#'
+#' Calculates the distance between two coefficient matrices or a coefficient matrix and a list of coefficient matrices.
+#'
+#' @param x single coefficient matrix to find distances to
+#' @param Y list or single coefficient matrix
+#' @inheritParams polyToDistMat
+#' @return vector of distances
+#' @note the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+#' @examples
+#'
+#'
+#' @export
+polyDist <- function(x, Y, method = "logDiff"){
+  # check input arguments
+
+      if(typeof(x) == "list"){
+        x <- x[[1]]
+      }
+
+      if(typeof(x[[1]]) == "double"){
+        coefficientMatrices <- alignCoeffs(c(list(x),Y), type = "real")
+        compareCoeffRcpp( coefficientMatrices, method = method)
+
+      } else if(typeof(x[[1]]) == "complex"){
+        if(dim(x[[1]])[[1]] == 1){
+          if(method != "logDiff") warning("only the logDiff method is available for the complex polynomial")
+          coefficientMatrices <- alignCoeffs(c(x,Y), type = "complex")
+          compareCoeffRcpp( coefficientMatrices, method = "logDiffComplex")
+
+        } else {
+          if(method != "logDiff") warning("only the logDiff method is available for binary trait label polynomial")
+          coefficientMatrices <- alignCoeffs(c(x,Y), type = "binTipLabel")
+          compareCoeffRcpp( coefficientMatrices, method = "tipLab")
+        }
+      } else {
+        stop("invalid input")
+      }
+
+}
+
+
+#' Calculates the distance between coefficient matrices
+#'
+#' Calculates the distance between two coefficient matrices or a coefficient matrix and a list of coefficient matrices.
+#'
+#' @param x single coefficient matrix to find distances to
+#' @param Y list or single coefficient matrix
+#' @inheritParams treeToDistMat
+#' @return vector of distances
+#' @note the complex coefficient vector and the complex tip label coefficient matrix only supports the \dQuote{logDiff} method
+#' @examples
+#'
+#'
+#' @export
+treeDist <- function(x, Y, type = "real", method = "logDiff"){
+  coeffs <- treeToPoly(c(x,Y), type = type)
+  coeffs <- alignPoly(coeffs)
+  compareCoeffRcpp(coeffs, method = method)
+}
+
 #' Calculates the distance matrix from multiple coefficient matrices
 #'
+#'
 #' @param coefficientMatrices list of complex or real coefficient matrices
-#' @param method method to use when calculating coefficient distances: "logL1", "wLogL1", "b"  or "c"
-#' @param progressBar add a progress bar to track progress
-#' @param smallDistanceMatrix whether to return a distance matrix (TRUE) or a distance value (FALSE) if only two coefficient matrices are given
+#' @param method method to use when calculating coefficient distances:
+#' \describe{
+#'   \item{\dQuote{logDiff}}{for two coefficient matrices A and B returns sum(log(1+abs(A-B))}
+#'   \item{\dQuote{wLogDiff}}{performs the \dQuote{logDiff} method with weights on the rows}
+#'   \item{\dQuote{pa}}{total pairs where the coefficient is present in one matrix and absent in the other (presence-absence)}
+#'   \item{\dQuote{ap}}{opposite comparison of pa (absence-presence)}
+#' }
 #' @return distance matrix calculated from argument coefficient matrices
-#' @note the complex coefficient vector only supports the "logL1" method
-#' @note by default a list of two coefficient matrices will return a distance value rather than a 2*2 distance matrix
-#' @import Matrix
-#' @importFrom utils combn
-#' @import pbapply
+#' @note \itemize{
+#'   \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+#'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
+#' }
 #' @examples
 #'
 #'
 #'
 #'
 #' @export
-coeffDist <- function(coefficientMatrices, method = "logL1", progressBar = FALSE, smallDistanceMatrix = FALSE) {
+polyToDistMat <- function(coefficientMatrices, method = "logDiff") {
 
-   # check input arguments
+  # check input arguments
   if(class(coefficientMatrices) == "list"){
-    if(class(coefficientMatrices[[1]]) == "dgCMatrix"){
-      coefficientMatrices <- lapply(coefficientMatrices, function(i){as.matrix(i)})
-      distMat <- coeffDistRcpp(coefficientMatrices, method = method, progressBar = progressBar)
-
-    } else if(class(coefficientMatrices[[1]]) == "matrix"){
-
-      distMat <- coeffDistRcpp(coefficientMatrices, method = method, progressBar = progressBar)
-
-    } else if(class(coefficientMatrices[[1]]) == "complex"){
-      distMat <- coeffDistRcpp(coefficientMatrices, method = "logL1Complex", progressBar = progressBar)
+    if(class(coefficientMatrices[[1]]) == "matrix"){
+      if(typeof(coefficientMatrices[[1]]) == "double"){
+        coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "real")
+        distMat <- coeffDistRcpp(coefficientMatrices, method = method)
+      } else if(typeof(coefficientMatrices[[1]]) == "complex"){
+        if(dim(coefficientMatrices[[1]])[[1]] == 1){
+          if(method != "logDiff") warning("only the logDiff method is available for the complex polynomial")
+          coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "complex")
+          distMat <- coeffDistRcpp(coefficientMatrices, method = "logDiffComplex")
+        } else {
+          if(method != "logDiff") warning("only the logDiff method is available for binary trait label polynomial")
+          coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "binTipLabel")
+          distMat <- coeffDistRcpp(coefficientMatrices, method = "tipLab")
+        }
+      } else {
+        stop("invalid input")
+      }
 
     } else {
       stop("input must be a list of coefficient matrices")
@@ -39,170 +111,102 @@ coeffDist <- function(coefficientMatrices, method = "logL1", progressBar = FALSE
     stop("input must be a list of coefficient matrices")
   }
 
-  # align
-  coefficientMatrices <- coefficientAlign(coefficientMatrices)
-
-
   # distMat <- new("dspMatrix", Dim = as.integer(c(numCoeffs,numCoeffs)), x = u, uplo = "U")
   rownames(distMat) <- names(coefficientMatrices)
   colnames(distMat) <- names(coefficientMatrices)
-
-  if(!smallDistanceMatrix && length(coefficientMatrices) == 2){
-    return(distMat[1,2])
-  }
 
   return(distMat)
 }
 
 #' Calculates the distance matrix from a list of phylo objects
-#' @param type type of the polynomial one of:
-#' "real" to use real polynomials \cr
-#' "complex" to use the real polynomial with y = 1 + i \cr
-#' "tipLabel" to use polynomial that utilize binary trait tip labels on the phylo objects \cr
-#' @inheritParams coeffDist
-#' @inheritParams coeffMatrix
+#' @inheritParams polyToDistMat
+#' @inheritParams treeToPoly
 #' @return a distance matrix
+#' @export
 #' @examples
-#' #' require(ape)
-#  # distance matrix for 10 trees of 30 tips
-#' phyloDist(trees,method = "logL1", type = "tipLabel")
+#' library(treenomial)
+#' library(ape)
+#' # distance matrix for 10 trees of 30 tips
+#' phyloDist(rmtree(10,30),method = "wLogDiff")
 #'
 #' @export
-phyloDist <- function(trees, method = "logL1", type = "real", progressBar = FALSE, smallDistanceMatrix = FALSE, cl = NULL){
-
-  if(type == "tipLabel"){
-    coeffDist(coefficientMatrices = coeffMatrix(trees, type = "tipLabel" ,progressBar,cl), method = type, progressBar = progressBar, smallDistanceMatrix = smallDistanceMatrix)
-  } else {
-    coeffDist(coeffMatrix(trees, type = type ,progressBar,cl), method = method, progressBar = progressBar, smallDistanceMatrix = smallDistanceMatrix)
-  }
+treeToDistMat <- function(trees, method = "logDiff", type = "real"){
+  polyToDistMat(treeToPoly(trees, type = type), method = method)
 }
 
-#' Plot the min/max distance tree from a target tree in a distance matrix
+#' Plot the min/max distance trees from a target tree
 #'
-#' @param trees list of phylo objects
-#' @param distMatrix
-#' @param target
-#' @param comparison find the "min" or the "max" distance tree in the distance matrix
-#' @param plotFacing whether to plot the trees with the tips facing each other
-#' @param returnNearestInfo whether to return the smallest/max distance phylo object and its distance to target (TRUE) or have the function return no value (FALSE)
-#' @return
+#' @param target the phylo object of the tree to calculate the distances to
+#' @param trees a list of phylo objects to compare with the \strong{target}
+#' @param n the number of trees to find and plot
+#' @param comparison whether to find the \dQuote{min} or the \dQuote{max} distance trees from the \strong{target}
+#' @return a list of lists containing the \strong{n} min/max distance trees and their distances to \strong{target}
+#' @inheritParams treeToDistMat
 #' @examples
 #'
+# trees <- c(rmtree(1000,50),rmtree(10,9))
+# target <- rtree(50)
+# minTrees <- plotExtremeTrees(target,trees,2, comparison = "min")
+#'
+#'
 #' @export
-phyloDistPlot <- function(trees, distMatrix, target, comparison = "min", plotFacing = FALSE, returnNearestInfo = FALSE){
+plotExtremeTrees <- function(target, trees, n, method = "logDiff", type = "real", comparison = "min"){
 
-  facing = ifelse(plotFacing,"leftwards","rightwards")
+  distances <- treeDist(target, trees, type = type, method = method)
 
-  if(class(target) == "character"){
-    targetName = target
-    target = which(rownames(distMatrix) == target)
+  # if greater then 16 trees break up over multiple pages
+  if(n < 15){
+    par(mfrow=c(ceiling(n/4),ifelse(ceiling(n/4) == 1,1+n,4)), oma=c(2,0,2,0))
   } else {
-    targetName = target
+    par(mfrow=c(4,4), oma=c(2,0,2,0))
   }
+
+  target$edge.length <- rep(1,length(target$edge.length))
+
+  plot.phylo(ladderize(target), show.tip.label = FALSE, main = "Target:", use.edge.length = T)
 
   if(comparison == "min"){
-    minTreeIndex <- which.min(distMatrix[target,-target])
-    if(minTreeIndex > target){
-       minTreeIndex <- minTreeIndex + 1
+    orderMin <- order(distances)
+
+    minList <- vector("list",n)
+
+    for(i in 1:n){
+
+      minTree <- trees[[orderMin[i]]]
+      minTree$edge.length <- rep(1,length(minTree$edge.length))
+
+      currName <- names(trees)[orderMin[i]]
+      minTitle <- ifelse(!is.null(currName),paste(currName, "tree distance: ",signif(distances[orderMin[i]],6)),paste("Distance: ",signif(distances[orderMin[i]],6)))
+
+      plot.phylo(ladderize(minTree), show.tip.label = FALSE, main = minTitle, use.edge.length = T)
+
+      minList[[i]] <- list(tree = minTree, distance = distances[[orderMin[i]]])
     }
 
-    par(mfrow=c(1,2), oma=c(2,0,2,0))
-    plot.phylo(ladderize(as.phylo(trees[[target]])), show.tip.label = FALSE, main = paste("Target:",targetName), use.edge.length = F)
-    plot.phylo(ladderize(as.phylo(trees[[minTreeIndex]])), show.tip.label = FALSE, main = paste("Min. Dist. Tree:",names(minTreeIndex)), use.edge.length = F, direction = facing)
-
-    mtext(side=1, paste("Distance Value:",as.character(distMatrix[target,minTreeIndex])), outer=TRUE)
-
-    if(returnNearestInfo){
-      list(minTree = trees[[minTreeIndex]], distance = distMatrix[target,minTreeIndex])
-    }
+    return(minList)
 
   } else if(comparison == "max"){
+    orderMax <- order(distances, decreasing = TRUE)
 
-    maxTreeIndex <- which.max(distMatrix[target,])
+    maxList <- vector("list",n)
 
-    par(mfrow=c(1,2), oma=c(2,0,2,0))
-    plot.phylo(ladderize(as.phylo(trees[[target]])), show.tip.label = FALSE, main = paste("Target:",targetName), use.edge.length = F)
-    plot.phylo(ladderize(as.phylo(trees[[maxTreeIndex]])), show.tip.label = FALSE, main = paste("Max. Dist. Tree:",names(maxTreeIndex)), use.edge.length = F, direction = facing)
+    for(i in 1:n){
 
-    mtext(side=1, paste("Distance Value:",as.character(distMatrix[target,maxTreeIndex])), outer=TRUE)
+      maxTree <- trees[[orderMax[i]]]
+      maxTree$edge.length <- rep(1,length(maxTree$edge.length))
 
-    if(returnNearestInfo){
-      list(maxTree = trees[[maxTreeIndex]], distance = distMatrix[target,maxTreeIndex])
+      currName <- names(trees)[orderMax[i]]
+      minTitle <- ifelse(!is.null(currName),paste(currName, "tree distance: ",signif(distances[orderMax[i]],6)),paste("Distance: ",signif(distances[orderMax[i]],6)))
+
+      plot.phylo(ladderize(maxTree), show.tip.label = FALSE, main = minTitle, use.edge.length = T)
+
+      maxList[[i]] <- list(tree = maxTree, distance = distances[[orderMax[i]]])
     }
 
+    return(maxList)
+
+  } else {
+    stop("invalid comparison")
   }
 
 }
-
-coefficientAlign <- function(coeffMats){
-
-  # check for complex poly
-  if(is.complex(coeffMats[[1]])){
-
-    # check for the matrix of tip labelled complex matrices
-    if(class(coeffMats[[1]]) == "matrix"){
-      # tip labels coeff mats will be of different size depending on tip labels, this adds zeroes to align
-      maxRowCol <- sapply(coeffMats, function(x) c(nrow(x),ncol(x)))
-      maxRowCol <- c(max(maxRowCol[1,]),max(maxRowCol[2,]))
-      coeffMats <- lapply(coeffMats, function(x){
-        amountSmaller  <- maxRowCol - dim(x)
-        x <- cbind(x,matrix(data = 0, ncol = amountSmaller[2], nrow = nrow(x)))
-        x <- rbind(x,matrix(data = 0, ncol = ncol(x), nrow = amountSmaller[1]))
-      })
-      return(coeffMats)
-    }
-
-    coeffsLengths <- lengths(coeffMats)
-
-    # determine the size of the largest matrix in the list
-    maxSize <- max(coeffsLengths)
-
-    # check there exists at least one smaller matrix
-    if(!any(coeffsLengths < maxSize)){
-      return(coeffMats)
-    }
-
-    # go through and align smaller complex vectors
-    coeffMats <- lapply(coeffMats, function(x){
-      # check if alignment is neccessary
-      if(length(x) < maxSize){
-        # align
-        alignedVector <- vector(mode = "complex", length = maxSize)
-        alignedVector[(maxSize - length(x) + 1):maxSize] <- x
-        return(alignedVector)
-      } else {
-        return(x)
-      }
-
-    })
-    return(coeffMats)
-  }
-
-  colSizes <- vapply(coeffMats, ncol, FUN.VALUE =  numeric(1))
-
-  # determine the size of the largest matrix in the list
-  maxSize <- max(colSizes)
-  maxRows <- ceiling(maxSize/2)
-
-  # check there exists at least one smaller matrix
-  if(!any(colSizes < maxSize)){
-    return(coeffMats)
-  }
-
-  # go through and align smaller matrices
-  coeffMats <- lapply(coeffMats, function(x){
-    # check if alignment is neccessary
-    if(ncol(x) < maxSize){
-      # align
-      alignedMatrix <- matrix(data = 0, nrow = maxRows, ncol = maxSize)
-      alignedMatrix[1:nrow(x),(maxSize - ncol(x) + 1):maxSize] <- x
-      return(alignedMatrix)
-    } else {
-      return(x)
-    }
-
-  })
-  return(coeffMats)
-}
-
-

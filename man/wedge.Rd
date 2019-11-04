@@ -2,36 +2,35 @@
 % Please edit documentation in R/wedge.R
 \name{wedge}
 \alias{wedge}
+\alias{\%wedge\%}
 \title{Performs the wedge operation}
 \usage{
-wedge(A, B, type = "real")
+wedge(A, B)
+
+A \%wedge\% B
 }
 \arguments{
-\item{A, B}{Two real coefficient matrices, complex coefficient vectors or phylo objects.}
-
-\item{type}{The type of objects to wedge: "real", "complex" or "phylo".}
+\item{A, B}{two real coefficient matrices, complex coefficient vectors or phylo objects}
 }
 \value{
-The wedge result.
+the wedge result in the same format as the arguments
 }
 \description{
 Calculates the result from the wedge operation on two real coefficient
-matrices (class "dgCMatrix"), two complex coefficient vectors or two phylo objects.
+matrices, two complex coefficient vectors or two phylo objects.
 }
 \examples{
-require(Matrix)
-require(ape)
+
+library(ape)
 
 # wedge two real coefficient matrices
-leaf <- sparseMatrix(1, 2, x = 1)
-wedge(leaf, leaf, type = "real")
+
+leaf <- matrix(c(0,1), nrow = 1, ncol = 2)
+wedge(leaf, leaf)
 
 # wedge two complex coefficient matrices
-leaf <- as.complex(c(0,1))
-wedge(leaf, leaf, type = "complex")
 
-# wedge two phylo objects
-cherry <- rtree(2, br = NULL)
-wedge(cherry, cherry, type = "phylo")
+leaf <- as.complex(c(0,1))
+wedge(leaf, leaf)
 
 }
