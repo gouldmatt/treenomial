@@ -1,6 +1,6 @@
 Package: treenomial
 Type: Package
-Title: Comparison of trees using using a tree defining polynomial 
+Title: Comparison of trees using a tree defining polynomial 
 Version: 0.0.9
 Authors@R: 
   c(person(given = "Matthew",

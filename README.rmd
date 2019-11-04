@@ -19,7 +19,7 @@ The package **treenomial** is an application of polynomials that uniquely descri
 
 * __`treeToPoly()`__: convert trees to tree distinguishing polynomials described with coefficient matrices
 
-* __`polyToDistMat()`__: construct a distance matrix from multiple trees by using a distance measure on the trees polynomials 
+* __`polyToDistMat()`__: construct a distance matrix from multiple coefficient matrices using a distance measure 
 
 For the mathmatical description of the tree defining polynomial see: 
 

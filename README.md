@@ -11,7 +11,7 @@ comparison based on polynomials. The core functions are:
     described with coefficient matrices
 
   - **`polyToDistMat()`**: construct a distance matrix from multiple
-    trees by using a distance measure on the trees polynomials
+    coefficient matrices using a distance measure
 
 For the mathmatical description of the tree defining polynomial see:
 
