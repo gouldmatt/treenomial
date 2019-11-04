@@ -30,10 +30,16 @@ a distance matrix
 \description{
 Calculates the distance matrix from a list of phylo objects
 }
+\note{
+\itemize{
+  \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+  \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
+}
+}
 \examples{
 library(treenomial)
 library(ape)
 # distance matrix for 10 trees of 30 tips
-phyloDist(rmtree(10,30),method = "wLogDiff")
+treeToDistMat(rmtree(10,30),method = "wLogDiff")
 
 }

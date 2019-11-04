@@ -37,8 +37,16 @@ a list of lists containing the \strong{n} min/max distance trees and their dista
 \description{
 Plot the min/max distance trees from a target tree
 }
+\note{
+\itemize{
+  \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+  \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
+}
+}
 \examples{
-
-
-
+library(treenomial)
+library(ape)
+trees <- c(rmtree(1000,50),rmtree(10,9))
+target <- rtree(50)
+minTrees <- plotExtremeTrees(target,trees,2, comparison = "min")
 }

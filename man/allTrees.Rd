@@ -4,9 +4,11 @@
 \alias{allTrees}
 \title{Calculate all full unordered m-ary trees up to n tips}
 \usage{
-allTrees(maxTips, m = 2, type = "real")
+allTrees(n, m = 2, type = "real")
 }
 \arguments{
+\item{n}{max number of tips}
+
 \item{m}{max number of children for each node}
 
 \item{type}{one of:
@@ -15,11 +17,9 @@ allTrees(maxTips, m = 2, type = "real")
   \item{\dQuote{complex}}{complex coefficient polynomials (real polynomials with y = 1 + i)}
   \item{\dQuote{phylo}}{phylo objects}
 }}
-
-\item{n}{max number of tips}
 }
 \value{
-list of lists containing all the specified \strong{type} of coefficient matrices for each number of tips
+list of lists containing all the trees in \strong{type} format for each number of tips
 }
 \description{
 Return real coefficient matrices, complex coefficient vectors, or phylo objects for all possible unordered full m-ary trees up to n tips.
@@ -33,15 +33,15 @@ only m = 2 is currently supported
 library(treenomial)
 library(ape)
 
-# generate coefficient matrices describing the polynomials of all possible unordered full binary trees
-# up to 10 tips and print out the number of matrices at each tip number
+# generate coefficient matrices describing the polynomials of all possible
+# unordered full binary trees up to 10 tips
 
-allBinTenRealCoeff <- allBinaryTreeShapes(10, type = "phylo")
+allBinTenRealCoeff <- allTrees(10, type = "phylo")
 lengths(allBinTenRealCoeff)
 
 # phylo type example, plot all 6 tip unordered full binary trees
 
-allBinSixPhylo <- allBinaryTreeShapes(6, type = "phylo")[[6]]
+allBinSixPhylo <- allTrees(6, type = "phylo")[[6]]
 par(mfrow=c(1,6))
 plots <- lapply(allBinSixPhylo, function(t){
   plot.phylo(ladderize(t), direction = "downwards", show.tip.label = FALSE)

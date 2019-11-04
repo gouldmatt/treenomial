@@ -6,9 +6,25 @@
 #' @param Y list or single coefficient matrix
 #' @inheritParams polyToDistMat
 #' @return vector of distances
-#' @note the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+#' @note \itemize{
+#'   \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+#'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
+#' }
 #' @examples
+#' library(treenomial)
+#' library(ape)
 #'
+#' # distance between coefficient matrices of one 10 tip tree and 100 trees with 30 tips using
+#'
+#' # create the coefficient matrices
+#' tenTipTree <- rtree(10)
+#' tenTipTreeCoeff <- treeToPoly(tenTipTree)
+#'
+#' thirtyTipList <- rmtree(100,30)
+#' thirtyTipCoeffs <- treeToPoly(thirtyTipList)
+#'
+#' # find the distance
+#' polyDist(tenTipTreeCoeff,thirtyTipCoeffs)
 #'
 #' @export
 polyDist <- function(x, Y, method = "logDiff"){
@@ -48,9 +64,22 @@ polyDist <- function(x, Y, method = "logDiff"){
 #' @param Y list or single coefficient matrix
 #' @inheritParams treeToDistMat
 #' @return vector of distances
-#' @note the complex coefficient vector and the complex tip label coefficient matrix only supports the \dQuote{logDiff} method
+#' @note \itemize{
+#'   \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+#'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
+#' }
 #' @examples
+#' library(treenomial)
+#' library(ape)
 #'
+#' # distance between one 10 tip tree and 100 trees with 30 tips
+#'
+#' # generate the trees
+#' tenTipTree <- rtree(10)
+#' thirtyTipList <- rmtree(100,30)
+#'
+#' # find the distance
+#' treeDist(tenTipTree,thirtyTipList)
 #'
 #' @export
 treeDist <- function(x, Y, type = "real", method = "logDiff"){
@@ -76,9 +105,17 @@ treeDist <- function(x, Y, type = "real", method = "logDiff"){
 #'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 #' }
 #' @examples
+#' library(treenomial)
+#' library(ape)
 #'
+#' # coefficient matrices for ten trees of 20 tips
+#' coeffs <- treeToPoly(rmtree(10,20))
 #'
+#' # distance matrix from the list of coefficient matrices
+#' d <- polyToDistMat(coeffs, method = "logDiff")
 #'
+#' # using the absence-presence method
+#' d <- polyToDistMat(coeffs, method = "ap")
 #'
 #' @export
 polyToDistMat <- function(coefficientMatrices, method = "logDiff") {
@@ -122,12 +159,16 @@ polyToDistMat <- function(coefficientMatrices, method = "logDiff") {
 #' @inheritParams polyToDistMat
 #' @inheritParams treeToPoly
 #' @return a distance matrix
+#' @note \itemize{
+#'   \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+#'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
+#' }
 #' @export
 #' @examples
 #' library(treenomial)
 #' library(ape)
 #' # distance matrix for 10 trees of 30 tips
-#' phyloDist(rmtree(10,30),method = "wLogDiff")
+#' treeToDistMat(rmtree(10,30),method = "wLogDiff")
 #'
 #' @export
 treeToDistMat <- function(trees, method = "logDiff", type = "real"){
@@ -142,13 +183,16 @@ treeToDistMat <- function(trees, method = "logDiff", type = "real"){
 #' @param comparison whether to find the \dQuote{min} or the \dQuote{max} distance trees from the \strong{target}
 #' @return a list of lists containing the \strong{n} min/max distance trees and their distances to \strong{target}
 #' @inheritParams treeToDistMat
+#' @note \itemize{
+#'   \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+#'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
+#' }
 #' @examples
-#'
-# trees <- c(rmtree(1000,50),rmtree(10,9))
-# target <- rtree(50)
-# minTrees <- plotExtremeTrees(target,trees,2, comparison = "min")
-#'
-#'
+#' library(treenomial)
+#' library(ape)
+#' trees <- c(rmtree(1000,50),rmtree(10,9))
+#' target <- rtree(50)
+#' minTrees <- plotExtremeTrees(target,trees,2, comparison = "min")
 #' @export
 plotExtremeTrees <- function(target, trees, n, method = "logDiff", type = "real", comparison = "min"){
 

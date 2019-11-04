@@ -10,6 +10,8 @@
 #' @param col colours to be used for the image
 #' @useDynLib treenomial
 #' @importFrom Rcpp sourceCpp
+#' @importFrom grDevices colorRampPalette
+#' @importFrom graphics par
 #' @examples
 #'
 #' library(treenomial)

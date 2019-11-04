@@ -33,9 +33,22 @@ vector of distances
 Calculates the distance between two coefficient matrices or a coefficient matrix and a list of coefficient matrices.
 }
 \note{
-the complex coefficient vector and the complex tip label coefficient matrix only supports the \dQuote{logDiff} method
+\itemize{
+  \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+  \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
+}
 }
 \examples{
+library(treenomial)
+library(ape)
 
+# distance between one 10 tip tree and 100 trees with 30 tips
+
+# generate the trees
+tenTipTree <- rtree(10)
+thirtyTipList <- rmtree(100,30)
+
+# find the distance
+treeDist(tenTipTree,thirtyTipList)
 
 }

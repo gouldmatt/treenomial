@@ -30,8 +30,16 @@ Calculates the distance matrix from multiple coefficient matrices
 }
 }
 \examples{
+library(treenomial)
+library(ape)
 
+# coefficient matrices for ten trees of 20 tips
+coeffs <- treeToPoly(rmtree(10,20))
 
+# distance matrix from the list of coefficient matrices
+d <- polyToDistMat(coeffs, method = "logDiff")
 
+# using the absence-presence method
+d <- polyToDistMat(coeffs, method = "ap")
 
 }

@@ -11,7 +11,7 @@
 #'   \item{\dQuote{phylo}}{phylo objects}
 #' }
 #' @inheritParams treeToPoly
-#' @return list of lists containing all the specified \strong{type} of coefficient matrices for each number of tips
+#' @return list of lists containing all the trees in \strong{type} format for each number of tips
 #' @note only m = 2 is currently supported
 #' @useDynLib treenomial
 #' @examples
@@ -19,22 +19,22 @@
 #' library(treenomial)
 #' library(ape)
 #'
-#' # generate coefficient matrices describing the polynomials of all possible unordered full binary trees
-#' # up to 10 tips and print out the number of matrices at each tip number
+#' # generate coefficient matrices describing the polynomials of all possible
+#' # unordered full binary trees up to 10 tips
 #'
-#' allBinTenRealCoeff <- allBinaryTreeShapes(10, type = "phylo")
+#' allBinTenRealCoeff <- allTrees(10, type = "phylo")
 #' lengths(allBinTenRealCoeff)
 #'
 #' # phylo type example, plot all 6 tip unordered full binary trees
 #'
-#' allBinSixPhylo <- allBinaryTreeShapes(6, type = "phylo")[[6]]
+#' allBinSixPhylo <- allTrees(6, type = "phylo")[[6]]
 #' par(mfrow=c(1,6))
 #' plots <- lapply(allBinSixPhylo, function(t){
 #'   plot.phylo(ladderize(t), direction = "downwards", show.tip.label = FALSE)
 #' })
 #'
 #' @export
-allTrees <- function(maxTips, m = 2, type = "real") {
+allTrees <- function(n, m = 2, type = "real") {
   # wadNum <- c(1,1,1,2,3,6, 11, 23, 46, 98, 207, 451,
   #             983, 2179, 4850, 10905, 24631, 56011, 127912,
   #             293547, 676157, 1563372, 3626149, 8436379, 19680277,
@@ -44,15 +44,15 @@ allTrees <- function(maxTips, m = 2, type = "real") {
   }
 
   if(type == "real"){
-    allBinaryTreeShapesReal(maxTips)
+    allBinaryTreeShapesReal(n)
   } else if(type == "complex"){
-    allBinaryTreeShapesComplex(maxTips)
+    allBinaryTreeShapesComplex(n)
   } else if(type == "phylo"){
-    wedgeList <- allBinaryTreeShapesPhylo(maxTips)
+    wedgeList <- allBinaryTreeShapesPhylo(n)
     wedgeList <- wedgeList[-1]
 
-    nTipsTrees <- vector("list", length = maxTips)
-    nTipsTrees <- lapply(1:maxTips, function(i){ nTipsTrees[[i]] <- list()})
+    nTipsTrees <- vector("list", length = n)
+    nTipsTrees <- lapply(1:n, function(i){ nTipsTrees[[i]] <- list()})
 
     nTipsTrees[[1]][[1]] <- "leaf"
 
