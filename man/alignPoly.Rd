@@ -2,7 +2,7 @@
 % Please edit documentation in R/treeToPoly.R
 \name{alignPoly}
 \alias{alignPoly}
-\title{Align varios types of coefficient matrices}
+\title{Align various types of coefficient matrices}
 \usage{
 alignPoly(coefficientMatrices)
 }
@@ -13,7 +13,7 @@ alignPoly(coefficientMatrices)
 the aligned list of coefficient matrices
 }
 \description{
-Align varios types of coefficient matrices
+Align various types of coefficient matrices
 }
 \examples{
 library(treenomial)

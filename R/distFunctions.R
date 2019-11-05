@@ -14,7 +14,8 @@
 #' library(treenomial)
 #' library(ape)
 #'
-#' # distance between coefficient matrices of one 10 tip tree and 100 trees with 30 tips using
+#' # distance between coefficient matrices of one 10 tip tree
+#' # and 100 trees with 30 tips using
 #'
 #' # create the coefficient matrices
 #' tenTipTree <- rtree(10)
@@ -30,16 +31,20 @@
 polyDist <- function(x, Y, method = "logDiff"){
   # check input arguments
 
-      if(typeof(x) == "list"){
-        x <- x[[1]]
+      if(class(x) == "list"){
+        stop("argument x must not be a list")
       }
 
-      if(typeof(x[[1]]) == "double"){
+      if(class(Y) == "matrix"){
+        Y <- list(Y)
+      }
+
+      if(typeof(x) == "double"){
         coefficientMatrices <- alignCoeffs(c(list(x),Y), type = "real")
         compareCoeffRcpp( coefficientMatrices, method = method)
 
-      } else if(typeof(x[[1]]) == "complex"){
-        if(dim(x[[1]])[[1]] == 1){
+      } else if(typeof(x) == "complex"){
+        if(dim(x)[[1]] == 1){
           if(method != "logDiff") warning("only the logDiff method is available for the complex polynomial")
           coefficientMatrices <- alignCoeffs(c(x,Y), type = "complex")
           compareCoeffRcpp( coefficientMatrices, method = "logDiffComplex")
@@ -56,12 +61,12 @@ polyDist <- function(x, Y, method = "logDiff"){
 }
 
 
-#' Calculates the distance between coefficient matrices
+#' Calculates the distance between trees
 #'
-#' Calculates the distance between two coefficient matrices or a coefficient matrix and a list of coefficient matrices.
+#' Calculates the distance between two trees or a tree and a list of trees.
 #'
-#' @param x single coefficient matrix to find distances to
-#' @param Y list or single coefficient matrix
+#' @param x single phylo object
+#' @param Y a list of class phylo
 #' @inheritParams treeToDistMat
 #' @return vector of distances
 #' @note \itemize{
@@ -83,7 +88,16 @@ polyDist <- function(x, Y, method = "logDiff"){
 #'
 #' @export
 treeDist <- function(x, Y, type = "real", method = "logDiff"){
-  coeffs <- treeToPoly(c(x,Y), type = type)
+
+  if(class(x) == "list"){
+    stop("argument x must not be a list")
+  }
+
+  if(class(Y) == "phylo"){
+    Y <- list(Y)
+  }
+
+  coeffs <- treeToPoly(c(list(x),Y), type = type)
   coeffs <- alignPoly(coeffs)
   compareCoeffRcpp(coeffs, method = method)
 }
@@ -91,7 +105,7 @@ treeDist <- function(x, Y, type = "real", method = "logDiff"){
 #' Calculates the distance matrix from multiple coefficient matrices
 #'
 #'
-#' @param coefficientMatrices list of complex or real coefficient matrices
+#' @param coefficientMatrices list of coefficient matrices
 #' @param method method to use when calculating coefficient distances:
 #' \describe{
 #'   \item{\dQuote{logDiff}}{for two coefficient matrices A and B returns sum(log(1+abs(A-B))}
@@ -194,7 +208,17 @@ treeToDistMat <- function(trees, method = "logDiff", type = "real"){
 #' target <- rtree(50)
 #' minTrees <- plotExtremeTrees(target,trees,2, comparison = "min")
 #' @export
-plotExtremeTrees <- function(target, trees, n, method = "logDiff", type = "real", comparison = "min"){
+plotExtremeTrees <- function(target, trees, n, comparison = "min", method = "logDiff", type = "real"){
+
+  if(class(target) == "list"){
+    stop("argument target must not be a list")
+  }
+
+  if(class(trees) == "phylo"){
+    trees <- list(trees)
+  }
+
+  parBackup <- par()
 
   distances <- treeDist(target, trees, type = type, method = method)
 
@@ -227,6 +251,8 @@ plotExtremeTrees <- function(target, trees, n, method = "logDiff", type = "real"
       minList[[i]] <- list(tree = minTree, distance = distances[[orderMin[i]]])
     }
 
+    par <- parBackup
+
     return(minList)
 
   } else if(comparison == "max"){
@@ -247,9 +273,12 @@ plotExtremeTrees <- function(target, trees, n, method = "logDiff", type = "real"
       maxList[[i]] <- list(tree = maxTree, distance = distances[[orderMax[i]]])
     }
 
+    par <- parBackup
+
     return(maxList)
 
   } else {
+    par <- parBackup
     stop("invalid comparison")
   }
 

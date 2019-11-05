@@ -7,7 +7,7 @@
 polyToDistMat(coefficientMatrices, method = "logDiff")
 }
 \arguments{
-\item{coefficientMatrices}{list of complex or real coefficient matrices}
+\item{coefficientMatrices}{list of coefficient matrices}
 
 \item{method}{method to use when calculating coefficient distances:
 \describe{

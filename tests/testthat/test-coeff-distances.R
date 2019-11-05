@@ -24,6 +24,7 @@ test_that("test that different distance method have correct result (small manual
 
   expect_equal(dWLogDiff[2,4], testWlogL1(coeffs[[2]], coeffs[[4]]))
 
+
 })
 
 ## tests on treeToDistMat ##
@@ -66,48 +67,46 @@ test_that("ensure distance matrix is symmetric", {
 })
 
 
-## tests on treeToDistMatPlot ##
-# test_that("ensure correct max/min dist value is being used", {
-#   d <- matrix(data = 7, nrow = 100, ncol = 100)
-#   diag(d) <- 0
-#   d <- d + t(d)
-#
-#   d[50,49] <- 42
-#   d[50,36] <- 12
-#
-#   res <- treeToDistMatPlot(rmtree(100,2), d,50, "min", returnNearestInfo = T)
-#   expect_equal(res$distance, 12)
-#
-#   res <- treeToDistMatPlot(rmtree(100,2), d,50, "max", returnNearestInfo = T)
-#   expect_equal(res$distance, 42)
-#
-#   forest <- rmtree(100, 15)
-#
-#   d <- treeToDistMat(forest)
-#
-#   res <- treeToDistMatPlot(forest, d,50, "min", returnNearestInfo = T)
-#
-#   expect_equal(res$distance, min(d[50,-50]))
-#
-#
-#   res <- treeToDistMatPlot(forest, d,25, "max", returnNearestInfo = T)
-#
-#   expect_equal(res$distance, max(d[25,-25]))
-#
-#   forest <- rmtree(100, 5)
-#
-#   d <- treeToDistMat(forest, method = "pa")
-#
-#   res <- treeToDistMatPlot(forest, d,50, "min", returnNearestInfo = T)
-#
-#   expect_equal(res$distance, min(d[50,-50]))
-#
-#
-#   res <- treeToDistMatPlot(forest, d,25, "max", returnNearestInfo = T)
-#
-#   expect_equal(res$distance, max(d[25,-25]))
-#
-#
-#
-#
-# })
+## tests on plotExtremeTrees ##
+test_that("ensure correct min/max trees are being found", {
+  forestTen <- rmtree(100,10)
+  forestSixty <- rmtree(42,60)
+  threeTip <- rtree(3)
+
+  minTrees <- plotExtremeTrees(threeTip, c(forestSixty,threeTip,forestTen), 2)
+
+  expect_equal(minTrees[[1]]$distance, 0)
+  expect_equal(treeDist(minTrees[[1]]$tree,threeTip), 0)
+
+  maxTrees <- plotExtremeTrees(threeTip, c(forestSixty,threeTip,forestTen), 2, comparison = "max")
+
+  expect_equal(maxTrees[[1]]$distance, treeDist(threeTip,maxTrees[[1]]$tree))
+})
+
+
+## other tests ##
+test_that("tests with single and lists arguments", {
+  forestTen <- rmtree(100,10)
+  forestSixty <- rmtree(42,60)
+  threeTip <- rtree(3)
+
+  expect_silent(treeDist(threeTip,threeTip))
+  expect_silent(treeDist(threeTip,forestSixty))
+  expect_error(treeDist(list(threeTip),forestSixty))
+  expect_error(treeDist(list(threeTip),list(forestSixty)))
+
+  coeffsSixty <- treeToPoly(forestSixty)
+  coeffsThree <- treeToPoly(threeTip)
+
+  expect_silent(polyDist(coeffsThree,coeffsThree))
+  expect_silent(polyDist(coeffsThree,coeffsSixty))
+  expect_error(polyDist(list(coeffsThree),coeffsSixty))
+  expect_error(polyDist(list(coeffsThree),list(coeffsSixty)))
+
+  expect_silent(plotExtremeTrees(threeTip, threeTip, 1))
+  expect_silent(plotExtremeTrees(threeTip, forestSixty, 1))
+  expect_error(plotExtremeTrees(list(threeTip),forestSixty,1))
+  expect_error(plotExtremeTrees(list(threeTip),list(forestSixty),1))
+})
+
+

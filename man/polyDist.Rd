@@ -35,7 +35,8 @@ Calculates the distance between two coefficient matrices or a coefficient matrix
 library(treenomial)
 library(ape)
 
-# distance between coefficient matrices of one 10 tip tree and 100 trees with 30 tips using
+# distance between coefficient matrices of one 10 tip tree
+# and 100 trees with 30 tips using
 
 # create the coefficient matrices
 tenTipTree <- rtree(10)

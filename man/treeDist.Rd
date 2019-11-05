@@ -2,14 +2,14 @@
 % Please edit documentation in R/distFunctions.R
 \name{treeDist}
 \alias{treeDist}
-\title{Calculates the distance between coefficient matrices}
+\title{Calculates the distance between trees}
 \usage{
 treeDist(x, Y, type = "real", method = "logDiff")
 }
 \arguments{
-\item{x}{single coefficient matrix to find distances to}
+\item{x}{single phylo object}
 
-\item{Y}{list or single coefficient matrix}
+\item{Y}{a list of class phylo}
 
 \item{type}{one of:
 \describe{
@@ -30,7 +30,7 @@ treeDist(x, Y, type = "real", method = "logDiff")
 vector of distances
 }
 \description{
-Calculates the distance between two coefficient matrices or a coefficient matrix and a list of coefficient matrices.
+Calculates the distance between two trees or a tree and a list of trees.
 }
 \note{
 \itemize{

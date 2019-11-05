@@ -39,7 +39,8 @@ test_that("test different size trees to real polynomials", {
 
   firstDims <- dim(coeffs[[1]])
 
-  res <- lapply(coeffs, function(i)  expect_equal(dim(i), firstDims))
+  res <- lapply(coeffs, function(i)  dim(i) == firstDims)
+  expect_condition(all(res))
 })
 
 test_that("test different size trees to complex polynomials", {
@@ -50,7 +51,8 @@ test_that("test different size trees to complex polynomials", {
 
   firstDims <- dim(coeffs[[1]])
 
-  res <- lapply(coeffs, function(i)  expect_equal(dim(i), firstDims))
+  res <- lapply(coeffs, function(i)  dim(i) == firstDims)
+  expect_condition(all(res))
 })
 
 
@@ -67,7 +69,8 @@ test_that("test different size trees with binary trait labels", {
 
   firstDims <- dim(coeffs[[1]])
 
-  res <- lapply(coeffs, function(i)  expect_equal(dim(i), firstDims))
+  res <- lapply(coeffs, function(i)  dim(i) == firstDims)
+  expect_condition(all(res))
 
 
   largerTrees <- rmtree(10,10)
@@ -85,7 +88,8 @@ test_that("test different size trees with binary trait labels", {
 
   firstDims <- dim(coeffs[[1]])
 
-  res <- lapply(coeffs, function(i)  expect_equal(dim(i), firstDims))
+  res <- lapply(coeffs, function(i)  dim(i) == firstDims)
+  expect_condition(all(res))
 
 
   largerTrees <- rmtree(10,10)
@@ -110,7 +114,8 @@ test_that("test different size trees with binary trait labels", {
 
   firstDims <- dim(coeffs[[1]])
 
-  res <- lapply(coeffs, function(i)  expect_equal(dim(i), firstDims))
+  res <- lapply(coeffs, function(i)  dim(i) == firstDims)
+  expect_condition(all(res))
 
 })
 

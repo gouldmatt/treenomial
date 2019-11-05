@@ -9,13 +9,18 @@ Authors@R:
            email = "mgould@sfu.ca"),
     person(given = "Pengyu",
            family = "Liu",
+           role = "ctb",
+           email = "pengyu_liu@sfu.ca"),
+    person(given = "Caroline",
+           family = "Colijn",
            role = "ctb")) 
 Maintainer: Matthew Gould <mgould@sfu.ca>
 Description: This package is an application of polynomials that uniquely describe trees. It provides tools for tree anaylsis and comparison based on polynomials. 
 Depends: R (>= 3.5.0)
 License: GPL (>= 2)
+URL: https://github.com/mattgou1d/treenomial
+BugReports: https://github.com/mattgou1d/treenomial/issues
 Encoding: UTF-8
-LazyData: true
 Imports: Rcpp (>= 1.0.1),
          ape
 LinkingTo: Rcpp, RcppArmadillo, RcppThread

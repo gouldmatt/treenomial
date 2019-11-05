@@ -2,18 +2,15 @@
 % Please edit documentation in R/wedge.R
 \name{wedge}
 \alias{wedge}
-\alias{\%wedge\%}
 \title{Performs the wedge operation}
 \usage{
 wedge(A, B)
-
-A \%wedge\% B
 }
 \arguments{
 \item{A, B}{two real coefficient matrices, complex coefficient vectors or phylo objects}
 }
 \value{
-the wedge result in the same format as the arguments
+the wedge result in the same form as the arguments
 }
 \description{
 Calculates the result from the wedge operation on two real coefficient
@@ -28,7 +25,7 @@ library(ape)
 leaf <- matrix(c(0,1), nrow = 1, ncol = 2)
 wedge(leaf, leaf)
 
-# wedge two complex coefficient matrices
+# wedge two complex coefficient vectors
 
 leaf <- as.complex(c(0,1))
 wedge(leaf, leaf)

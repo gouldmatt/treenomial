@@ -4,9 +4,9 @@
 \alias{treeJuliaSet}
 \title{Plots a Julia Set for a tree}
 \usage{
-treeJuliaSet(tree, pixelLength = 1000, center = 0, maxZ = 2,
-  asp = 1, col = c("white", colorRampPalette(c("dodgerblue4",
-  "lightblue"))(98), "black"))
+treeJuliaSet(tree, pixelLength = 700, center = 0, maxZ = 2,
+  col = c("white", colorRampPalette(c("dodgerblue4", "lightblue"))(98),
+  "black"))
 }
 \arguments{
 \item{tree}{phylo object}
@@ -15,9 +15,7 @@ treeJuliaSet(tree, pixelLength = 1000, center = 0, maxZ = 2,
 
 \item{center}{complex number giving the center of the image on the complex plane}
 
-\item{maxZ}{integer giving the max value for the real and imaginary axis in the image}
-
-\item{asp}{aspect ratio of the image}
+\item{maxZ}{integer giving the max value for the real and imaginary axis}
 
 \item{col}{colours to be used for the image}
 }

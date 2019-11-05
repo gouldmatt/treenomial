@@ -131,11 +131,16 @@ treeToPoly <- function(trees, type = "real") {
     stop('incorrect type, available types are "real", "complex" or "tipLabel" ')
   }
 
-  return(res)
+  if(singleTree){
+    return(res[[1]])
+  } else {
+    return(res)
+  }
+
 }
 
 
-#' Align varios types of coefficient matrices
+#' Align various types of coefficient matrices
 #'
 #' @param coefficientMatrices a list of coefficient matrices of various sizes
 #' @return the aligned list of coefficient matrices

@@ -4,8 +4,8 @@
 \alias{plotExtremeTrees}
 \title{Plot the min/max distance trees from a target tree}
 \usage{
-plotExtremeTrees(target, trees, n, method = "logDiff", type = "real",
-  comparison = "min")
+plotExtremeTrees(target, trees, n, comparison = "min",
+  method = "logDiff", type = "real")
 }
 \arguments{
 \item{target}{the phylo object of the tree to calculate the distances to}
@@ -13,6 +13,8 @@ plotExtremeTrees(target, trees, n, method = "logDiff", type = "real",
 \item{trees}{a list of phylo objects to compare with the \strong{target}}
 
 \item{n}{the number of trees to find and plot}
+
+\item{comparison}{whether to find the \dQuote{min} or the \dQuote{max} distance trees from the \strong{target}}
 
 \item{method}{method to use when calculating coefficient distances:
 \describe{
@@ -28,8 +30,6 @@ plotExtremeTrees(target, trees, n, method = "logDiff", type = "real",
   \item{\dQuote{complex}}{complex coefficient polynomials (real polynomials with y = 1 + i)}
   \item{\dQuote{tipLabel}}{complex coefficient polynomial that utilize binary trait tip labels on the phylo objects}
 }}
-
-\item{comparison}{whether to find the \dQuote{min} or the \dQuote{max} distance trees from the \strong{target}}
 }
 \value{
 a list of lists containing the \strong{n} min/max distance trees and their distances to \strong{target}

@@ -3,9 +3,8 @@
 #' Calculates the result from the wedge operation on two real coefficient
 #' matrices, two complex coefficient vectors or two phylo objects.
 #'
-#' @aliases %wedge%
 #' @param A,B two real coefficient matrices, complex coefficient vectors or phylo objects
-#' @return the wedge result in the same format as the arguments
+#' @return the wedge result in the same form as the arguments
 #' @import ape
 #' @useDynLib treenomial
 #' @importFrom Rcpp sourceCpp
@@ -18,7 +17,7 @@
 #' leaf <- matrix(c(0,1), nrow = 1, ncol = 2)
 #' wedge(leaf, leaf)
 #'
-#' # wedge two complex coefficient matrices
+#' # wedge two complex coefficient vectors
 #'
 #' leaf <- as.complex(c(0,1))
 #' wedge(leaf, leaf)
@@ -26,16 +25,12 @@
 #' @export
 wedge <- function(A, B) {
 
-  type = class(A)
+  type = class(A[1])
 
-  # if(type != class(B)){
-  #   stop("missing or incorrect wedge type")
-  # }
-
-  if (any(type == "dgCMatrix" || type == "matrix")) {
+  if (type == "numeric" && class(A) == "matrix") {
     wedgeExport(A,B)
   } else if (type == "complex") {
-    wedgeExportConv(A,B)
+    as.vector(wedgeExportConv(A,B))
   } else {
     if(all(A == "leaf" & B == "leaf")){
       res <- rtree(2, br = NULL)
@@ -58,8 +53,3 @@ wedge <- function(A, B) {
     return(res)
   }
 }
-
-#' @rdname wedge
-#' @export
-`%wedge%` <- function(A, B) wedge(A, B)
-

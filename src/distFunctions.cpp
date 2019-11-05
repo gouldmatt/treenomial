@@ -30,11 +30,11 @@ double logDiffComplex(const cx_rowvec coeffMatA, const cx_rowvec coeffMatB) {
 
 
 double binB(const mat coeffMatA, const mat coeffMatB) {
-  return(accu((coeffMatA == true) && (coeffMatB == false)));
+  return(accu((coeffMatA != 0) && (coeffMatB == 0)));
 }
 
 double binC(const mat coeffMatA, const mat coeffMatB) {
-  return(accu((coeffMatA == false) && (coeffMatB == true)));
+  return(accu((coeffMatA == 0) && (coeffMatB != 0)));
 }
 
 double tipLab(const cx_mat coeffMatA, const cx_mat coeffMatB) {
@@ -166,9 +166,9 @@ Rcpp::NumericMatrix coeffDistRcpp(Rcpp::List coeffsList, std::string method){
     mat distMat(numCoeffs, numCoeffs, fill::zeros);
 
     RcppThread::parallelFor(0, numCoeffs, [&distMat,&numCoeffs,&coeffs] (unsigned int i) {
-      for(int j = i+1; j < numCoeffs; j++){
-        distMat(i,j) = binC(coeffs[i],coeffs[j]);
-      }
+       for(int j = i+1; j < numCoeffs; j++){
+         distMat(i,j) = binC(coeffs[i],coeffs[j]);
+       }
     });
 
     distMat = distMat.t() + distMat;
