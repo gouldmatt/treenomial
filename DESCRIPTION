@@ -1,7 +1,7 @@
 Package: treenomial
 Type: Package
-Title: Comparison of trees using a tree defining polynomial 
-Version: 0.0.9
+Title: Comparison of Trees using a Tree Defining Polynomial
+Version: 1.0.0
 Authors@R: 
   c(person(given = "Matthew",
            family = "Gould",
@@ -15,11 +15,10 @@ Authors@R:
            family = "Colijn",
            role = "ctb")) 
 Maintainer: Matthew Gould <mgould@sfu.ca>
-Description: This package is an application of polynomials that uniquely describe trees. It provides tools for tree anaylsis and comparison based on polynomials. 
+Description: Tree analysis and comparison with polynomials that uniquely describe trees.
 Depends: R (>= 3.5.0)
 License: GPL (>= 2)
 URL: https://github.com/mattgou1d/treenomial
-BugReports: https://github.com/mattgou1d/treenomial/issues
 Encoding: UTF-8
 Imports: Rcpp (>= 1.0.1),
          ape
@@ -29,4 +28,3 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-VignetteBuilder: knitr

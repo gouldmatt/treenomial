@@ -90,8 +90,8 @@ Rcpp::List allBinaryTreeShapesReal(int numTips){
 Rcpp::List allBinaryTreeShapesPhylo(int numTips){
   int currTips = 2;
   int treeCount = 1;
-  uword lengthA = 0;
-  uword lengthB = 0;
+  int lengthA = 0;
+  int lengthB = 0;
 
   std::vector<std::vector<vec>> nTipsTrees;
   std::vector<vec> temp;
@@ -109,11 +109,11 @@ Rcpp::List allBinaryTreeShapesPhylo(int numTips){
     for(int i = 1; i < currTips; i++){
       for(int j = 1; j <= i; j++){
         if((i+j) == currTips){
-          lengthA = nTipsTrees[i-1].size();
-          lengthB = nTipsTrees[j-1].size();
+          lengthA = (int)nTipsTrees[i-1].size();
+          lengthB = (int)nTipsTrees[j-1].size();
 
-          for(uword k = 1; k <= lengthA; k++){
-            for(uword l = 1; l <= lengthB; l++){
+          for(int k = 1; k <= lengthA; k++){
+            for(int l = 1; l <= lengthB; l++){
               if(i == j){
                 if(k >= l){
                   treeCount ++;
