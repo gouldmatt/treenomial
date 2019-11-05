@@ -13,6 +13,8 @@ knitr::opts_chunk$set(
 
 # treenomial
 
+[![CRAN status](https://www.r-pkg.org/badges/version/treenomial)](https://cran.r-project.org/package=treenomial)
+
 ## Overview
  
 The package **treenomial** is an application of polynomials that uniquely describe trees. It provides tools for tree anaylsis and comparison based on polynomials. The core functions are: 

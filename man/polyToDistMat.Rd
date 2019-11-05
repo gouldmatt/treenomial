@@ -2,7 +2,7 @@
 % Please edit documentation in R/distFunctions.R
 \name{polyToDistMat}
 \alias{polyToDistMat}
-\title{Calculates the distance matrix from multiple coefficient matrices}
+\title{Calculates the distance matrix from a list coefficient matrices}
 \usage{
 polyToDistMat(coefficientMatrices, method = "logDiff")
 }
@@ -21,7 +21,7 @@ polyToDistMat(coefficientMatrices, method = "logDiff")
 distance matrix calculated from argument coefficient matrices
 }
 \description{
-Calculates the distance matrix from multiple coefficient matrices
+Calculates the distance matrix from a list coefficient matrices
 }
 \note{
 \itemize{

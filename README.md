@@ -1,6 +1,9 @@
 
 # treenomial
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/treenomial)](https://cran.r-project.org/package=treenomial)
+
 ## Overview
 
 The package **treenomial** is an application of polynomials that

@@ -102,7 +102,7 @@ treeDist <- function(x, Y, type = "real", method = "logDiff"){
   compareCoeffRcpp(coeffs, method = method)
 }
 
-#' Calculates the distance matrix from multiple coefficient matrices
+#' Calculates the distance matrix from a list coefficient matrices
 #'
 #'
 #' @param coefficientMatrices list of coefficient matrices
