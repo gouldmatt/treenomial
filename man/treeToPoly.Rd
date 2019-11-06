@@ -25,7 +25,7 @@ the resulting coefficient matrix or matrices of the form:
 }
 }
 \description{
-Converts trees to tree distinguishing polynomials descibed with coefficient matrices.
+Converts trees to tree distinguishing polynomials described with coefficient matrices.
 }
 \examples{
 library(treenomial)

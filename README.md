@@ -7,7 +7,7 @@ status](https://www.r-pkg.org/badges/version/treenomial)](https://cran.r-project
 ## Overview
 
 The package **treenomial** is an application of polynomials that
-uniquely describe trees. It provides tools for tree anaylsis and
+uniquely describe trees. It provides tools for tree analysis and
 comparison based on polynomials. The core functions are:
 
   - **`treeToPoly()`**: convert trees to tree distinguishing polynomials
@@ -16,7 +16,7 @@ comparison based on polynomials. The core functions are:
   - **`polyToDistMat()`**: construct a distance matrix from multiple
     coefficient matrices using a distance measure
 
-For the mathmatical description of the tree defining polynomial see:
+For the mathematical description of the tree defining polynomial see:
 
 [Liu, Pengyu. “A tree distinguishing polynomial.” arXiv preprint
 arXiv:1904.03332 (2019).](https://arxiv.org/abs/1904.03332)
@@ -40,7 +40,7 @@ plot.phylo(threeTipTree, use.edge.length = F, show.tip.label = F, direction = "d
 ![](man/figures/README-threeTipTree-1.png)<!-- -->
 
 It’s polynomial is x^3+xy+y which can equivalently be described with a
-coefficient matrix where the elmenent in the ith row, jth column
+coefficient matrix where the element in the ith row, jth column
 represents the y^(i-1) \* x^(j-1) coefficient:
 
 ``` r

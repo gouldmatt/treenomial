@@ -1,6 +1,6 @@
 #' Convert trees to coefficient matrices
 #'
-#' Converts trees to tree distinguishing polynomials descibed with coefficient matrices.
+#' Converts trees to tree distinguishing polynomials described with coefficient matrices.
 #'
 #' @param trees an object or list of class "phylo"
 #' @param type one of:
