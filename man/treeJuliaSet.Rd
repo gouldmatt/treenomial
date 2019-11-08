@@ -11,11 +11,11 @@ treeJuliaSet(tree, pixelLength = 700, center = 0, maxZ = 2,
 \arguments{
 \item{tree}{phylo object}
 
-\item{pixelLength}{integer of pixels on one side of the image}
+\item{pixelLength}{number of pixels on one side of the image}
 
 \item{center}{complex number giving the center of the image on the complex plane}
 
-\item{maxZ}{integer giving the max value for the real and imaginary axis}
+\item{maxZ}{the max value for the real and imaginary axis}
 
 \item{col}{colours to be used for the image}
 }
@@ -24,8 +24,10 @@ Finds the Julia Set for the complex polynomial of a tree and plots in a square i
 }
 \examples{
 
+\donttest{
 library(treenomial)
 library(ape)
 treeJuliaSet(stree(5,type = "right"))
+}
 
 }

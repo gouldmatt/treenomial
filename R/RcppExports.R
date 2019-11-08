@@ -25,16 +25,16 @@ alignCoeffs <- function(coeffs, type) {
     .Call('_treenomial_alignCoeffs', PACKAGE = 'treenomial', coeffs, type)
 }
 
-coeffMatListCpp <- function(wedgeOrders, type, tipLabA = " ", tipLabB = " ") {
-    .Call('_treenomial_coeffMatListCpp', PACKAGE = 'treenomial', wedgeOrders, type, tipLabA, tipLabB)
+coeffMatList <- function(wedgeOrders, type, tipLabA = " ", tipLabB = " ", nThreads = -1L) {
+    .Call('_treenomial_coeffMatList', PACKAGE = 'treenomial', wedgeOrders, type, tipLabA, tipLabB, nThreads)
 }
 
-compareCoeffRcpp <- function(coeffsList, method) {
-    .Call('_treenomial_compareCoeffRcpp', PACKAGE = 'treenomial', coeffsList, method)
+coeffDist <- function(coeffsList, method, nThreads = -1L) {
+    .Call('_treenomial_coeffDist', PACKAGE = 'treenomial', coeffsList, method, nThreads)
 }
 
-coeffDistRcpp <- function(coeffsList, method) {
-    .Call('_treenomial_coeffDistRcpp', PACKAGE = 'treenomial', coeffsList, method)
+coeffDistMat <- function(coeffsList, method, nThreads = -1L) {
+    .Call('_treenomial_coeffDistMat', PACKAGE = 'treenomial', coeffsList, method, nThreads)
 }
 
 juliaSet <- function(coeffs, pixelLength, center, maxZ) {

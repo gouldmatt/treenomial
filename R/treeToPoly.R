@@ -1,8 +1,8 @@
 #' Convert trees to coefficient matrices
 #'
-#' Converts trees to tree distinguishing polynomials described with coefficient matrices.
+#' Converts rooted full binary trees to tree distinguishing polynomials described with coefficient matrices.
 #'
-#' @param trees an object or list of class "phylo"
+#' @param trees a single phylo object or a list of phylo objects
 #' @param type one of:
 #' \describe{
 #'   \item{\dQuote{real}}{real coefficient polynomials}
@@ -15,10 +15,12 @@
 #'   \item{\dQuote{complex}}{a complex vector where the kth column represents the x^(k-1) coefficient}
 #'   \item{\dQuote{tipLabel}}{given trees with two unique tip labels \dQuote{a}, \dQuote{b} a complex matrix where the ith row, jth column represents the a^(i-1)*b^(j-1) coefficient}
 #' }
+#' @param numThreads number of threads to be used, the default (-1) will use the number of cores in the machine and numThreads = 0 will only use the main thread
 #' @importFrom ape as.phylo
 #' @useDynLib treenomial
 #' @importFrom Rcpp sourceCpp
 #' @examples
+#' \donttest{
 #' library(treenomial)
 #' library(ape)
 #'
@@ -33,9 +35,10 @@
 #'
 #' # for a list of trees
 #' treeToPoly(rmtree(10, 30))
+#' }
 #'
 #' @export
-treeToPoly <- function(trees, type = "real") {
+treeToPoly <- function(trees, type = "real", numThreads = -1) {
 
   # check input format
   if (class(trees) == "phylo") {
@@ -62,7 +65,7 @@ treeToPoly <- function(trees, type = "real") {
       inds <- unique(rev(trees$edge[trees$edge[, 1] >= length(trees$tip.label), ]))
       wedgeOrder <- ifelse(inds <= length(trees$tip.label), "0", "1")
 
-      res <- coeffMatListCpp(list(wedgeOrder), type = type)
+      res <- coeffMatList(list(wedgeOrder), type = type, nThreads = numThreads)
       attributes(res) <- NULL
     } else {
       trees <- lapply(trees, function(x) {
@@ -70,7 +73,7 @@ treeToPoly <- function(trees, type = "real") {
         ifelse(inds <= length(x$tip.label), "0", "1")
       })
 
-      res <- coeffMatListCpp(trees, type = type)
+      res <- coeffMatList(trees, type = type, nThreads = numThreads)
 
       attributes(res) <- NULL
       if(!is.null(names(trees))){
@@ -92,7 +95,7 @@ treeToPoly <- function(trees, type = "real") {
 
       wedgeOrder <-  ifelse(inds <= length(trees$tip.label), trees$tip.label[inds], "1")
 
-      res <- coeffMatListCpp(list(wedgeOrder), type = type, tipLabA = uniqueTipLab[[1]], tipLabB = uniqueTipLab[[2]])
+      res <- coeffMatList(list(wedgeOrder), type = type, tipLabA = uniqueTipLab[[1]], tipLabB = uniqueTipLab[[2]], nThreads = numThreads)
       attributes(res) <- NULL
     } else {
       uniqueTipLabFirst <- sort(unique(trees[[1]]$tip.label))
@@ -120,7 +123,7 @@ treeToPoly <- function(trees, type = "real") {
         ifelse(inds <= length(x$tip.label), x$tip.label[inds], "1")
       })
 
-      res <- coeffMatListCpp(wedgeOrders, type = type, tipLabA = uniqueTipLabFirst[[1]], tipLabB = uniqueTipLabFirst[[2]])
+      res <- coeffMatList(wedgeOrders, type = type, tipLabA = uniqueTipLabFirst[[1]], tipLabB = uniqueTipLabFirst[[2]], nThreads = numThreads)
 
       attributes(res) <- NULL
       if(!is.null(names(trees))){
@@ -147,11 +150,13 @@ treeToPoly <- function(trees, type = "real") {
 #' @useDynLib treenomial
 #' @importFrom Rcpp sourceCpp
 #' @examples
+#' \donttest{
 #' library(treenomial)
 #' library(ape)
 #' differentSizeTrees <- c(rtree(2), rmtree(10,10))
 #' coeffs <- treeToPoly(differentSizeTrees)
 #' alignedCoeffs <- alignPoly(coeffs)
+#' }
 #'
 #' @export
 alignPoly <- function(coefficientMatrices){

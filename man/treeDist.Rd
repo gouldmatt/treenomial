@@ -4,12 +4,12 @@
 \alias{treeDist}
 \title{Calculates the distance between trees}
 \usage{
-treeDist(x, Y, type = "real", method = "logDiff")
+treeDist(x, Y, type = "real", method = "logDiff", numThreads = -1)
 }
 \arguments{
 \item{x}{single phylo object}
 
-\item{Y}{a list of class phylo}
+\item{Y}{a list of phylo objects}
 
 \item{type}{one of:
 \describe{
@@ -25,6 +25,8 @@ treeDist(x, Y, type = "real", method = "logDiff")
   \item{\dQuote{pa}}{total pairs where the coefficient is present in one matrix and absent in the other (presence-absence)}
   \item{\dQuote{ap}}{opposite comparison of pa (absence-presence)}
 }}
+
+\item{numThreads}{number of threads to be used, the default (-1) will use the number of cores in the machine and numThreads = 0 will only use the main thread}
 }
 \value{
 vector of distances
@@ -39,6 +41,7 @@ Calculates the distance between two trees or a tree and a list of trees.
 }
 }
 \examples{
+\donttest{
 library(treenomial)
 library(ape)
 
@@ -50,5 +53,6 @@ thirtyTipList <- rmtree(100,30)
 
 # find the distance
 treeDist(tenTipTree,thirtyTipList)
+}
 
 }

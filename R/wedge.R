@@ -10,6 +10,7 @@
 #' @importFrom Rcpp sourceCpp
 #' @examples
 #'
+#' library(treenomial)
 #' library(ape)
 #'
 #' # wedge two real coefficient matrices

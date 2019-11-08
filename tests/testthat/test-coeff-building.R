@@ -6,7 +6,7 @@ library(ape)
 test_that("Test consistency of treeToPoly runs tips = 500", {
   numTips <- 500
   tree <- rtree(n = numTips)
-  expect_equal(treeToPoly(tree), treeToPoly(tree))
+  expect_equal(treeToPoly(tree, numThreads = 0), treeToPoly(tree, numThreads = 0))
 })
 
 ## tests on allTrees ##
@@ -34,7 +34,7 @@ test_that("ensure that number of trees from allTrees match Wedderburn-Etheringto
 test_that("test different size trees to real polynomials", {
   differentSizeTrees <- c(rtree(2), rmtree(10,10))
 
-  coeffs <- treeToPoly(differentSizeTrees)
+  coeffs <- treeToPoly(differentSizeTrees, numThreads = 0)
   coeffs <- alignPoly(coeffs)
 
   firstDims <- dim(coeffs[[1]])
@@ -46,7 +46,7 @@ test_that("test different size trees to real polynomials", {
 test_that("test different size trees to complex polynomials", {
   differentSizeTrees <- c(rtree(2), rmtree(10,10))
 
-  coeffs <- treeToPoly(differentSizeTrees, type = "complex")
+  coeffs <- treeToPoly(differentSizeTrees, type = "complex", numThreads = 0)
   coeffs <- alignPoly(coeffs)
 
   firstDims <- dim(coeffs[[1]])
@@ -63,7 +63,7 @@ test_that("test different size trees with binary trait labels", {
 
   smallerTree <- rtree(2)
 
-  coeffs <- treeToPoly(c(largerTree,smallerTree), type = "tipLabel")
+  coeffs <- treeToPoly(c(largerTree,smallerTree), type = "tipLabel", numThreads = 0)
 
   coeffs <- alignPoly(coeffs)
 
@@ -82,7 +82,7 @@ test_that("test different size trees with binary trait labels", {
 
   differentSizeTrees <- c(largerTrees, list(rtree(2)))
 
-  coeffs <- treeToPoly(differentSizeTrees, type = "tipLabel")
+  coeffs <- treeToPoly(differentSizeTrees, type = "tipLabel", numThreads = 0)
 
   coeffs <- alignPoly(coeffs)
 
@@ -108,7 +108,7 @@ test_that("test different size trees with binary trait labels", {
 
   differentSizeTrees <- c(largerTrees, smallerTrees)
 
-  coeffs <- treeToPoly(differentSizeTrees, type = "tipLabel")
+  coeffs <- treeToPoly(differentSizeTrees, type = "tipLabel", numThreads = 0)
 
   coeffs <- alignPoly(coeffs)
 

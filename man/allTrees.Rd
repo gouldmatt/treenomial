@@ -29,7 +29,7 @@ For binary trees (m = 2), the number of trees at each number of tips follows the
 only m = 2 is currently supported
 }
 \examples{
-
+\donttest{
 library(treenomial)
 library(ape)
 
@@ -46,5 +46,5 @@ par(mfrow=c(1,6))
 plots <- lapply(allBinSixPhylo, function(t){
   plot.phylo(ladderize(t), direction = "downwards", show.tip.label = FALSE)
 })
-
+}
 }

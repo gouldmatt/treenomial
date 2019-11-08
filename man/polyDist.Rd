@@ -4,12 +4,12 @@
 \alias{polyDist}
 \title{Calculates the distance between coefficient matrices}
 \usage{
-polyDist(x, Y, method = "logDiff")
+polyDist(x, Y, method = "logDiff", numThreads = -1)
 }
 \arguments{
 \item{x}{single coefficient matrix to find distances to}
 
-\item{Y}{list or single coefficient matrix}
+\item{Y}{a list of coefficient matrices}
 
 \item{method}{method to use when calculating coefficient distances:
 \describe{
@@ -18,6 +18,8 @@ polyDist(x, Y, method = "logDiff")
   \item{\dQuote{pa}}{total pairs where the coefficient is present in one matrix and absent in the other (presence-absence)}
   \item{\dQuote{ap}}{opposite comparison of pa (absence-presence)}
 }}
+
+\item{numThreads}{number of threads to be used, the default (-1) will use the number of cores in the machine and numThreads = 0 will only use the main thread}
 }
 \value{
 vector of distances
@@ -32,12 +34,12 @@ Calculates the distance between two coefficient matrices or a coefficient matrix
 }
 }
 \examples{
+\donttest{
 library(treenomial)
 library(ape)
 
 # distance between coefficient matrices of one 10 tip tree
 # and 100 trees with 30 tips using
-
 # create the coefficient matrices
 tenTipTree <- rtree(10)
 tenTipTreeCoeff <- treeToPoly(tenTipTree)
@@ -47,5 +49,6 @@ thirtyTipCoeffs <- treeToPoly(thirtyTipList)
 
 # find the distance
 polyDist(tenTipTreeCoeff,thirtyTipCoeffs)
+}
 
 }

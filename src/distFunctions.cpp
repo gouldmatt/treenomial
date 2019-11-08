@@ -42,8 +42,13 @@ double tipLab(const cx_mat coeffMatA, const cx_mat coeffMatB) {
 }
 
 // [[Rcpp::export]]
-std::vector<double> compareCoeffRcpp(Rcpp::List coeffsList, std::string method){
+std::vector<double> coeffDist(Rcpp::List coeffsList, std::string method, int nThreads = -1){
   int coeffsLength = coeffsList.length();
+
+  size_t numThreads = std::thread::hardware_concurrency();
+  if(nThreads != -1){
+    numThreads = nThreads;
+  }
 
   if(method == "logDiff"){
     std::vector<mat> Y = Rcpp::as<std::vector<mat>>(coeffsList);
@@ -51,7 +56,7 @@ std::vector<double> compareCoeffRcpp(Rcpp::List coeffsList, std::string method){
 
     RcppThread::parallelFor(1, coeffsLength, [&distVect,&Y] (unsigned int i) {
       distVect[i-1] = logDiff(Y[0],Y[i]);
-    });
+    },numThreads,0);
 
     return(distVect);
 
@@ -61,7 +66,7 @@ std::vector<double> compareCoeffRcpp(Rcpp::List coeffsList, std::string method){
 
     RcppThread::parallelFor(1, coeffsLength, [&distVect,&Y] (unsigned int i) {
       distVect[i-1] = wLogDiff(Y[0],Y[i]);
-    });
+    },numThreads,0);
 
     return(distVect);
 
@@ -71,7 +76,7 @@ std::vector<double> compareCoeffRcpp(Rcpp::List coeffsList, std::string method){
 
     RcppThread::parallelFor(1, coeffsLength, [&distVect,&Y] (unsigned int i) {
       distVect[i-1] = binB(Y[0],Y[i]);
-    });
+    },numThreads,0);
 
     return(distVect);
 
@@ -81,7 +86,7 @@ std::vector<double> compareCoeffRcpp(Rcpp::List coeffsList, std::string method){
 
     RcppThread::parallelFor(1, coeffsLength, [&distVect,&Y] (unsigned int i) {
       distVect[i-1] = binC(Y[0],Y[i]);
-    });
+    },numThreads,0);
 
     return(distVect);
 
@@ -91,29 +96,32 @@ std::vector<double> compareCoeffRcpp(Rcpp::List coeffsList, std::string method){
 
     RcppThread::parallelFor(1, coeffsLength, [&distVect,&Y] (unsigned int i) {
       distVect[i-1] = logDiffComplex(Y[0],Y[i]);
-    });
+    },numThreads,0);
 
     return(distVect);
 
-  } else if (method == "tipLab"){
+  } else {
     std::vector<cx_mat> Y = Rcpp::as<std::vector<cx_mat>>(coeffsList);
     std::vector<double> distVect(coeffsLength-1);
 
     RcppThread::parallelFor(1, coeffsLength, [&distVect,&Y] (unsigned int i) {
       distVect[i-1] = logDiffComplex(Y[0],Y[i]);
-    });
+    },numThreads,0);
 
 
     return(distVect);
 
-  } else {
-    throw std::invalid_argument("invalid method");
   }
 }
 
 
 // [[Rcpp::export]]
-Rcpp::NumericMatrix coeffDistRcpp(Rcpp::List coeffsList, std::string method){
+Rcpp::NumericMatrix coeffDistMat(Rcpp::List coeffsList, std::string method, int nThreads = -1){
+
+  size_t numThreads = std::thread::hardware_concurrency();
+  if(nThreads != -1){
+    numThreads = nThreads;
+  }
 
   if(method == "logDiff"){
     std::vector<mat> coeffs = Rcpp::as<std::vector<mat>>(coeffsList);
@@ -124,7 +132,7 @@ Rcpp::NumericMatrix coeffDistRcpp(Rcpp::List coeffsList, std::string method){
       for(int j = i+1; j < numCoeffs; j++){
         distMat(i,j) = logDiff(coeffs[i],coeffs[j]);
       }
-    });
+    }, numThreads,0);
 
     distMat = distMat.t() + distMat;
 
@@ -139,7 +147,7 @@ Rcpp::NumericMatrix coeffDistRcpp(Rcpp::List coeffsList, std::string method){
       for(int j = i+1; j < numCoeffs; j++){
         distMat(i,j) = wLogDiff(coeffs[i],coeffs[j]);
       }
-    });
+    },numThreads,0);
 
     distMat = distMat.t() + distMat;
 
@@ -154,7 +162,7 @@ Rcpp::NumericMatrix coeffDistRcpp(Rcpp::List coeffsList, std::string method){
       for(int j = i+1; j < numCoeffs; j++){
         distMat(i,j) = binB(coeffs[i],coeffs[j]);
       }
-    });
+    },numThreads,0);
 
     distMat = distMat.t() + distMat;
 
@@ -169,7 +177,7 @@ Rcpp::NumericMatrix coeffDistRcpp(Rcpp::List coeffsList, std::string method){
        for(int j = i+1; j < numCoeffs; j++){
          distMat(i,j) = binC(coeffs[i],coeffs[j]);
        }
-    });
+    },numThreads,0);
 
     distMat = distMat.t() + distMat;
 
@@ -184,13 +192,13 @@ Rcpp::NumericMatrix coeffDistRcpp(Rcpp::List coeffsList, std::string method){
       for(int j = i+1; j < numCoeffs; j++){
         distMat(i,j) = logDiffComplex(coeffs[i],coeffs[j]);
       }
-    });
+    },numThreads,0);
 
     distMat = distMat.t() + distMat;
 
     return(Rcpp::wrap(distMat));
 
-  } else if (method == "tipLab"){
+  } else {
     std::vector<cx_mat> coeffs = Rcpp::as<std::vector<cx_mat>>(coeffsList);
     int numCoeffs = coeffs.size();
     mat distMat(numCoeffs, numCoeffs, fill::zeros);
@@ -199,13 +207,11 @@ Rcpp::NumericMatrix coeffDistRcpp(Rcpp::List coeffsList, std::string method){
       for(int j = i+1; j < numCoeffs; j++){
         distMat(i,j) = tipLab(coeffs[i],coeffs[j]);
       }
-    });
+    },numThreads,0);
 
     distMat = distMat.t() + distMat;
 
     return(Rcpp::wrap(distMat));
 
-  } else {
-    throw std::invalid_argument("invalid method");
   }
 }

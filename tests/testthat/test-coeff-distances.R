@@ -9,9 +9,9 @@ test_that("test that different distance method have correct result (small manual
 
   coeffs <- allTrees(6)[[6]]
 
-  dLogDiff <- polyToDistMat(coeffs, method = "logDiff")
+  dLogDiff <- polyToDistMat(coeffs, method = "logDiff", numThreads = 0)
 
-  dWLogDiff <- polyToDistMat(coeffs, method = "wLogDiff")
+  dWLogDiff <- polyToDistMat(coeffs, method = "wLogDiff", numThreads = 0)
 
   testWlogL1 <- function(coeffA,coeffB){
     logDiffMat <- rowSums(log(1 + abs(coeffA-coeffB)))
@@ -32,19 +32,19 @@ test_that("test distance matrix of same trees is zero for each method", {
   tree <- list(rtree(10))
   identicalForest <- rep(tree,10)
 
-  distanceMatrix <- treeToDistMat(identicalForest, method = "logDiff", type = "complex")
+  distanceMatrix <- treeToDistMat(identicalForest, method = "logDiff", type = "complex", numThreads = 0)
   expect_true(all(distanceMatrix == 0))
 
-  distanceMatrix <- treeToDistMat(identicalForest, method = "logDiff")
+  distanceMatrix <- treeToDistMat(identicalForest, method = "logDiff", numThreads = 0)
   expect_true(all(distanceMatrix == 0))
 
-  distanceMatrix <- treeToDistMat(identicalForest, method = "wLogDiff")
+  distanceMatrix <- treeToDistMat(identicalForest, method = "wLogDiff", numThreads = 0)
   expect_true(all(distanceMatrix == 0))
 
-  distanceMatrix <- treeToDistMat(identicalForest, method = "pa")
+  distanceMatrix <- treeToDistMat(identicalForest, method = "pa", numThreads = 0)
   expect_true(all(distanceMatrix == 0))
 
-  distanceMatrix <- treeToDistMat(identicalForest, method = "ap")
+  distanceMatrix <- treeToDistMat(identicalForest, method = "ap", numThreads = 0)
   expect_true(all(distanceMatrix == 0))
 
 
@@ -53,7 +53,7 @@ test_that("test distance matrix of same trees is zero for each method", {
 test_that("testing naming carry through", {
   trees <- c(rmtree(2,10),rmtree(2,131),rtree(2),rtree(3))
   names(trees) <- c(rep(c("smaller","larger"), each = 2),"twoTip","threeTip")
-  d <- treeToDistMat(trees)
+  d <- treeToDistMat(trees, numThreads = 0)
   expect_equal(rownames(d),names(trees))
   expect_equal(colnames(d),names(trees))
 })
@@ -61,7 +61,7 @@ test_that("testing naming carry through", {
 
 test_that("ensure distance matrix is symmetric", {
 
-  distanceMatrix <- treeToDistMat(rmtree(100,20))
+  distanceMatrix <- treeToDistMat(rmtree(100,20), numThreads = 0)
 
   expect_true(all(distanceMatrix == t(distanceMatrix)))
 })
@@ -73,14 +73,14 @@ test_that("ensure correct min/max trees are being found", {
   forestSixty <- rmtree(42,60)
   threeTip <- rtree(3)
 
-  minTrees <- plotExtremeTrees(threeTip, c(forestSixty,threeTip,forestTen), 2)
+  minTrees <- plotExtremeTrees(threeTip, c(forestSixty,threeTip,forestTen), 2, numThreads = 0)
 
   expect_equal(minTrees[[1]]$distance, 0)
-  expect_equal(treeDist(minTrees[[1]]$tree,threeTip), 0)
+  expect_equal(treeDist(minTrees[[1]]$tree,threeTip, numThreads = 0), 0)
 
-  maxTrees <- plotExtremeTrees(threeTip, c(forestSixty,threeTip,forestTen), 2, comparison = "max")
+  maxTrees <- plotExtremeTrees(threeTip, c(forestSixty,threeTip,forestTen), 2, comparison = "max", numThreads = 0)
 
-  expect_equal(maxTrees[[1]]$distance, treeDist(threeTip,maxTrees[[1]]$tree))
+  expect_equal(maxTrees[[1]]$distance, treeDist(threeTip,maxTrees[[1]]$tree, numThreads = 0))
 })
 
 
@@ -90,23 +90,23 @@ test_that("tests with single and lists arguments", {
   forestSixty <- rmtree(42,60)
   threeTip <- rtree(3)
 
-  expect_silent(treeDist(threeTip,threeTip))
-  expect_silent(treeDist(threeTip,forestSixty))
-  expect_error(treeDist(list(threeTip),forestSixty))
-  expect_error(treeDist(list(threeTip),list(forestSixty)))
+  expect_silent(treeDist(threeTip,threeTip, numThreads = 0))
+  expect_silent(treeDist(threeTip,forestSixty, numThreads = 0))
+  expect_error(treeDist(list(threeTip),forestSixty, numThreads = 0))
+  expect_error(treeDist(list(threeTip),list(forestSixty), numThreads = 0))
 
-  coeffsSixty <- treeToPoly(forestSixty)
-  coeffsThree <- treeToPoly(threeTip)
+  coeffsSixty <- treeToPoly(forestSixty, numThreads = 0)
+  coeffsThree <- treeToPoly(threeTip, numThreads = 0)
 
-  expect_silent(polyDist(coeffsThree,coeffsThree))
-  expect_silent(polyDist(coeffsThree,coeffsSixty))
-  expect_error(polyDist(list(coeffsThree),coeffsSixty))
-  expect_error(polyDist(list(coeffsThree),list(coeffsSixty)))
+  expect_silent(polyDist(coeffsThree,coeffsThree, numThreads = 0))
+  expect_silent(polyDist(coeffsThree,coeffsSixty, numThreads = 0))
+  expect_error(polyDist(list(coeffsThree),coeffsSixty, numThreads = 0))
+  expect_error(polyDist(list(coeffsThree),list(coeffsSixty), numThreads = 0))
 
-  expect_silent(plotExtremeTrees(threeTip, threeTip, 1))
-  expect_silent(plotExtremeTrees(threeTip, forestSixty, 1))
-  expect_error(plotExtremeTrees(list(threeTip),forestSixty,1))
-  expect_error(plotExtremeTrees(list(threeTip),list(forestSixty),1))
+  expect_silent(plotExtremeTrees(threeTip, threeTip, 1, numThreads = 0))
+  expect_silent(plotExtremeTrees(threeTip, forestSixty, 1, numThreads = 0))
+  expect_error(plotExtremeTrees(list(threeTip),forestSixty,1, numThreads = 0))
+  expect_error(plotExtremeTrees(list(threeTip),list(forestSixty),1, numThreads = 0))
 })
 
 

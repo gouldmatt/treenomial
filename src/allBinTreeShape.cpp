@@ -1,7 +1,3 @@
-// [[Rcpp::plugins(cpp11)]]
-// [[Rcpp::depends(RcppThread)]]
-#include <RcppThread.h>
-
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 

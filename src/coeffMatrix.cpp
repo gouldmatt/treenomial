@@ -120,8 +120,13 @@ Rcpp::List alignCoeffs(Rcpp::List &coeffs,std::string type){
 }
 
 // [[Rcpp::export]]
-Rcpp::List coeffMatListCpp(std::vector<std::vector<std::string>> wedgeOrders,std::string type, std::string tipLabA = " ", std::string tipLabB = " "){
+Rcpp::List coeffMatList(std::vector<std::vector<std::string>> wedgeOrders,std::string type, std::string tipLabA = " ", std::string tipLabB = " ", int nThreads = -1){
   int numCoeffs = wedgeOrders.size();
+
+  size_t numThreads = std::thread::hardware_concurrency();
+  if(nThreads != -1){
+    numThreads = nThreads;
+  }
 
   Rcpp::List output(numCoeffs);
 
@@ -130,7 +135,7 @@ Rcpp::List coeffMatListCpp(std::vector<std::vector<std::string>> wedgeOrders,std
 
       RcppThread::parallelFor(0, numCoeffs, [&coeffs, &wedgeOrders] (unsigned int i) {
         coeffs[i] = coeffMatrixReal(wedgeOrders[i]);
-      });
+      },numThreads,0);
 
       output = Rcpp::wrap(coeffs);
     } else if(type == "complex"){
@@ -138,7 +143,7 @@ Rcpp::List coeffMatListCpp(std::vector<std::vector<std::string>> wedgeOrders,std
 
       RcppThread::parallelFor(0, numCoeffs, [&coeffs, &wedgeOrders] (unsigned int i) {
         coeffs[i] = coeffMatrixComplex(wedgeOrders[i]);
-      });
+      },numThreads,0);
 
       output = Rcpp::wrap(coeffs);
     } else if(type == "tipLabel"){
@@ -146,7 +151,7 @@ Rcpp::List coeffMatListCpp(std::vector<std::vector<std::string>> wedgeOrders,std
 
       RcppThread::parallelFor(0, numCoeffs, [&coeffs, &wedgeOrders, &tipLabA, &tipLabB] (unsigned int i) {
         coeffs[i] = coeffMatrixTipLabel(wedgeOrders[i], tipLabA, tipLabB);
-      });
+      },numThreads,0);
 
       output = Rcpp::wrap(coeffs);
     }

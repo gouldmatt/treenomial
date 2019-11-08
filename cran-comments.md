@@ -1,22 +1,28 @@
+## Resubmission
+This is a resubmission with the following changes: 
+
+* Limit the maximum threads used in tests and examples to be never greater than two. 
+
 ## Test environments
 * local OS X Mojave install, R 3.6.1
 * R-hub macos-elcapitan-release (r-release)
 * R-hub windows-x86_64-devel (r-devel)
 * R-hub ubuntu-gcc-release (r-release)
 * R-hub fedora-clang-devel (r-devel)
+* win-builder (devel and release)
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
 
 There was 3 NOTEs:
 
-❯ On windows-x86_64-devel (r-devel), ubuntu-gcc-release (r-release)
+* On windows-x86_64-devel (r-devel), ubuntu-gcc-release (r-release), win-builder (devel and release)
   checking CRAN incoming feasibility ... NOTE
   Maintainer: 'Matthew Gould <mgould@sfu.ca>'
   
   New submission
 
-❯ On windows-x86_64-devel (r-devel)
+* On windows-x86_64-devel (r-devel)
   checking for non-standard things in the check directory ... NOTE
   Found the following files/directories:
     'treenomial-Ex_i386.Rout' 'treenomial-Ex_x64.Rout'
@@ -24,7 +30,7 @@ There was 3 NOTEs:
 
 These files/directories were created by R-hub. 
 
-❯ On ubuntu-gcc-release (r-release)
+* On ubuntu-gcc-release (r-release)
   checking installed package size ... NOTE
     installed size is  5.9Mb
     sub-directories of 1Mb or more:

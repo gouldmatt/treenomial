@@ -4,10 +4,11 @@
 \alias{treeToDistMat}
 \title{Calculates the distance matrix from a list of phylo objects}
 \usage{
-treeToDistMat(trees, method = "logDiff", type = "real")
+treeToDistMat(trees, method = "logDiff", type = "real",
+  numThreads = -1)
 }
 \arguments{
-\item{trees}{an object or list of class "phylo"}
+\item{trees}{a single phylo object or a list of phylo objects}
 
 \item{method}{method to use when calculating coefficient distances:
 \describe{
@@ -23,6 +24,8 @@ treeToDistMat(trees, method = "logDiff", type = "real")
   \item{\dQuote{complex}}{complex coefficient polynomials (real polynomials with y = 1 + i)}
   \item{\dQuote{tipLabel}}{complex coefficient polynomial that utilize binary trait tip labels on the phylo objects}
 }}
+
+\item{numThreads}{number of threads to be used, the default (-1) will use the number of cores in the machine and numThreads = 0 will only use the main thread}
 }
 \value{
 a distance matrix
@@ -37,9 +40,11 @@ Calculates the distance matrix from a list of phylo objects
 }
 }
 \examples{
+\donttest{
 library(treenomial)
 library(ape)
 # distance matrix for 10 trees of 30 tips
 treeToDistMat(rmtree(10,30),method = "wLogDiff")
+}
 
 }

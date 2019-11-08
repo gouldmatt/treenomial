@@ -3,7 +3,7 @@
 #' Calculates the distance between two coefficient matrices or a coefficient matrix and a list of coefficient matrices.
 #'
 #' @param x single coefficient matrix to find distances to
-#' @param Y list or single coefficient matrix
+#' @param Y a list of coefficient matrices
 #' @inheritParams polyToDistMat
 #' @return vector of distances
 #' @note \itemize{
@@ -11,12 +11,12 @@
 #'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 #' }
 #' @examples
+#' \donttest{
 #' library(treenomial)
 #' library(ape)
 #'
 #' # distance between coefficient matrices of one 10 tip tree
 #' # and 100 trees with 30 tips using
-#'
 #' # create the coefficient matrices
 #' tenTipTree <- rtree(10)
 #' tenTipTreeCoeff <- treeToPoly(tenTipTree)
@@ -26,9 +26,10 @@
 #'
 #' # find the distance
 #' polyDist(tenTipTreeCoeff,thirtyTipCoeffs)
+#' }
 #'
 #' @export
-polyDist <- function(x, Y, method = "logDiff"){
+polyDist <- function(x, Y, method = "logDiff", numThreads = -1){
   # check input arguments
 
       if(class(x) == "list"){
@@ -39,20 +40,24 @@ polyDist <- function(x, Y, method = "logDiff"){
         Y <- list(Y)
       }
 
+      if(!(method %in% c("pa","ap","logDiff","wLogDiff"))){
+        stop("invalid method")
+      }
+
       if(typeof(x) == "double"){
         coefficientMatrices <- alignCoeffs(c(list(x),Y), type = "real")
-        compareCoeffRcpp( coefficientMatrices, method = method)
+        coeffDist(coefficientMatrices, method = method, nThreads = numThreads)
 
       } else if(typeof(x) == "complex"){
         if(dim(x)[[1]] == 1){
           if(method != "logDiff") warning("only the logDiff method is available for the complex polynomial")
           coefficientMatrices <- alignCoeffs(c(x,Y), type = "complex")
-          compareCoeffRcpp( coefficientMatrices, method = "logDiffComplex")
+          coeffDist( coefficientMatrices, method = "logDiffComplex", nThreads = numThreads)
 
         } else {
           if(method != "logDiff") warning("only the logDiff method is available for binary trait label polynomial")
           coefficientMatrices <- alignCoeffs(c(x,Y), type = "binTipLabel")
-          compareCoeffRcpp( coefficientMatrices, method = "tipLab")
+          coeffDist( coefficientMatrices, method = "tipLab", nThreads = numThreads)
         }
       } else {
         stop("invalid input")
@@ -66,7 +71,7 @@ polyDist <- function(x, Y, method = "logDiff"){
 #' Calculates the distance between two trees or a tree and a list of trees.
 #'
 #' @param x single phylo object
-#' @param Y a list of class phylo
+#' @param Y a list of phylo objects
 #' @inheritParams treeToDistMat
 #' @return vector of distances
 #' @note \itemize{
@@ -74,6 +79,7 @@ polyDist <- function(x, Y, method = "logDiff"){
 #'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 #' }
 #' @examples
+#' \donttest{
 #' library(treenomial)
 #' library(ape)
 #'
@@ -85,9 +91,10 @@ polyDist <- function(x, Y, method = "logDiff"){
 #'
 #' # find the distance
 #' treeDist(tenTipTree,thirtyTipList)
+#' }
 #'
 #' @export
-treeDist <- function(x, Y, type = "real", method = "logDiff"){
+treeDist <- function(x, Y, type = "real", method = "logDiff", numThreads = -1){
 
   if(class(x) == "list"){
     stop("argument x must not be a list")
@@ -97,9 +104,14 @@ treeDist <- function(x, Y, type = "real", method = "logDiff"){
     Y <- list(Y)
   }
 
-  coeffs <- treeToPoly(c(list(x),Y), type = type)
+  coeffs <- treeToPoly(c(list(x),Y), type = type, numThreads = numThreads)
   coeffs <- alignPoly(coeffs)
-  compareCoeffRcpp(coeffs, method = method)
+
+  if(!(method %in% c("pa","ap","logDiff","wLogDiff"))){
+    stop("invalid method")
+  }
+
+  coeffDist(coeffs, method = method, nThreads = numThreads)
 }
 
 #' Calculates the distance matrix from a list coefficient matrices
@@ -118,7 +130,9 @@ treeDist <- function(x, Y, type = "real", method = "logDiff"){
 #'   \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
 #'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 #' }
+#' @param numThreads number of threads to be used, the default (-1) will use the number of cores in the machine and numThreads = 0 will only use the main thread
 #' @examples
+#' \donttest{
 #' library(treenomial)
 #' library(ape)
 #'
@@ -130,25 +144,30 @@ treeDist <- function(x, Y, type = "real", method = "logDiff"){
 #'
 #' # using the absence-presence method
 #' d <- polyToDistMat(coeffs, method = "ap")
+#' }
 #'
 #' @export
-polyToDistMat <- function(coefficientMatrices, method = "logDiff") {
+polyToDistMat <- function(coefficientMatrices, method = "logDiff", numThreads = -1) {
+
+  if(!(method %in% c("pa","ap","logDiff","wLogDiff"))){
+    stop("invalid method")
+  }
 
   # check input arguments
   if(class(coefficientMatrices) == "list"){
     if(class(coefficientMatrices[[1]]) == "matrix"){
       if(typeof(coefficientMatrices[[1]]) == "double"){
         coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "real")
-        distMat <- coeffDistRcpp(coefficientMatrices, method = method)
+        distMat <- coeffDistMat(coefficientMatrices, method = method, nThreads = numThreads)
       } else if(typeof(coefficientMatrices[[1]]) == "complex"){
         if(dim(coefficientMatrices[[1]])[[1]] == 1){
           if(method != "logDiff") warning("only the logDiff method is available for the complex polynomial")
           coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "complex")
-          distMat <- coeffDistRcpp(coefficientMatrices, method = "logDiffComplex")
+          distMat <- coeffDistMat(coefficientMatrices, method = "logDiffComplex", nThreads = numThreads)
         } else {
           if(method != "logDiff") warning("only the logDiff method is available for binary trait label polynomial")
           coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "binTipLabel")
-          distMat <- coeffDistRcpp(coefficientMatrices, method = "tipLab")
+          distMat <- coeffDistMat(coefficientMatrices, method = "tipLab", nThreads = numThreads)
         }
       } else {
         stop("invalid input")
@@ -179,14 +198,16 @@ polyToDistMat <- function(coefficientMatrices, method = "logDiff") {
 #' }
 #' @export
 #' @examples
+#' \donttest{
 #' library(treenomial)
 #' library(ape)
 #' # distance matrix for 10 trees of 30 tips
 #' treeToDistMat(rmtree(10,30),method = "wLogDiff")
+#' }
 #'
 #' @export
-treeToDistMat <- function(trees, method = "logDiff", type = "real"){
-  polyToDistMat(treeToPoly(trees, type = type), method = method)
+treeToDistMat <- function(trees, method = "logDiff", type = "real", numThreads = -1) {
+  polyToDistMat(treeToPoly(trees, type = type, numThreads = numThreads), method = method, numThreads = numThreads)
 }
 
 #' Plot the min/max distance trees from a target tree
@@ -202,13 +223,15 @@ treeToDistMat <- function(trees, method = "logDiff", type = "real"){
 #'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 #' }
 #' @examples
+#' \donttest{
 #' library(treenomial)
 #' library(ape)
 #' trees <- c(rmtree(1000,50),rmtree(10,9))
 #' target <- rtree(50)
 #' minTrees <- plotExtremeTrees(target,trees,2, comparison = "min")
+#' }
 #' @export
-plotExtremeTrees <- function(target, trees, n, comparison = "min", method = "logDiff", type = "real"){
+plotExtremeTrees <- function(target, trees, n, comparison = "min", method = "logDiff", type = "real", numThreads = -1) {
 
   if(class(target) == "list"){
     stop("argument target must not be a list")
@@ -220,7 +243,7 @@ plotExtremeTrees <- function(target, trees, n, comparison = "min", method = "log
 
   parBackup <- par()
 
-  distances <- treeDist(target, trees, type = type, method = method)
+  distances <- treeDist(target, trees, type = type, method = method, numThreads = numThreads)
 
   # if greater then 16 trees break up over multiple pages
   if(n < 15){

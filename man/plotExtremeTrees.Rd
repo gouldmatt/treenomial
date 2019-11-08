@@ -5,7 +5,7 @@
 \title{Plot the min/max distance trees from a target tree}
 \usage{
 plotExtremeTrees(target, trees, n, comparison = "min",
-  method = "logDiff", type = "real")
+  method = "logDiff", type = "real", numThreads = -1)
 }
 \arguments{
 \item{target}{the phylo object of the tree to calculate the distances to}
@@ -30,6 +30,8 @@ plotExtremeTrees(target, trees, n, comparison = "min",
   \item{\dQuote{complex}}{complex coefficient polynomials (real polynomials with y = 1 + i)}
   \item{\dQuote{tipLabel}}{complex coefficient polynomial that utilize binary trait tip labels on the phylo objects}
 }}
+
+\item{numThreads}{number of threads to be used, the default (-1) will use the number of cores in the machine and numThreads = 0 will only use the main thread}
 }
 \value{
 a list of lists containing the \strong{n} min/max distance trees and their distances to \strong{target}
@@ -44,9 +46,11 @@ Plot the min/max distance trees from a target tree
 }
 }
 \examples{
+\donttest{
 library(treenomial)
 library(ape)
 trees <- c(rmtree(1000,50),rmtree(10,9))
 target <- rtree(50)
 minTrees <- plotExtremeTrees(target,trees,2, comparison = "min")
+}
 }

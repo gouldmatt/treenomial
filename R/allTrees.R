@@ -15,7 +15,7 @@
 #' @note only m = 2 is currently supported
 #' @useDynLib treenomial
 #' @examples
-#'
+#' \donttest{
 #' library(treenomial)
 #' library(ape)
 #'
@@ -32,7 +32,7 @@
 #' plots <- lapply(allBinSixPhylo, function(t){
 #'   plot.phylo(ladderize(t), direction = "downwards", show.tip.label = FALSE)
 #' })
-#'
+#' }
 #' @export
 allTrees <- function(n, m = 2, type = "real") {
   # wadNum <- c(1,1,1,2,3,6, 11, 23, 46, 98, 207, 451,

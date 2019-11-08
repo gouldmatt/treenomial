@@ -16,10 +16,12 @@ the aligned list of coefficient matrices
 Align various types of coefficient matrices
 }
 \examples{
+\donttest{
 library(treenomial)
 library(ape)
 differentSizeTrees <- c(rtree(2), rmtree(10,10))
 coeffs <- treeToPoly(differentSizeTrees)
 alignedCoeffs <- alignPoly(coeffs)
+}
 
 }

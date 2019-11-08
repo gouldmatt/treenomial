@@ -18,6 +18,7 @@ matrices, two complex coefficient vectors or two phylo objects.
 }
 \examples{
 
+library(treenomial)
 library(ape)
 
 # wedge two real coefficient matrices

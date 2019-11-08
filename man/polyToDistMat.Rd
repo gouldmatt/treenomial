@@ -4,7 +4,7 @@
 \alias{polyToDistMat}
 \title{Calculates the distance matrix from a list coefficient matrices}
 \usage{
-polyToDistMat(coefficientMatrices, method = "logDiff")
+polyToDistMat(coefficientMatrices, method = "logDiff", numThreads = -1)
 }
 \arguments{
 \item{coefficientMatrices}{list of coefficient matrices}
@@ -16,6 +16,8 @@ polyToDistMat(coefficientMatrices, method = "logDiff")
   \item{\dQuote{pa}}{total pairs where the coefficient is present in one matrix and absent in the other (presence-absence)}
   \item{\dQuote{ap}}{opposite comparison of pa (absence-presence)}
 }}
+
+\item{numThreads}{number of threads to be used, the default (-1) will use the number of cores in the machine and numThreads = 0 will only use the main thread}
 }
 \value{
 distance matrix calculated from argument coefficient matrices
@@ -30,6 +32,7 @@ Calculates the distance matrix from a list coefficient matrices
 }
 }
 \examples{
+\donttest{
 library(treenomial)
 library(ape)
 
@@ -41,5 +44,6 @@ d <- polyToDistMat(coeffs, method = "logDiff")
 
 # using the absence-presence method
 d <- polyToDistMat(coeffs, method = "ap")
+}
 
 }

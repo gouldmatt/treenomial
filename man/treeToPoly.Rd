@@ -4,10 +4,10 @@
 \alias{treeToPoly}
 \title{Convert trees to coefficient matrices}
 \usage{
-treeToPoly(trees, type = "real")
+treeToPoly(trees, type = "real", numThreads = -1)
 }
 \arguments{
-\item{trees}{an object or list of class "phylo"}
+\item{trees}{a single phylo object or a list of phylo objects}
 
 \item{type}{one of:
 \describe{
@@ -15,6 +15,8 @@ treeToPoly(trees, type = "real")
   \item{\dQuote{complex}}{complex coefficient polynomials (real polynomials with y = 1 + i)}
   \item{\dQuote{tipLabel}}{complex coefficient polynomial that utilize binary trait tip labels on the phylo objects}
 }}
+
+\item{numThreads}{number of threads to be used, the default (-1) will use the number of cores in the machine and numThreads = 0 will only use the main thread}
 }
 \value{
 the resulting coefficient matrix or matrices of the form:
@@ -25,9 +27,10 @@ the resulting coefficient matrix or matrices of the form:
 }
 }
 \description{
-Converts trees to tree distinguishing polynomials described with coefficient matrices.
+Converts rooted full binary trees to tree distinguishing polynomials described with coefficient matrices.
 }
 \examples{
+\donttest{
 library(treenomial)
 library(ape)
 
@@ -42,5 +45,6 @@ treeToPoly(tree, type = "complex")
 
 # for a list of trees
 treeToPoly(rmtree(10, 30))
+}
 
 }
