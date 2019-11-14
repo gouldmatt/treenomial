@@ -21,7 +21,8 @@
 #'
 #' @export
 treeJuliaSet <- function(tree, pixelLength = 700, center = 0, maxZ = 2, col = c("white", colorRampPalette(c("dodgerblue4", "lightblue"))(98) , "black")) {
-  parBackup <- par()
+  oldpar <- par(no.readonly =TRUE)
+  on.exit(par(oldpar))
 
   par(mar = c(1,1,1,1))
 
@@ -30,6 +31,4 @@ treeJuliaSet <- function(tree, pixelLength = 700, center = 0, maxZ = 2, col = c(
   res <- juliaSet(coeffs = coeff, pixelLength = pixelLength, center = center, maxZ = maxZ)
 
   graphics::image(z = log(res), axes = FALSE, asp = 1, col = col, useRaster = TRUE)
-
-  par <- parBackup
 }

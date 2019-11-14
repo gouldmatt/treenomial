@@ -29,7 +29,6 @@ For binary trees (m = 2), the number of trees at each number of tips follows the
 only m = 2 is currently supported
 }
 \examples{
-\donttest{
 library(treenomial)
 library(ape)
 
@@ -37,14 +36,22 @@ library(ape)
 # unordered full binary trees up to 10 tips
 
 allBinTenRealCoeff <- allTrees(10, type = "phylo")
+
+# number of trees at each number of tips follows Wedderburn-Etherington numbers
 lengths(allBinTenRealCoeff)
 
 # phylo type example, plot all 6 tip unordered full binary trees
+
+# backup par options
+oldpar <- par(no.readonly =TRUE)
 
 allBinSixPhylo <- allTrees(6, type = "phylo")[[6]]
 par(mfrow=c(1,6))
 plots <- lapply(allBinSixPhylo, function(t){
   plot.phylo(ladderize(t), direction = "downwards", show.tip.label = FALSE)
 })
-}
+
+# restore par options
+par(oldpar)
+
 }

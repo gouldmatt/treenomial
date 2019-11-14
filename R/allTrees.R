@@ -15,7 +15,6 @@
 #' @note only m = 2 is currently supported
 #' @useDynLib treenomial
 #' @examples
-#' \donttest{
 #' library(treenomial)
 #' library(ape)
 #'
@@ -23,16 +22,24 @@
 #' # unordered full binary trees up to 10 tips
 #'
 #' allBinTenRealCoeff <- allTrees(10, type = "phylo")
+#'
+#' # number of trees at each number of tips follows Wedderburn-Etherington numbers
 #' lengths(allBinTenRealCoeff)
 #'
 #' # phylo type example, plot all 6 tip unordered full binary trees
+#'
+#' # backup par options
+#' oldpar <- par(no.readonly =TRUE)
 #'
 #' allBinSixPhylo <- allTrees(6, type = "phylo")[[6]]
 #' par(mfrow=c(1,6))
 #' plots <- lapply(allBinSixPhylo, function(t){
 #'   plot.phylo(ladderize(t), direction = "downwards", show.tip.label = FALSE)
 #' })
-#' }
+#'
+#' # restore par options
+#' par(oldpar)
+#'
 #' @export
 allTrees <- function(n, m = 2, type = "real") {
   # wadNum <- c(1,1,1,2,3,6, 11, 23, 46, 98, 207, 451,

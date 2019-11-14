@@ -51,7 +51,6 @@ It's polynomial is x^3+xy+y which can equivalently be described with a coefficie
 
 ```{r coeffMat}
 treeToPoly(threeTipTree)
-
 ```
 
 

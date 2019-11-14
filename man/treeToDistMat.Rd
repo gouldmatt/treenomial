@@ -40,11 +40,11 @@ Calculates the distance matrix from a list of phylo objects
 }
 }
 \examples{
-\donttest{
+
 library(treenomial)
 library(ape)
 # distance matrix for 10 trees of 30 tips
-treeToDistMat(rmtree(10,30),method = "wLogDiff")
-}
+treeToDistMat(rmtree(10,30),method = "wLogDiff", numThreads = 0)
+
 
 }

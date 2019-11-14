@@ -1,7 +1,11 @@
 ## Resubmission
 This is a resubmission with the following changes: 
 
-* Limit the maximum threads used in tests and examples to be never greater than two. 
+* expanded the package description field to be one paragraph 
+
+* changed the two plot functions to ensure that user options in par() are not changed 
+
+* updated and unwraped more examples from \donttest{ } blocks 
 
 ## Test environments
 * local OS X Mojave install, R 3.6.1

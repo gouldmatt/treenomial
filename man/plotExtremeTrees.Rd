@@ -46,11 +46,11 @@ Plot the min/max distance trees from a target tree
 }
 }
 \examples{
-\donttest{
+
 library(treenomial)
 library(ape)
 trees <- c(rmtree(1000,50),rmtree(10,9))
 target <- rtree(50)
-minTrees <- plotExtremeTrees(target,trees,2, comparison = "min")
-}
+minTrees <- plotExtremeTrees(target,trees,2, comparison = "min", numThreads = 0)
+
 }

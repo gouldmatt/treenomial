@@ -15,7 +15,15 @@ Authors@R:
            family = "Colijn",
            role = "ctb")) 
 Maintainer: Matthew Gould <mgould@sfu.ca>
-Description: Tree analysis and comparison with polynomials that uniquely describe trees.
+Description: Provides functionality for creation and comparison of polynomials that uniquely
+  describe trees as introduced in Liu (2019) <arXiv:1904.03332>. The core method
+  converts rooted unlabeled phylo objects from ‘ape’ to the tree defining polynomials 
+  described with coefficient matrices. Additionally, a conversion for rooted binary trees 
+  with binary trait labels is also provided. Once the polynomials of trees are calculated 
+  there are functions to calculate distances, distance matrices and plot different distance 
+  trees from a target tree. Manipulation and conversion to the tree defining polynomials is 
+  implemented in C++ with 'Rcpp' and ‘RcppArmadillo’. Furthermore, parallel programming with 
+  ‘RcppThread’ is used to improve performance converting to polynomials and calculating distances. 
 Depends: R (>= 3.5.0)
 License: GPL (>= 2)
 URL: https://github.com/mattgou1d/treenomial

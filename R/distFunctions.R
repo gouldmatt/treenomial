@@ -11,7 +11,7 @@
 #'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 #' }
 #' @examples
-#' \donttest{
+#'
 #' library(treenomial)
 #' library(ape)
 #'
@@ -19,14 +19,14 @@
 #' # and 100 trees with 30 tips using
 #' # create the coefficient matrices
 #' tenTipTree <- rtree(10)
-#' tenTipTreeCoeff <- treeToPoly(tenTipTree)
+#' tenTipTreeCoeff <- treeToPoly(tenTipTree, numThreads = 0)
 #'
 #' thirtyTipList <- rmtree(100,30)
-#' thirtyTipCoeffs <- treeToPoly(thirtyTipList)
+#' thirtyTipCoeffs <- treeToPoly(thirtyTipList, numThreads = 0)
 #'
 #' # find the distance
-#' polyDist(tenTipTreeCoeff,thirtyTipCoeffs)
-#' }
+#' polyDist(tenTipTreeCoeff,thirtyTipCoeffs, numThreads = 0)
+#'
 #'
 #' @export
 polyDist <- function(x, Y, method = "logDiff", numThreads = -1){
@@ -79,7 +79,7 @@ polyDist <- function(x, Y, method = "logDiff", numThreads = -1){
 #'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 #' }
 #' @examples
-#' \donttest{
+#'
 #' library(treenomial)
 #' library(ape)
 #'
@@ -90,8 +90,8 @@ polyDist <- function(x, Y, method = "logDiff", numThreads = -1){
 #' thirtyTipList <- rmtree(100,30)
 #'
 #' # find the distance
-#' treeDist(tenTipTree,thirtyTipList)
-#' }
+#' treeDist(tenTipTree,thirtyTipList, numThreads = 0)
+#'
 #'
 #' @export
 treeDist <- function(x, Y, type = "real", method = "logDiff", numThreads = -1){
@@ -132,19 +132,19 @@ treeDist <- function(x, Y, type = "real", method = "logDiff", numThreads = -1){
 #' }
 #' @param numThreads number of threads to be used, the default (-1) will use the number of cores in the machine and numThreads = 0 will only use the main thread
 #' @examples
-#' \donttest{
+#'
 #' library(treenomial)
 #' library(ape)
 #'
 #' # coefficient matrices for ten trees of 20 tips
-#' coeffs <- treeToPoly(rmtree(10,20))
+#' coeffs <- treeToPoly(rmtree(10,20), numThreads = 0)
 #'
 #' # distance matrix from the list of coefficient matrices
-#' d <- polyToDistMat(coeffs, method = "logDiff")
+#' d <- polyToDistMat(coeffs, method = "logDiff", numThreads = 0)
 #'
 #' # using the absence-presence method
-#' d <- polyToDistMat(coeffs, method = "ap")
-#' }
+#' d <- polyToDistMat(coeffs, method = "ap", numThreads = 0)
+#'
 #'
 #' @export
 polyToDistMat <- function(coefficientMatrices, method = "logDiff", numThreads = -1) {
@@ -198,12 +198,12 @@ polyToDistMat <- function(coefficientMatrices, method = "logDiff", numThreads = 
 #' }
 #' @export
 #' @examples
-#' \donttest{
+#'
 #' library(treenomial)
 #' library(ape)
 #' # distance matrix for 10 trees of 30 tips
-#' treeToDistMat(rmtree(10,30),method = "wLogDiff")
-#' }
+#' treeToDistMat(rmtree(10,30),method = "wLogDiff", numThreads = 0)
+#'
 #'
 #' @export
 treeToDistMat <- function(trees, method = "logDiff", type = "real", numThreads = -1) {
@@ -223,13 +223,13 @@ treeToDistMat <- function(trees, method = "logDiff", type = "real", numThreads =
 #'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 #' }
 #' @examples
-#' \donttest{
+#'
 #' library(treenomial)
 #' library(ape)
 #' trees <- c(rmtree(1000,50),rmtree(10,9))
 #' target <- rtree(50)
-#' minTrees <- plotExtremeTrees(target,trees,2, comparison = "min")
-#' }
+#' minTrees <- plotExtremeTrees(target,trees,2, comparison = "min", numThreads = 0)
+#'
 #' @export
 plotExtremeTrees <- function(target, trees, n, comparison = "min", method = "logDiff", type = "real", numThreads = -1) {
 
@@ -241,7 +241,8 @@ plotExtremeTrees <- function(target, trees, n, comparison = "min", method = "log
     trees <- list(trees)
   }
 
-  parBackup <- par()
+  oldpar <- par(no.readonly =TRUE)
+  on.exit(par(oldpar))
 
   distances <- treeDist(target, trees, type = type, method = method, numThreads = numThreads)
 
@@ -274,8 +275,6 @@ plotExtremeTrees <- function(target, trees, n, comparison = "min", method = "log
       minList[[i]] <- list(tree = minTree, distance = distances[[orderMin[i]]])
     }
 
-    par <- parBackup
-
     return(minList)
 
   } else if(comparison == "max"){
@@ -296,12 +295,9 @@ plotExtremeTrees <- function(target, trees, n, comparison = "min", method = "log
       maxList[[i]] <- list(tree = maxTree, distance = distances[[orderMax[i]]])
     }
 
-    par <- parBackup
-
     return(maxList)
 
   } else {
-    par <- parBackup
     stop("invalid comparison")
   }
 

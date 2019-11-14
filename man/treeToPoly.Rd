@@ -30,7 +30,6 @@ the resulting coefficient matrix or matrices of the form:
 Converts rooted full binary trees to tree distinguishing polynomials described with coefficient matrices.
 }
 \examples{
-\donttest{
 library(treenomial)
 library(ape)
 
@@ -38,13 +37,12 @@ library(ape)
 tree <- rtree(n = 30, rooted = TRUE)
 
 # a real coefficient matrix
-treeToPoly(tree)
+treeToPoly(tree, numThreads = 0)
 
 # complex coefficient vector for the tree
-treeToPoly(tree, type = "complex")
+treeToPoly(tree, type = "complex", numThreads = 0)
 
 # for a list of trees
-treeToPoly(rmtree(10, 30))
-}
+treeToPoly(rmtree(10, 30), numThreads = 0)
 
 }

@@ -15,13 +15,21 @@ the aligned list of coefficient matrices
 \description{
 Align various types of coefficient matrices
 }
+\details{
+Alignment depends on the type of matrix:
+\describe{
+  \item{\dQuote{real}}{the smaller matrices columns are prepended with zero columns to align with the max number of columns and the rows are appended with zero rows to match the max number of rows}
+  \item{\dQuote{complex}}{the smaller vectors are appended with zeroes to match the max length vector}
+  \item{\dQuote{tipLabel}}{the smaller matrices are appended with zeroes to match the max number of rows and columns}
+}
+}
 \examples{
-\donttest{
+
 library(treenomial)
 library(ape)
 differentSizeTrees <- c(rtree(2), rmtree(10,10))
-coeffs <- treeToPoly(differentSizeTrees)
+coeffs <- treeToPoly(differentSizeTrees, numThreads = 0)
 alignedCoeffs <- alignPoly(coeffs)
-}
+
 
 }

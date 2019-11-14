@@ -20,7 +20,6 @@
 #' @useDynLib treenomial
 #' @importFrom Rcpp sourceCpp
 #' @examples
-#' \donttest{
 #' library(treenomial)
 #' library(ape)
 #'
@@ -28,14 +27,13 @@
 #' tree <- rtree(n = 30, rooted = TRUE)
 #'
 #' # a real coefficient matrix
-#' treeToPoly(tree)
+#' treeToPoly(tree, numThreads = 0)
 #'
 #' # complex coefficient vector for the tree
-#' treeToPoly(tree, type = "complex")
+#' treeToPoly(tree, type = "complex", numThreads = 0)
 #'
 #' # for a list of trees
-#' treeToPoly(rmtree(10, 30))
-#' }
+#' treeToPoly(rmtree(10, 30), numThreads = 0)
 #'
 #' @export
 treeToPoly <- function(trees, type = "real", numThreads = -1) {
@@ -149,14 +147,21 @@ treeToPoly <- function(trees, type = "real", numThreads = -1) {
 #' @return the aligned list of coefficient matrices
 #' @useDynLib treenomial
 #' @importFrom Rcpp sourceCpp
+#' @details
+#' Alignment depends on the type of matrix:
+#' \describe{
+#'   \item{\dQuote{real}}{the smaller matrices columns are prepended with zero columns to align with the max number of columns and the rows are appended with zero rows to match the max number of rows}
+#'   \item{\dQuote{complex}}{the smaller vectors are appended with zeroes to match the max length vector}
+#'   \item{\dQuote{tipLabel}}{the smaller matrices are appended with zeroes to match the max number of rows and columns}
+#' }
 #' @examples
-#' \donttest{
+#'
 #' library(treenomial)
 #' library(ape)
 #' differentSizeTrees <- c(rtree(2), rmtree(10,10))
-#' coeffs <- treeToPoly(differentSizeTrees)
+#' coeffs <- treeToPoly(differentSizeTrees, numThreads = 0)
 #' alignedCoeffs <- alignPoly(coeffs)
-#' }
+#'
 #'
 #' @export
 alignPoly <- function(coefficientMatrices){

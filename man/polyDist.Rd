@@ -34,7 +34,7 @@ Calculates the distance between two coefficient matrices or a coefficient matrix
 }
 }
 \examples{
-\donttest{
+
 library(treenomial)
 library(ape)
 
@@ -42,13 +42,13 @@ library(ape)
 # and 100 trees with 30 tips using
 # create the coefficient matrices
 tenTipTree <- rtree(10)
-tenTipTreeCoeff <- treeToPoly(tenTipTree)
+tenTipTreeCoeff <- treeToPoly(tenTipTree, numThreads = 0)
 
 thirtyTipList <- rmtree(100,30)
-thirtyTipCoeffs <- treeToPoly(thirtyTipList)
+thirtyTipCoeffs <- treeToPoly(thirtyTipList, numThreads = 0)
 
 # find the distance
-polyDist(tenTipTreeCoeff,thirtyTipCoeffs)
-}
+polyDist(tenTipTreeCoeff,thirtyTipCoeffs, numThreads = 0)
+
 
 }

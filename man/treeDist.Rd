@@ -41,7 +41,7 @@ Calculates the distance between two trees or a tree and a list of trees.
 }
 }
 \examples{
-\donttest{
+
 library(treenomial)
 library(ape)
 
@@ -52,7 +52,7 @@ tenTipTree <- rtree(10)
 thirtyTipList <- rmtree(100,30)
 
 # find the distance
-treeDist(tenTipTree,thirtyTipList)
-}
+treeDist(tenTipTree,thirtyTipList, numThreads = 0)
+
 
 }

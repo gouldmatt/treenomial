@@ -59,7 +59,7 @@ test_that("test different size trees to complex polynomials", {
 test_that("test different size trees with binary trait labels", {
 
   largerTree <- rtree(30)
-  largerTree$tip.label <- sample(c("t1","t2"),size = 30 , replace = T)
+  largerTree$tip.label <- sample(c("t1","t2"),size = 30 , replace = TRUE)
 
   smallerTree <- rtree(2)
 
@@ -76,7 +76,7 @@ test_that("test different size trees with binary trait labels", {
   largerTrees <- rmtree(10,10)
 
   largerTrees <- lapply(largerTrees, function(i){
-    i$tip.label <- sample(c("t1","t2"),size = 10 , replace = T)
+    i$tip.label <- sample(c("t1","t2"),size = 10 , replace = TRUE)
     return(i)
   })
 
@@ -95,14 +95,14 @@ test_that("test different size trees with binary trait labels", {
   largerTrees <- rmtree(10,10)
 
   largerTrees <- lapply(largerTrees, function(i){
-    i$tip.label <- sample(c("t1","t2"),size = 10 , replace = T)
+    i$tip.label <- sample(c("t1","t2"),size = 10 , replace = TRUE)
     return(i)
   })
 
   smallerTrees <- rmtree(50,5)
 
   smallerTrees <- lapply(smallerTrees, function(i){
-    i$tip.label <- sample(c("t1","t2"),size = 5, replace = T)
+    i$tip.label <- sample(c("t1","t2"),size = 5, replace = TRUE)
     return(i)
   })
 
