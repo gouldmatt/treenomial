@@ -4,7 +4,7 @@
 \alias{polyDist}
 \title{Calculates the distance between coefficient matrices}
 \usage{
-polyDist(x, Y, method = "logDiff", numThreads = -1)
+polyDist(x, Y, method = c("logDiff", "wLogDiff", "pa", "ap"), numThreads = -1)
 }
 \arguments{
 \item{x}{single coefficient matrix to find distances to}
@@ -29,7 +29,7 @@ Calculates the distance between two coefficient matrices or a coefficient matrix
 }
 \note{
 \itemize{
-  \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+  \item the substituted y coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 }
 }
@@ -44,11 +44,9 @@ library(ape)
 tenTipTree <- rtree(10)
 tenTipTreeCoeff <- treeToPoly(tenTipTree, numThreads = 0)
 
-thirtyTipList <- rmtree(100,30)
+thirtyTipList <- rmtree(100, 30)
 thirtyTipCoeffs <- treeToPoly(thirtyTipList, numThreads = 0)
 
 # find the distance
-polyDist(tenTipTreeCoeff,thirtyTipCoeffs, numThreads = 0)
-
-
+polyDist(tenTipTreeCoeff, thirtyTipCoeffs, numThreads = 0)
 }

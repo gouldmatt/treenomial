@@ -21,7 +21,7 @@ test_that("ensure that number of trees from allTrees match Wedderburn-Etheringto
   expect_equal(wadNum,lengths(allTrees))
 
   # check complex version
-  allTrees <- allTrees(13, type = "complex")
+  allTrees <- allTrees(13, type = "yEvaluated", y = 1+1i)
   allTrees <- unique(allTrees)
   expect_equal(wadNum,lengths(allTrees))
 
@@ -46,7 +46,7 @@ test_that("test different size trees to real polynomials", {
 test_that("test different size trees to complex polynomials", {
   differentSizeTrees <- c(rtree(2), rmtree(10,10))
 
-  coeffs <- treeToPoly(differentSizeTrees, type = "complex", numThreads = 0)
+  coeffs <- treeToPoly(differentSizeTrees, type = "yEvaluated", y = 1+1i, numThreads = 0)
   coeffs <- alignPoly(coeffs)
 
   firstDims <- dim(coeffs[[1]])

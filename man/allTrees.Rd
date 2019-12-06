@@ -4,7 +4,7 @@
 \alias{allTrees}
 \title{Calculate all full unordered m-ary trees up to n tips}
 \usage{
-allTrees(n, m = 2, type = "real")
+allTrees(n, m = 2, type = c("default", "yEvaluated", "phylo"), y)
 }
 \arguments{
 \item{n}{max number of tips}
@@ -13,16 +13,18 @@ allTrees(n, m = 2, type = "real")
 
 \item{type}{one of:
 \describe{
-  \item{\dQuote{real}}{real coefficient polynomials}
-  \item{\dQuote{complex}}{complex coefficient polynomials (real polynomials with y = 1 + i)}
+  \item{\dQuote{real}}{tree distiguishing polynomials in two variables x (columns) and y (rows)}
+  \item{\dQuote{yEvaluated}}{tree distiguishing polynomials with y evaluated at a specified argument}
   \item{\dQuote{phylo}}{phylo objects}
 }}
+
+\item{y}{the y value to evaluate the polynomial at when type is \dQuote{yEvaluated}, ignored otherwise}
 }
 \value{
 list of lists containing all the trees in \strong{type} format for each number of tips
 }
 \description{
-Return real coefficient matrices, complex coefficient vectors, or phylo objects for all possible unordered full m-ary trees up to n tips.
+Return normal coefficient matrices, substituted y coefficient vectors, or phylo objects for all possible unordered full m-ary trees up to n tips.
 For binary trees (m = 2), the number of trees at each number of tips follows the \href{https://oeis.org/A001190}{Wedderburn-Etherington numbers}.
 }
 \note{

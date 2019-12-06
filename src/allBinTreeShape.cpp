@@ -155,7 +155,7 @@ Rcpp::List allBinaryTreeShapesPhylo(int numTips){
 }
 
 // [[Rcpp::export]]
-Rcpp::List allBinaryTreeShapesComplex(int numTips){
+Rcpp::List allBinaryTreeShapesComplex(int numTips, arma::cx_double y){
   int currTips = 2;
   int treeCount = 1;
   uword lengthA = 0;
@@ -187,12 +187,12 @@ Rcpp::List allBinaryTreeShapesComplex(int numTips){
               if(i == j){
                 if(k >= l){
                   treeCount ++;
-                  nTipsTrees[currTips-1].push_back(wedgeConv( nTipsTrees[i-1][k-1], nTipsTrees[j-1][l-1]));
+                  nTipsTrees[currTips-1].push_back(wedgeConv( nTipsTrees[i-1][k-1], nTipsTrees[j-1][l-1],y));
                 }
               } else {
 
                 treeCount ++;
-                nTipsTrees[currTips-1].push_back(wedgeConv( nTipsTrees[i-1][k-1], nTipsTrees[j-1][l-1]));
+                nTipsTrees[currTips-1].push_back(wedgeConv( nTipsTrees[i-1][k-1], nTipsTrees[j-1][l-1],y));
               }
             }
           }

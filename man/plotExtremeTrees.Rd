@@ -4,8 +4,16 @@
 \alias{plotExtremeTrees}
 \title{Plot the min/max distance trees from a target tree}
 \usage{
-plotExtremeTrees(target, trees, n, comparison = "min",
-  method = "logDiff", type = "real", numThreads = -1)
+plotExtremeTrees(
+  target,
+  trees,
+  n,
+  comparison = "min",
+  method = c("logDiff", "wLogDiff", "pa", "ap"),
+  type = c("default", "yEvaluated", "tipLabel"),
+  y,
+  numThreads = -1
+)
 }
 \arguments{
 \item{target}{the phylo object of the tree to calculate the distances to}
@@ -26,10 +34,12 @@ plotExtremeTrees(target, trees, n, comparison = "min",
 
 \item{type}{one of:
 \describe{
-  \item{\dQuote{real}}{real coefficient polynomials}
-  \item{\dQuote{complex}}{complex coefficient polynomials (real polynomials with y = 1 + i)}
+  \item{\dQuote{real}}{tree distinguishing polynomials in two variables x (columns) and y (rows)}
+  \item{\dQuote{yEvaluated}}{tree distinguishing polynomials with y evaluated at a specified argument}
   \item{\dQuote{tipLabel}}{complex coefficient polynomial that utilize binary trait tip labels on the phylo objects}
 }}
+
+\item{y}{the y value to evaluate the polynomial at when type is \dQuote{yEvaluated}, ignored otherwise}
 
 \item{numThreads}{number of threads to be used, the default (-1) will use the number of cores in the machine and numThreads = 0 will only use the main thread}
 }
@@ -41,7 +51,7 @@ Plot the min/max distance trees from a target tree
 }
 \note{
 \itemize{
-  \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+  \item the substituted y coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 }
 }
@@ -49,8 +59,7 @@ Plot the min/max distance trees from a target tree
 
 library(treenomial)
 library(ape)
-trees <- c(rmtree(1000,50),rmtree(10,9))
+trees <- c(rmtree(1000, 50), rmtree(10, 9))
 target <- rtree(50)
-minTrees <- plotExtremeTrees(target,trees,2, comparison = "min", numThreads = 0)
-
+minTrees <- plotExtremeTrees(target, trees, 2, comparison = "min", numThreads = 0)
 }

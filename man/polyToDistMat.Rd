@@ -4,7 +4,11 @@
 \alias{polyToDistMat}
 \title{Calculates the distance matrix from a list coefficient matrices}
 \usage{
-polyToDistMat(coefficientMatrices, method = "logDiff", numThreads = -1)
+polyToDistMat(
+  coefficientMatrices,
+  method = c("logDiff", "wLogDiff", "pa", "ap"),
+  numThreads = -1
+)
 }
 \arguments{
 \item{coefficientMatrices}{list of coefficient matrices}
@@ -27,7 +31,7 @@ Calculates the distance matrix from a list coefficient matrices
 }
 \note{
 \itemize{
-  \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+  \item the substituted y coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 }
 }
@@ -37,13 +41,11 @@ library(treenomial)
 library(ape)
 
 # coefficient matrices for ten trees of 20 tips
-coeffs <- treeToPoly(rmtree(10,20), numThreads = 0)
+coeffs <- treeToPoly(rmtree(10, 20), numThreads = 0)
 
 # distance matrix from the list of coefficient matrices
 d <- polyToDistMat(coeffs, method = "logDiff", numThreads = 0)
 
 # using the absence-presence method
 d <- polyToDistMat(coeffs, method = "ap", numThreads = 0)
-
-
 }

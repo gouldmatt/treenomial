@@ -4,9 +4,15 @@
 \alias{treeJuliaSet}
 \title{Plots a Julia Set for a tree}
 \usage{
-treeJuliaSet(tree, pixelLength = 700, center = 0, maxZ = 2,
-  col = c("white", colorRampPalette(c("dodgerblue4", "lightblue"))(98),
-  "black"))
+treeJuliaSet(
+  tree,
+  pixelLength = 700,
+  center = 0,
+  maxZ = 2,
+  maxIter = 100,
+  col = c("white", colorRampPalette(c("dodgerblue4", "lightblue"))(98), "black"),
+  y
+)
 }
 \arguments{
 \item{tree}{phylo object}
@@ -17,17 +23,19 @@ treeJuliaSet(tree, pixelLength = 700, center = 0, maxZ = 2,
 
 \item{maxZ}{the max value for the real and imaginary axis}
 
+\item{maxIter}{maximum count for iterations}
+
 \item{col}{colours to be used for the image}
+
+\item{y}{the y value to evaluate the polynomial at}
 }
 \description{
-Finds the Julia Set for the complex polynomial of a tree and plots in a square image.
+Finds the Julia Set for the y evaluated polynomial of a tree and plots in a square image.
 }
 \examples{
 
-\donttest{
 library(treenomial)
 library(ape)
-treeJuliaSet(stree(5,type = "right"))
-}
+treeJuliaSet(stree(5,type = "right"), y = 1+1i)
 
 }

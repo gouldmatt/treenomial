@@ -19,9 +19,9 @@ arma::mat wedgeExport( const arma::mat& A,  const arma::mat& B){
 }
 
 // [[Rcpp::export]]
-arma::cx_rowvec wedgeExportConv(arma::cx_rowvec A, arma::cx_rowvec B){
+arma::cx_rowvec wedgeExportConv(arma::cx_rowvec A, arma::cx_rowvec B, arma::cx_double y){
 
-  cx_rowvec res = wedgeConv(A,B);
+  cx_rowvec res = wedgeConv(A,B,y);
 
   return(res);
 }
@@ -33,7 +33,7 @@ Rcpp::List alignCoeffs(Rcpp::List &coeffs,std::string type){
   uword maxSizeR = 0;
   uword maxSizeC = 0;
 
-  if(type == "real"){
+  if(type == "default"){
 
     /*
      *  find max row/col present, resize smaller matrices and then
@@ -64,10 +64,10 @@ Rcpp::List alignCoeffs(Rcpp::List &coeffs,std::string type){
       }
     }
 
-  } else if(type == "complex"){
+  } else if(type == "yEvaluated"){
 
     /*
-     *  only consider max col for complex with resize and
+     *  only consider max col for vector with resize and
      *  shift for max x exponent term
      */
 
@@ -120,7 +120,7 @@ Rcpp::List alignCoeffs(Rcpp::List &coeffs,std::string type){
 }
 
 // [[Rcpp::export]]
-Rcpp::List coeffMatList(std::vector<std::vector<std::string>> wedgeOrders,std::string type, std::string tipLabA = " ", std::string tipLabB = " ", int nThreads = -1){
+Rcpp::List coeffMatList(std::vector<std::vector<std::string>> wedgeOrders,std::string type, arma::cx_double y, std::string tipLabA = " ", std::string tipLabB = " ", int nThreads = -1){
   int numCoeffs = wedgeOrders.size();
 
   size_t numThreads = std::thread::hardware_concurrency();
@@ -130,7 +130,7 @@ Rcpp::List coeffMatList(std::vector<std::vector<std::string>> wedgeOrders,std::s
 
   Rcpp::List output(numCoeffs);
 
-    if(type == "real"){
+    if(type == "default"){
       arma::field<arma::mat> coeffs(numCoeffs);
 
       RcppThread::parallelFor(0, numCoeffs, [&coeffs, &wedgeOrders] (unsigned int i) {
@@ -138,11 +138,11 @@ Rcpp::List coeffMatList(std::vector<std::vector<std::string>> wedgeOrders,std::s
       },numThreads,0);
 
       output = Rcpp::wrap(coeffs);
-    } else if(type == "complex"){
+    } else if(type == "yEvaluated"){
       arma::field<arma::cx_rowvec> coeffs(numCoeffs);
 
-      RcppThread::parallelFor(0, numCoeffs, [&coeffs, &wedgeOrders] (unsigned int i) {
-        coeffs[i] = coeffMatrixComplex(wedgeOrders[i]);
+      RcppThread::parallelFor(0, numCoeffs, [&coeffs, &wedgeOrders, &y] (unsigned int i) {
+        coeffs[i] = coeffMatrixComplex(wedgeOrders[i],y);
       },numThreads,0);
 
       output = Rcpp::wrap(coeffs);

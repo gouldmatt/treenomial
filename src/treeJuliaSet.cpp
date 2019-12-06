@@ -4,7 +4,7 @@
 using namespace arma;
 
 
-int escapeTime(std::complex<double> z, std::vector<std::complex <double>> C) {
+int escapeTime(std::complex<double> z, std::vector<std::complex <double>> C, int maxIter) {
   int i = 1;
   double sum = 0;
   std::complex<double> temp (0,0);
@@ -14,7 +14,7 @@ int escapeTime(std::complex<double> z, std::vector<std::complex <double>> C) {
     sum += abs(C[k]);
   }
 
-  while(i < 100){
+  while(i < maxIter){
     i ++;
 
     temp =  std::complex<double> (0,0);
@@ -34,7 +34,7 @@ int escapeTime(std::complex<double> z, std::vector<std::complex <double>> C) {
 }
 
 // [[Rcpp::export]]
-arma::mat juliaSet(std::vector<std::complex < double> > coeffs, int pixelLength, std::complex<double> center, double maxZ){
+arma::mat juliaSet(std::vector<std::complex < double> > coeffs, int pixelLength, std::complex<double> center, double maxZ, int maxIter){
 
   double inc = (2*maxZ)/pixelLength;
 
@@ -52,7 +52,7 @@ arma::mat juliaSet(std::vector<std::complex < double> > coeffs, int pixelLength,
 
      z = re + im*(std::complex<double>(0,1));
 
-     res(i,j) = escapeTime(z,coeffs);
+     res(i,j) = escapeTime(z,coeffs,maxIter);
 
      im -= inc;
     }

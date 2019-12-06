@@ -4,17 +4,26 @@
 \alias{wedge}
 \title{Performs the wedge operation}
 \usage{
-wedge(A, B)
+wedge(A, B, type = c("default", "yEvaluated", "phylo"), y)
 }
 \arguments{
 \item{A, B}{two real coefficient matrices, complex coefficient vectors or phylo objects}
+
+\item{type}{one of:
+\describe{
+  \item{\dQuote{real}}{tree distinguishing polynomials in two variables x (columns) and y (rows)}
+  \item{\dQuote{yEvaluated}}{tree distinguishing polynomials with y evaluated at a specified argument}
+  \item{\dQuote{tipLabel}}{complex coefficient polynomial that utilize binary trait tip labels on the phylo objects}
+}}
+
+\item{y}{the y value to evaluate the polynomial at when type is \dQuote{yEvaluated}, ignored otherwise}
 }
 \value{
 the wedge result in the same form as the arguments
 }
 \description{
 Calculates the result from the wedge operation on two real coefficient
-matrices, two complex coefficient vectors or two phylo objects.
+matrices, two y evaluated polynomial coefficient vectors or two phylo objects.
 }
 \examples{
 
@@ -29,6 +38,6 @@ wedge(leaf, leaf)
 # wedge two complex coefficient vectors
 
 leaf <- as.complex(c(0,1))
-wedge(leaf, leaf)
+wedge(leaf, leaf, "yEvaluated",5)
 
 }

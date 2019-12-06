@@ -29,13 +29,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // allBinaryTreeShapesComplex
-Rcpp::List allBinaryTreeShapesComplex(int numTips);
-RcppExport SEXP _treenomial_allBinaryTreeShapesComplex(SEXP numTipsSEXP) {
+Rcpp::List allBinaryTreeShapesComplex(int numTips, arma::cx_double y);
+RcppExport SEXP _treenomial_allBinaryTreeShapesComplex(SEXP numTipsSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type numTips(numTipsSEXP);
-    rcpp_result_gen = Rcpp::wrap(allBinaryTreeShapesComplex(numTips));
+    Rcpp::traits::input_parameter< arma::cx_double >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(allBinaryTreeShapesComplex(numTips, y));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -52,14 +53,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // wedgeExportConv
-arma::cx_rowvec wedgeExportConv(arma::cx_rowvec A, arma::cx_rowvec B);
-RcppExport SEXP _treenomial_wedgeExportConv(SEXP ASEXP, SEXP BSEXP) {
+arma::cx_rowvec wedgeExportConv(arma::cx_rowvec A, arma::cx_rowvec B, arma::cx_double y);
+RcppExport SEXP _treenomial_wedgeExportConv(SEXP ASEXP, SEXP BSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::cx_rowvec >::type A(ASEXP);
     Rcpp::traits::input_parameter< arma::cx_rowvec >::type B(BSEXP);
-    rcpp_result_gen = Rcpp::wrap(wedgeExportConv(A, B));
+    Rcpp::traits::input_parameter< arma::cx_double >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(wedgeExportConv(A, B, y));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -76,17 +78,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // coeffMatList
-Rcpp::List coeffMatList(std::vector<std::vector<std::string>> wedgeOrders, std::string type, std::string tipLabA, std::string tipLabB, int nThreads);
-RcppExport SEXP _treenomial_coeffMatList(SEXP wedgeOrdersSEXP, SEXP typeSEXP, SEXP tipLabASEXP, SEXP tipLabBSEXP, SEXP nThreadsSEXP) {
+Rcpp::List coeffMatList(std::vector<std::vector<std::string>> wedgeOrders, std::string type, arma::cx_double y, std::string tipLabA, std::string tipLabB, int nThreads);
+RcppExport SEXP _treenomial_coeffMatList(SEXP wedgeOrdersSEXP, SEXP typeSEXP, SEXP ySEXP, SEXP tipLabASEXP, SEXP tipLabBSEXP, SEXP nThreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::vector<std::vector<std::string>> >::type wedgeOrders(wedgeOrdersSEXP);
     Rcpp::traits::input_parameter< std::string >::type type(typeSEXP);
+    Rcpp::traits::input_parameter< arma::cx_double >::type y(ySEXP);
     Rcpp::traits::input_parameter< std::string >::type tipLabA(tipLabASEXP);
     Rcpp::traits::input_parameter< std::string >::type tipLabB(tipLabBSEXP);
     Rcpp::traits::input_parameter< int >::type nThreads(nThreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(coeffMatList(wedgeOrders, type, tipLabA, tipLabB, nThreads));
+    rcpp_result_gen = Rcpp::wrap(coeffMatList(wedgeOrders, type, y, tipLabA, tipLabB, nThreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -117,8 +120,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // juliaSet
-arma::mat juliaSet(std::vector<std::complex < double> > coeffs, int pixelLength, std::complex<double> center, double maxZ);
-RcppExport SEXP _treenomial_juliaSet(SEXP coeffsSEXP, SEXP pixelLengthSEXP, SEXP centerSEXP, SEXP maxZSEXP) {
+arma::mat juliaSet(std::vector<std::complex < double> > coeffs, int pixelLength, std::complex<double> center, double maxZ, int maxIter);
+RcppExport SEXP _treenomial_juliaSet(SEXP coeffsSEXP, SEXP pixelLengthSEXP, SEXP centerSEXP, SEXP maxZSEXP, SEXP maxIterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -126,7 +129,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type pixelLength(pixelLengthSEXP);
     Rcpp::traits::input_parameter< std::complex<double> >::type center(centerSEXP);
     Rcpp::traits::input_parameter< double >::type maxZ(maxZSEXP);
-    rcpp_result_gen = Rcpp::wrap(juliaSet(coeffs, pixelLength, center, maxZ));
+    Rcpp::traits::input_parameter< int >::type maxIter(maxIterSEXP);
+    rcpp_result_gen = Rcpp::wrap(juliaSet(coeffs, pixelLength, center, maxZ, maxIter));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -134,14 +138,14 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_treenomial_allBinaryTreeShapesReal", (DL_FUNC) &_treenomial_allBinaryTreeShapesReal, 1},
     {"_treenomial_allBinaryTreeShapesPhylo", (DL_FUNC) &_treenomial_allBinaryTreeShapesPhylo, 1},
-    {"_treenomial_allBinaryTreeShapesComplex", (DL_FUNC) &_treenomial_allBinaryTreeShapesComplex, 1},
+    {"_treenomial_allBinaryTreeShapesComplex", (DL_FUNC) &_treenomial_allBinaryTreeShapesComplex, 2},
     {"_treenomial_wedgeExport", (DL_FUNC) &_treenomial_wedgeExport, 2},
-    {"_treenomial_wedgeExportConv", (DL_FUNC) &_treenomial_wedgeExportConv, 2},
+    {"_treenomial_wedgeExportConv", (DL_FUNC) &_treenomial_wedgeExportConv, 3},
     {"_treenomial_alignCoeffs", (DL_FUNC) &_treenomial_alignCoeffs, 2},
-    {"_treenomial_coeffMatList", (DL_FUNC) &_treenomial_coeffMatList, 5},
+    {"_treenomial_coeffMatList", (DL_FUNC) &_treenomial_coeffMatList, 6},
     {"_treenomial_coeffDist", (DL_FUNC) &_treenomial_coeffDist, 3},
     {"_treenomial_coeffDistMat", (DL_FUNC) &_treenomial_coeffDistMat, 3},
-    {"_treenomial_juliaSet", (DL_FUNC) &_treenomial_juliaSet, 4},
+    {"_treenomial_juliaSet", (DL_FUNC) &_treenomial_juliaSet, 5},
     {NULL, NULL, 0}
 };
 

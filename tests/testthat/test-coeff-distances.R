@@ -32,7 +32,7 @@ test_that("test distance matrix of same trees is zero for each method", {
   tree <- list(rtree(10))
   identicalForest <- rep(tree,10)
 
-  distanceMatrix <- treeToDistMat(identicalForest, method = "logDiff", type = "complex", numThreads = 0)
+  distanceMatrix <- treeToDistMat(identicalForest, method = "logDiff", type = "yEvaluated", y=1+1i, numThreads = 0)
   expect_true(all(distanceMatrix == 0))
 
   distanceMatrix <- treeToDistMat(identicalForest, method = "logDiff", numThreads = 0)

@@ -7,7 +7,7 @@
 #' @inheritParams polyToDistMat
 #' @return vector of distances
 #' @note \itemize{
-#'   \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+#'   \item the substituted y coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
 #'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 #' }
 #' @examples
@@ -21,48 +21,41 @@
 #' tenTipTree <- rtree(10)
 #' tenTipTreeCoeff <- treeToPoly(tenTipTree, numThreads = 0)
 #'
-#' thirtyTipList <- rmtree(100,30)
+#' thirtyTipList <- rmtree(100, 30)
 #' thirtyTipCoeffs <- treeToPoly(thirtyTipList, numThreads = 0)
 #'
 #' # find the distance
-#' polyDist(tenTipTreeCoeff,thirtyTipCoeffs, numThreads = 0)
-#'
-#'
+#' polyDist(tenTipTreeCoeff, thirtyTipCoeffs, numThreads = 0)
 #' @export
-polyDist <- function(x, Y, method = "logDiff", numThreads = -1){
+polyDist <- function(x, Y, method = c("logDiff", "wLogDiff", "pa", "ap"), numThreads = -1) {
   # check input arguments
+  if (is(x, "list")) {
+    stop("argument x must not be a list")
+  }
 
-      if(class(x) == "list"){
-        stop("argument x must not be a list")
-      }
+  if (is(Y, "matrix")) {
+    Y <- list(Y)
+  }
 
-      if(class(Y) == "matrix"){
-        Y <- list(Y)
-      }
+  if (!missing(method) & length(method) > 1) stop("only one 'method' allowed")
+  method <- match.arg(method)
 
-      if(!(method %in% c("pa","ap","logDiff","wLogDiff"))){
-        stop("invalid method")
-      }
+  if(typeof(x) != typeof(Y[[1]])) stop("arguments x and Y must be of the same form")
 
-      if(typeof(x) == "double"){
-        coefficientMatrices <- alignCoeffs(c(list(x),Y), type = "real")
-        coeffDist(coefficientMatrices, method = method, nThreads = numThreads)
-
-      } else if(typeof(x) == "complex"){
-        if(dim(x)[[1]] == 1){
-          if(method != "logDiff") warning("only the logDiff method is available for the complex polynomial")
-          coefficientMatrices <- alignCoeffs(c(x,Y), type = "complex")
-          coeffDist( coefficientMatrices, method = "logDiffComplex", nThreads = numThreads)
-
-        } else {
-          if(method != "logDiff") warning("only the logDiff method is available for binary trait label polynomial")
-          coefficientMatrices <- alignCoeffs(c(x,Y), type = "binTipLabel")
-          coeffDist( coefficientMatrices, method = "tipLab", nThreads = numThreads)
-        }
-      } else {
-        stop("invalid input")
-      }
-
+  if (is(Y[[1]], "matrix") && typeof(Y[[1]]) == "double" && nrow(Y[[1]]) != 1) {
+    coefficientMatrices <- alignCoeffs(c(list(x), Y), type = "default")
+    coeffDist(coefficientMatrices, method = method, nThreads = numThreads)
+  } else if (is(Y[[1]], "matrix") && (nrow(Y[[1]]) == 1)) {
+    if (method != "logDiff") warning("only the logDiff method is available for this polynomial")
+    coefficientMatrices <- alignCoeffs(c(x, Y), type = "yEvaluated")
+    coeffDist(coefficientMatrices, method = "logDiffComplex", nThreads = numThreads)
+  } else if (is(Y[[1]], "matrix") && (typeof(Y[[1]]) == "complex")) {
+    if (method != "logDiff") warning("only the logDiff method is available for this polynomial")
+    coefficientMatrices <- alignCoeffs(c(x, Y), type = "tipLab")
+    coeffDist(coefficientMatrices, method = "tipLab", nThreads = numThreads)
+  } else {
+    stop("invalid input")
+  }
 }
 
 
@@ -75,7 +68,7 @@ polyDist <- function(x, Y, method = "logDiff", numThreads = -1){
 #' @inheritParams treeToDistMat
 #' @return vector of distances
 #' @note \itemize{
-#'   \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+#'   \item the substituted y coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
 #'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 #' }
 #' @examples
@@ -87,29 +80,33 @@ polyDist <- function(x, Y, method = "logDiff", numThreads = -1){
 #'
 #' # generate the trees
 #' tenTipTree <- rtree(10)
-#' thirtyTipList <- rmtree(100,30)
+#' thirtyTipList <- rmtree(100, 30)
 #'
 #' # find the distance
-#' treeDist(tenTipTree,thirtyTipList, numThreads = 0)
-#'
-#'
+#' treeDist(tenTipTree, thirtyTipList, numThreads = 0)
 #' @export
-treeDist <- function(x, Y, type = "real", method = "logDiff", numThreads = -1){
+treeDist <- function(x, Y, type = c("default","yEvaluated","tipLabel"), method = c("logDiff", "wLogDiff", "pa", "ap"), y, numThreads = -1) {
+  if (!missing(method) & length(method) > 1) stop("only one 'method' allowed")
+  method <- match.arg(method)
 
-  if(class(x) == "list"){
+  if (!missing(type) & length(type) > 1) stop("only one 'type' allowed")
+  type <- match.arg(type)
+
+  if (is(x, "list")) {
     stop("argument x must not be a list")
   }
 
-  if(class(Y) == "phylo"){
+  if (is(Y, "phylo")) {
     Y <- list(Y)
   }
 
-  coeffs <- treeToPoly(c(list(x),Y), type = type, numThreads = numThreads)
+  if(typeof(x) != typeof(Y[[1]])) stop("arguments x and Y must be of the same form")
+
+  coeffs <- treeToPoly(c(list(x), Y), type = type, y = y, numThreads = numThreads)
   coeffs <- alignPoly(coeffs)
 
-  if(!(method %in% c("pa","ap","logDiff","wLogDiff"))){
-    stop("invalid method")
-  }
+  if (!missing(method) & length(method) > 1) stop("only one 'method' allowed")
+  method <- match.arg(method)
 
   coeffDist(coeffs, method = method, nThreads = numThreads)
 }
@@ -127,7 +124,7 @@ treeDist <- function(x, Y, type = "real", method = "logDiff", numThreads = -1){
 #' }
 #' @return distance matrix calculated from argument coefficient matrices
 #' @note \itemize{
-#'   \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+#'   \item the substituted y coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
 #'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 #' }
 #' @param numThreads number of threads to be used, the default (-1) will use the number of cores in the machine and numThreads = 0 will only use the main thread
@@ -137,51 +134,40 @@ treeDist <- function(x, Y, type = "real", method = "logDiff", numThreads = -1){
 #' library(ape)
 #'
 #' # coefficient matrices for ten trees of 20 tips
-#' coeffs <- treeToPoly(rmtree(10,20), numThreads = 0)
+#' coeffs <- treeToPoly(rmtree(10, 20), numThreads = 0)
 #'
 #' # distance matrix from the list of coefficient matrices
 #' d <- polyToDistMat(coeffs, method = "logDiff", numThreads = 0)
 #'
 #' # using the absence-presence method
 #' d <- polyToDistMat(coeffs, method = "ap", numThreads = 0)
-#'
-#'
 #' @export
-polyToDistMat <- function(coefficientMatrices, method = "logDiff", numThreads = -1) {
+polyToDistMat <- function(coefficientMatrices, method = c("logDiff", "wLogDiff", "pa", "ap"), numThreads = -1) {
+  if (!missing(method) & length(method) > 1) stop("only one 'method' allowed")
+  method <- match.arg(method)
 
-  if(!(method %in% c("pa","ap","logDiff","wLogDiff"))){
-    stop("invalid method")
-  }
-
-  # check input arguments
-  if(class(coefficientMatrices) == "list"){
-    if(class(coefficientMatrices[[1]]) == "matrix"){
-      if(typeof(coefficientMatrices[[1]]) == "double"){
-        coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "real")
-        distMat <- coeffDistMat(coefficientMatrices, method = method, nThreads = numThreads)
-      } else if(typeof(coefficientMatrices[[1]]) == "complex"){
-        if(dim(coefficientMatrices[[1]])[[1]] == 1){
-          if(method != "logDiff") warning("only the logDiff method is available for the complex polynomial")
-          coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "complex")
-          distMat <- coeffDistMat(coefficientMatrices, method = "logDiffComplex", nThreads = numThreads)
-        } else {
-          if(method != "logDiff") warning("only the logDiff method is available for binary trait label polynomial")
-          coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "binTipLabel")
-          distMat <- coeffDistMat(coefficientMatrices, method = "tipLab", nThreads = numThreads)
-        }
-      } else {
-        stop("invalid input")
-      }
-
-    } else {
-      stop("input must be a list of coefficient matrices")
-    }
-
-  } else {
+  if(!is(coefficientMatrices, "list")){
     stop("input must be a list of coefficient matrices")
   }
 
-  # distMat <- new("dspMatrix", Dim = as.integer(c(numCoeffs,numCoeffs)), x = u, uplo = "U")
+  if(is(coefficientMatrices[[1]],"matrix") && typeof(coefficientMatrices[[1]]) == "double" && nrow(coefficientMatrices[[1]]) != 1){
+    coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "default")
+    distMat <- coeffDistMat(coefficientMatrices, method = method, nThreads = numThreads)
+
+  } else if(is(coefficientMatrices[[1]],"matrix") && (nrow(coefficientMatrices[[1]]) == 1)){
+    if (method != "logDiff") warning("only the logDiff method is available for this polynomial")
+    coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "yEvaluated")
+    distMat <- coeffDistMat(coefficientMatrices, method = "logDiffComplex", nThreads = numThreads)
+
+  } else if(is(coefficientMatrices[[1]],"matrix") && (typeof(coefficientMatrices[[1]]) == "complex")){
+    if (method != "logDiff") warning("only the logDiff method is available for this polynomial")
+    coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "tipLab")
+    distMat <- coeffDistMat(coefficientMatrices, method = "tipLab", nThreads = numThreads)
+
+  } else {
+    stop("invalid input")
+  }
+
   rownames(distMat) <- names(coefficientMatrices)
   colnames(distMat) <- names(coefficientMatrices)
 
@@ -193,7 +179,7 @@ polyToDistMat <- function(coefficientMatrices, method = "logDiff", numThreads = 
 #' @inheritParams treeToPoly
 #' @return a distance matrix
 #' @note \itemize{
-#'   \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+#'   \item the substituted y coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
 #'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 #' }
 #' @export
@@ -202,12 +188,16 @@ polyToDistMat <- function(coefficientMatrices, method = "logDiff", numThreads = 
 #' library(treenomial)
 #' library(ape)
 #' # distance matrix for 10 trees of 30 tips
-#' treeToDistMat(rmtree(10,30),method = "wLogDiff", numThreads = 0)
-#'
-#'
+#' treeToDistMat(rmtree(10, 30), method = "wLogDiff", numThreads = 0)
 #' @export
-treeToDistMat <- function(trees, method = "logDiff", type = "real", numThreads = -1) {
-  polyToDistMat(treeToPoly(trees, type = type, numThreads = numThreads), method = method, numThreads = numThreads)
+treeToDistMat <- function(trees, method = c("logDiff", "wLogDiff", "pa", "ap"), type = c("default","yEvaluated","tipLabel"), y, numThreads = -1) {
+  if (!missing(method) & length(method) > 1) stop("only one 'method' allowed")
+  method <- match.arg(method)
+
+  if (!missing(type) & length(type) > 1) stop("only one 'type' allowed")
+  type <- match.arg(type)
+
+  polyToDistMat(treeToPoly(trees, type = type, y = y, numThreads = numThreads), method = method, numThreads = numThreads)
 }
 
 #' Plot the min/max distance trees from a target tree
@@ -219,56 +209,59 @@ treeToDistMat <- function(trees, method = "logDiff", type = "real", numThreads =
 #' @return a list of lists containing the \strong{n} min/max distance trees and their distances to \strong{target}
 #' @inheritParams treeToDistMat
 #' @note \itemize{
-#'   \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+#'   \item the substituted y coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
 #'   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 #' }
 #' @examples
 #'
 #' library(treenomial)
 #' library(ape)
-#' trees <- c(rmtree(1000,50),rmtree(10,9))
+#' trees <- c(rmtree(1000, 50), rmtree(10, 9))
 #' target <- rtree(50)
-#' minTrees <- plotExtremeTrees(target,trees,2, comparison = "min", numThreads = 0)
-#'
+#' minTrees <- plotExtremeTrees(target, trees, 2, comparison = "min", numThreads = 0)
 #' @export
-plotExtremeTrees <- function(target, trees, n, comparison = "min", method = "logDiff", type = "real", numThreads = -1) {
+plotExtremeTrees <- function(target, trees, n, comparison = "min", method = c("logDiff", "wLogDiff", "pa", "ap"), type = c("default","yEvaluated","tipLabel"), y, numThreads = -1) {
+  if (!missing(method) & length(method) > 1) stop("only one 'method' allowed")
+  method <- match.arg(method)
 
-  if(class(target) == "list"){
+  if (!missing(type) & length(type) > 1) stop("only one 'type' allowed")
+  type <- match.arg(type)
+
+  if (is(target, "list")) {
     stop("argument target must not be a list")
   }
 
-  if(class(trees) == "phylo"){
+  if (is(trees, "phylo")) {
     trees <- list(trees)
   }
 
-  oldpar <- par(no.readonly =TRUE)
+  oldpar <- par(no.readonly = TRUE)
   on.exit(par(oldpar))
 
-  distances <- treeDist(target, trees, type = type, method = method, numThreads = numThreads)
+  distances <- treeDist(target, trees, type = type, method = method, y = y, numThreads = numThreads)
 
   # if greater then 16 trees break up over multiple pages
-  if(n < 15){
-    par(mfrow=c(ceiling(n/4),ifelse(ceiling(n/4) == 1,1+n,4)), oma=c(2,0,2,0))
+  if (n < 15) {
+    par(mfrow = c(ceiling(n / 4), ifelse(ceiling(n / 4) == 1, 1 + n, 4)), oma = c(2, 0, 2, 0))
   } else {
-    par(mfrow=c(4,4), oma=c(2,0,2,0))
+    par(mfrow = c(4, 4), oma = c(2, 0, 2, 0))
   }
 
-  target$edge.length <- rep(1,length(target$edge.length))
+  target$edge.length <- rep(1, length(target$edge.length))
 
   plot.phylo(ladderize(target), show.tip.label = FALSE, main = "Target:", use.edge.length = T)
 
-  if(comparison == "min"){
+  if (comparison == "min") {
     orderMin <- order(distances)
 
-    minList <- vector("list",n)
+    minList <- vector("list", n)
 
-    for(i in 1:n){
-
+    for (i in 1:n) {
       minTree <- trees[[orderMin[i]]]
-      minTree$edge.length <- rep(1,length(minTree$edge.length))
+      minTree$edge.length <- rep(1, length(minTree$edge.length))
 
       currName <- names(trees)[orderMin[i]]
-      minTitle <- ifelse(!is.null(currName),paste(currName, "tree distance: ",signif(distances[orderMin[i]],6)),paste("Distance: ",signif(distances[orderMin[i]],6)))
+      minTitle <- ifelse(!is.null(currName), paste(currName, "tree distance: ", signif(distances[orderMin[i]], 6)), paste("Distance: ", signif(distances[orderMin[i]], 6)))
 
       plot.phylo(ladderize(minTree), show.tip.label = FALSE, main = minTitle, use.edge.length = T)
 
@@ -276,19 +269,17 @@ plotExtremeTrees <- function(target, trees, n, comparison = "min", method = "log
     }
 
     return(minList)
-
-  } else if(comparison == "max"){
+  } else if (comparison == "max") {
     orderMax <- order(distances, decreasing = TRUE)
 
-    maxList <- vector("list",n)
+    maxList <- vector("list", n)
 
-    for(i in 1:n){
-
+    for (i in 1:n) {
       maxTree <- trees[[orderMax[i]]]
-      maxTree$edge.length <- rep(1,length(maxTree$edge.length))
+      maxTree$edge.length <- rep(1, length(maxTree$edge.length))
 
       currName <- names(trees)[orderMax[i]]
-      minTitle <- ifelse(!is.null(currName),paste(currName, "tree distance: ",signif(distances[orderMax[i]],6)),paste("Distance: ",signif(distances[orderMax[i]],6)))
+      minTitle <- ifelse(!is.null(currName), paste(currName, "tree distance: ", signif(distances[orderMax[i]], 6)), paste("Distance: ", signif(distances[orderMax[i]], 6)))
 
       plot.phylo(ladderize(maxTree), show.tip.label = FALSE, main = minTitle, use.edge.length = T)
 
@@ -296,9 +287,7 @@ plotExtremeTrees <- function(target, trees, n, comparison = "min", method = "log
     }
 
     return(maxList)
-
   } else {
     stop("invalid comparison")
   }
-
 }

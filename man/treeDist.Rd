@@ -4,7 +4,14 @@
 \alias{treeDist}
 \title{Calculates the distance between trees}
 \usage{
-treeDist(x, Y, type = "real", method = "logDiff", numThreads = -1)
+treeDist(
+  x,
+  Y,
+  type = c("default", "yEvaluated", "tipLabel"),
+  method = c("logDiff", "wLogDiff", "pa", "ap"),
+  y,
+  numThreads = -1
+)
 }
 \arguments{
 \item{x}{single phylo object}
@@ -13,8 +20,8 @@ treeDist(x, Y, type = "real", method = "logDiff", numThreads = -1)
 
 \item{type}{one of:
 \describe{
-  \item{\dQuote{real}}{real coefficient polynomials}
-  \item{\dQuote{complex}}{complex coefficient polynomials (real polynomials with y = 1 + i)}
+  \item{\dQuote{real}}{tree distinguishing polynomials in two variables x (columns) and y (rows)}
+  \item{\dQuote{yEvaluated}}{tree distinguishing polynomials with y evaluated at a specified argument}
   \item{\dQuote{tipLabel}}{complex coefficient polynomial that utilize binary trait tip labels on the phylo objects}
 }}
 
@@ -26,6 +33,8 @@ treeDist(x, Y, type = "real", method = "logDiff", numThreads = -1)
   \item{\dQuote{ap}}{opposite comparison of pa (absence-presence)}
 }}
 
+\item{y}{the y value to evaluate the polynomial at when type is \dQuote{yEvaluated}, ignored otherwise}
+
 \item{numThreads}{number of threads to be used, the default (-1) will use the number of cores in the machine and numThreads = 0 will only use the main thread}
 }
 \value{
@@ -36,7 +45,7 @@ Calculates the distance between two trees or a tree and a list of trees.
 }
 \note{
 \itemize{
-  \item the complex coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+  \item the substituted y coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 }
 }
@@ -49,10 +58,8 @@ library(ape)
 
 # generate the trees
 tenTipTree <- rtree(10)
-thirtyTipList <- rmtree(100,30)
+thirtyTipList <- rmtree(100, 30)
 
 # find the distance
-treeDist(tenTipTree,thirtyTipList, numThreads = 0)
-
-
+treeDist(tenTipTree, thirtyTipList, numThreads = 0)
 }

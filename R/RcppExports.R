@@ -9,24 +9,24 @@ allBinaryTreeShapesPhylo <- function(numTips) {
     .Call('_treenomial_allBinaryTreeShapesPhylo', PACKAGE = 'treenomial', numTips)
 }
 
-allBinaryTreeShapesComplex <- function(numTips) {
-    .Call('_treenomial_allBinaryTreeShapesComplex', PACKAGE = 'treenomial', numTips)
+allBinaryTreeShapesComplex <- function(numTips, y) {
+    .Call('_treenomial_allBinaryTreeShapesComplex', PACKAGE = 'treenomial', numTips, y)
 }
 
 wedgeExport <- function(A, B) {
     .Call('_treenomial_wedgeExport', PACKAGE = 'treenomial', A, B)
 }
 
-wedgeExportConv <- function(A, B) {
-    .Call('_treenomial_wedgeExportConv', PACKAGE = 'treenomial', A, B)
+wedgeExportConv <- function(A, B, y) {
+    .Call('_treenomial_wedgeExportConv', PACKAGE = 'treenomial', A, B, y)
 }
 
 alignCoeffs <- function(coeffs, type) {
     .Call('_treenomial_alignCoeffs', PACKAGE = 'treenomial', coeffs, type)
 }
 
-coeffMatList <- function(wedgeOrders, type, tipLabA = " ", tipLabB = " ", nThreads = -1L) {
-    .Call('_treenomial_coeffMatList', PACKAGE = 'treenomial', wedgeOrders, type, tipLabA, tipLabB, nThreads)
+coeffMatList <- function(wedgeOrders, type, y, tipLabA = " ", tipLabB = " ", nThreads = -1L) {
+    .Call('_treenomial_coeffMatList', PACKAGE = 'treenomial', wedgeOrders, type, y, tipLabA, tipLabB, nThreads)
 }
 
 coeffDist <- function(coeffsList, method, nThreads = -1L) {
@@ -37,7 +37,7 @@ coeffDistMat <- function(coeffsList, method, nThreads = -1L) {
     .Call('_treenomial_coeffDistMat', PACKAGE = 'treenomial', coeffsList, method, nThreads)
 }
 
-juliaSet <- function(coeffs, pixelLength, center, maxZ) {
-    .Call('_treenomial_juliaSet', PACKAGE = 'treenomial', coeffs, pixelLength, center, maxZ)
+juliaSet <- function(coeffs, pixelLength, center, maxZ, maxIter) {
+    .Call('_treenomial_juliaSet', PACKAGE = 'treenomial', coeffs, pixelLength, center, maxZ, maxIter)
 }
 
