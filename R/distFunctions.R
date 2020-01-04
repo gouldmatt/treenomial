@@ -47,7 +47,7 @@ polyDist <- function(x, Y, method = c("logDiff", "wLogDiff", "pa", "ap"), numThr
     coeffDist(coefficientMatrices, method = method, nThreads = numThreads)
   } else if (is(Y[[1]], "matrix") && (nrow(Y[[1]]) == 1)) {
     if (method != "logDiff") warning("only the logDiff method is available for this polynomial")
-    coefficientMatrices <- alignCoeffs(c(x, Y), type = "yEvaluated")
+    coefficientMatrices <- alignCoeffs(c(list(x), Y), type = "yEvaluated")
     coeffDist(coefficientMatrices, method = "logDiffComplex", nThreads = numThreads)
   } else if (is(Y[[1]], "matrix") && (typeof(Y[[1]]) == "complex")) {
     if (method != "logDiff") warning("only the logDiff method is available for this polynomial")
@@ -108,7 +108,13 @@ treeDist <- function(x, Y, type = c("default","yEvaluated","tipLabel"), method =
   if (!missing(method) & length(method) > 1) stop("only one 'method' allowed")
   method <- match.arg(method)
 
-  coeffDist(coeffs, method = method, nThreads = numThreads)
+  if(type == "default"){
+    coeffDist(coeffs, method = method, nThreads = numThreads)
+  } else if(type == "yEvaluated") {
+    coeffDist(coeffs, method = "logDiffComplex", nThreads = numThreads)
+  } else if(type == "tipLabel"){
+    coeffDist(coeffs, method = "tipLab", nThreads = numThreads)
+  }
 }
 
 #' Calculates the distance matrix from a list coefficient matrices

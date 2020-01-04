@@ -39,7 +39,7 @@
 #' treeToPoly(rmtree(4, 20), varLabels = TRUE, numThreads = 0)
 #'
 #' @export
-treeToPoly <- function(trees, type = c("default","yEvaluated","tipLabel"), y, varLabels = FALSE, numThreads = -1) {
+treeToPoly <- function(trees,type = c("default","yEvaluated","tipLabel"), y, varLabels = FALSE, numThreads = -1) {
 
   if(!missing(type) & length(type)>1) stop("only one 'type' allowed")
   type <- match.arg(type)
