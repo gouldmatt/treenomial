@@ -5,19 +5,12 @@
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
 
-There was 2 NOTEs:  
+There was 1 NOTE:  
     
 * checking installed package size ... NOTE
-    installed size is  5.9Mb
-    sub-directories of 1Mb or more:
-      libs   5.8Mb
-
-* checking for non-standard things in the check directory ... NOTE
-  Found the following files/directories:
-    'treenomial-Ex_i386.Rout' 'treenomial-Ex_x64.Rout'
-    'examples_i386' 'examples_x64' 'tests_i386' 'tests_x64'
-  
-These files/directories were created by R-hub.
+  installed size is  6.7Mb
+  sub-directories of 1Mb or more:
+    libs   6.6Mb
 
 ## Downstream dependencies
 There are currently no downstream dependencies for this package. 
