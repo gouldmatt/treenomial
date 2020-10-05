@@ -218,7 +218,7 @@ alignPoly <- function(coefficientMatrices){
     coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "default")
 
   } else if(is(coefficientMatrices[[1]],"matrix") && (nrow(coefficientMatrices[[1]]) == 1)){
-    coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "complex")
+    coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "yEvaluated")
 
   } else if(is(coefficientMatrices[[1]],"matrix") && (typeof(coefficientMatrices[[1]]) == "complex")){
     coefficientMatrices <- alignCoeffs(coefficientMatrices, type = "tipLabel")

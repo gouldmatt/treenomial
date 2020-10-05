@@ -8,6 +8,16 @@
 
 using namespace arma;
 
+double fraction(const mat coeffMatA, const mat coeffMatB) {
+
+  // mat zeroesLocation =
+  // mat res = (abs(coeffMatA - coeffMatB)/(coeffMatA+coeffMatB));
+  return(accu((abs(coeffMatA.elem(find(coeffMatA != 0 || coeffMatB != 0))
+                     - coeffMatB.elem(find(coeffMatA != 0 || coeffMatB != 0)))
+                 /(coeffMatA.elem(find(coeffMatA != 0 || coeffMatB != 0))+
+                 coeffMatB.elem(find(coeffMatA != 0 || coeffMatB != 0))))));
+}
+
 double logDiff(const mat coeffMatA, const mat coeffMatB) {
   return(accu(log(1+abs(coeffMatA - coeffMatB))));
 }
@@ -26,6 +36,13 @@ double wLogDiff(const mat coeffMatA, const mat coeffMatB) {
 
 double logDiffComplex(const cx_rowvec coeffMatA, const cx_rowvec coeffMatB) {
   return(accu(log(1+abs(coeffMatA - coeffMatB))));
+}
+
+double fractionComplex(const cx_rowvec coeffMatA, const cx_rowvec coeffMatB) {
+  return(accu((abs(coeffMatA.elem(find(coeffMatA != 0 || coeffMatB != 0))
+                     - coeffMatB.elem(find(coeffMatA != 0 || coeffMatB != 0)))
+                 /abs(coeffMatA.elem(find(coeffMatA != 0 || coeffMatB != 0))+
+                 coeffMatB.elem(find(coeffMatA != 0 || coeffMatB != 0))))));
 }
 
 
@@ -50,7 +67,17 @@ std::vector<double> coeffDist(Rcpp::List coeffsList, std::string method, int nTh
     numThreads = nThreads;
   }
 
-  if(method == "logDiff"){
+  if(method == "fraction"){
+    std::vector<mat> Y = Rcpp::as<std::vector<mat>>(coeffsList);
+    std::vector<double> distVect(coeffsLength-1);
+
+    RcppThread::parallelFor(1, coeffsLength, [&distVect,&Y] (unsigned int i) {
+      distVect[i-1] = fraction(Y[0],Y[i]);
+    },numThreads,0);
+
+    return(distVect);
+
+  } else if(method == "logDiff"){
     std::vector<mat> Y = Rcpp::as<std::vector<mat>>(coeffsList);
     std::vector<double> distVect(coeffsLength-1);
 
@@ -100,6 +127,16 @@ std::vector<double> coeffDist(Rcpp::List coeffsList, std::string method, int nTh
 
     return(distVect);
 
+  } else if (method == "fractionComplex"){
+    std::vector<cx_rowvec> Y = Rcpp::as<std::vector<cx_rowvec>>(coeffsList);
+    std::vector<double> distVect(coeffsLength-1);
+
+    RcppThread::parallelFor(1, coeffsLength, [&distVect,&Y] (unsigned int i) {
+      distVect[i-1] = fractionComplex(Y[0],Y[i]);
+    },numThreads,0);
+
+    return(distVect);
+
   } else {
     std::vector<cx_mat> Y = Rcpp::as<std::vector<cx_mat>>(coeffsList);
     std::vector<double> distVect(coeffsLength-1);
@@ -123,7 +160,22 @@ Rcpp::NumericMatrix coeffDistMat(Rcpp::List coeffsList, std::string method, int 
     numThreads = nThreads;
   }
 
-  if(method == "logDiff"){
+  if (method == "fraction"){
+    std::vector<mat> coeffs = Rcpp::as<std::vector<mat>>(coeffsList);
+    int numCoeffs = coeffs.size();
+    mat distMat(numCoeffs, numCoeffs, fill::zeros);
+
+    RcppThread::parallelFor(0, numCoeffs, [&distMat,&numCoeffs,&coeffs] (unsigned int i) {
+      for(int j = i+1; j < numCoeffs; j++){
+        distMat(i,j) = fraction(coeffs[i],coeffs[j]);
+      }
+    }, numThreads,0);
+
+    distMat = distMat.t() + distMat;
+
+    return(Rcpp::wrap(distMat));
+
+  } else if(method == "logDiff"){
     std::vector<mat> coeffs = Rcpp::as<std::vector<mat>>(coeffsList);
     int numCoeffs = coeffs.size();
     mat distMat(numCoeffs, numCoeffs, fill::zeros);
@@ -191,6 +243,21 @@ Rcpp::NumericMatrix coeffDistMat(Rcpp::List coeffsList, std::string method, int 
     RcppThread::parallelFor(0, numCoeffs, [&distMat,&numCoeffs,&coeffs] (unsigned int i) {
       for(int j = i+1; j < numCoeffs; j++){
         distMat(i,j) = logDiffComplex(coeffs[i],coeffs[j]);
+      }
+    },numThreads,0);
+
+    distMat = distMat.t() + distMat;
+
+    return(Rcpp::wrap(distMat));
+
+  } else if (method == "fractionComplex"){
+    std::vector<cx_rowvec> coeffs = Rcpp::as<std::vector<cx_rowvec>>(coeffsList);
+    int numCoeffs = coeffs.size();
+    mat distMat(numCoeffs, numCoeffs, fill::zeros);
+
+    RcppThread::parallelFor(0, numCoeffs, [&distMat,&numCoeffs,&coeffs] (unsigned int i) {
+      for(int j = i+1; j < numCoeffs; j++){
+        distMat(i,j) = fractionComplex(coeffs[i],coeffs[j]);
       }
     },numThreads,0);
 

@@ -8,7 +8,7 @@ treeDist(
   x,
   Y,
   type = c("default", "yEvaluated", "tipLabel"),
-  method = c("logDiff", "wLogDiff", "pa", "ap"),
+  method = c("fraction", "logDiff", "wLogDiff", "pa", "ap"),
   y,
   numThreads = -1
 )
@@ -27,6 +27,7 @@ treeDist(
 
 \item{method}{method to use when calculating coefficient distances:
 \describe{
+  \item{\dQuote{fraction}}{for two coefficient matrices A and B returns sum(abs(A-B)/(A+B)), excluding elements where both A and B are zero}
   \item{\dQuote{logDiff}}{for two coefficient matrices A and B returns sum(log(1+abs(A-B))}
   \item{\dQuote{wLogDiff}}{performs the \dQuote{logDiff} method with weights on the rows}
   \item{\dQuote{pa}}{total pairs where the coefficient is present in one matrix and absent in the other (presence-absence)}
@@ -45,7 +46,7 @@ Calculates the distance between two trees or a tree and a list of trees.
 }
 \note{
 \itemize{
-  \item the substituted y coefficient vector and the complex tip label coefficient matrix only support the \dQuote{logDiff} method
+  \item the substituted y coefficient vector only supports the \dQuote{logDiff} method and the \dQuote{fraction} method
   \item \dQuote{pa} and \dQuote{ap} force symmetry in the output distance matrix
 }
 }

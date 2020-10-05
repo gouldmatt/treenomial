@@ -3,8 +3,8 @@ library(treenomial)
 library(ape)
 
 ## tests on treeToPoly ##
-test_that("Test consistency of treeToPoly runs tips = 500", {
-  numTips <- 500
+test_that("Test consistency of treeToPoly runs tips = 120", {
+  numTips <- 120
   tree <- rtree(n = numTips)
   expect_equal(treeToPoly(tree, numThreads = 0), treeToPoly(tree, numThreads = 0))
 })
