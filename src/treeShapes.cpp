@@ -1,7 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
-#include "coeffMatrix.h"
+#include "wedge.h"
 
 using namespace arma;
 

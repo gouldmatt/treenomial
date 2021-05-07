@@ -65,12 +65,20 @@ treeToPoly <- function(trees,type = c("default","yEvaluated","tipLabel"), y, var
   if(type == "default"){
     if(singleTree) trees <- list(trees)
 
+
+    trees <- lapply(trees, reorder.phylo)
+
     wedgeSeq <- lapply(trees, function(x) {
-      inds <- unique(rev(x$edge[x$edge[, 1] >= length(x$tip.label), ]))
-      ifelse(inds <= length(x$tip.label), "0", "1")
+      xTips <- length(x$tip.label)
+      if(xTips < 2){
+        stop("Tree with less than two tips found!")
+      }
+
+      inds <- unique(rev(x$edge[x$edge[, 1] >= xTips, ]))
+      ifelse(inds <= xTips, "0", "1")
     })
 
-    coeffs <- coeffMatList(wedgeSeq, y = 0, type = type, nThreads = numThreads)
+    coeffs <- coeffMatListDefault(wedgeSeq, y = 0, nThreads = numThreads)
 
     attributes(coeffs) <- NULL
     if(!is.null(names(trees))){
@@ -88,7 +96,7 @@ treeToPoly <- function(trees,type = c("default","yEvaluated","tipLabel"), y, var
       ifelse(inds <= length(x$tip.label), "0", "1")
     })
 
-    coeffs <- coeffMatList(wedgeSeq, y = y, type = type, nThreads = numThreads)
+    coeffs <- coeffMatListEvalY(wedgeSeq, y = y, nThreads = numThreads)
 
     attributes(coeffs) <- NULL
     if(!is.null(names(trees))){
@@ -133,7 +141,7 @@ treeToPoly <- function(trees,type = c("default","yEvaluated","tipLabel"), y, var
       ifelse(inds <= length(x$tip.label), x$tip.label[inds], "1")
     })
 
-    coeffs <- coeffMatList(wedgeSeq, y = 0, type = type, tipLabA = uniqueTipLabFirst[[1]], tipLabB = uniqueTipLabFirst[[2]], nThreads = numThreads)
+    coeffs <- coeffMatListTipLabel(wedgeSeq, y = 0, tipLabA = uniqueTipLabFirst[[1]], tipLabB = uniqueTipLabFirst[[2]], nThreads = numThreads)
 
     attributes(coeffs) <- NULL
     if(!is.null(names(trees))){

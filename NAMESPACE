@@ -2,6 +2,9 @@
 
 export(alignPoly)
 export(allTrees)
+export(lattDist)
+export(lattToDistMat)
+export(latticize)
 export(plotExtremeTrees)
 export(polyDist)
 export(polyToDistMat)
