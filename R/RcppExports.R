@@ -41,12 +41,12 @@ setDiff <- function(x, y) {
     .Call('_treenomial_setDiff', PACKAGE = 'treenomial', x, y)
 }
 
-lattDistance <- function(L1, L2) {
-    .Call('_treenomial_lattDistance', PACKAGE = 'treenomial', L1, L2)
+lattDistance <- function(L1, L2, w) {
+    .Call('_treenomial_lattDistance', PACKAGE = 'treenomial', L1, L2, w)
 }
 
-lattDistMat <- function(lattList, nThreads = -1L) {
-    .Call('_treenomial_lattDistMat', PACKAGE = 'treenomial', lattList, nThreads)
+lattDistMat <- function(lattList, w, nThreads = -1L) {
+    .Call('_treenomial_lattDistMat', PACKAGE = 'treenomial', lattList, w, nThreads)
 }
 
 latticeList <- function(wedgeOrders, wedgeOrdersNodes, latList, numTips, nThreads = -1L) {

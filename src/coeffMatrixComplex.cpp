@@ -10,7 +10,7 @@
 using namespace arma;
 
 
-inline cx_rowvec coeffMatrixComplex(std::vector<std::string> wedgeOrder, cx_double y){
+cx_rowvec coeffMatrixComplex(std::vector<std::string> wedgeOrder, cx_double y){
   long unsigned int j = 0;
   int subTreeNum = 2;
   std::string op1;
@@ -97,7 +97,7 @@ inline cx_rowvec coeffMatrixComplex(std::vector<std::string> wedgeOrder, cx_doub
   return(subCoeffMats.back());
 }
 
-inline sp_cx_mat coeffMatrixTipLabel(std::vector<std::string> wedgeOrder, std::string tipLabA, std::string tipLabB){
+sp_cx_mat coeffMatrixTipLabel(std::vector<std::string> wedgeOrder, std::string tipLabA, std::string tipLabB){
   long unsigned int j = 0;
   int subTreeNum = 2;
   std::string op1;
@@ -201,7 +201,7 @@ Rcpp::List coeffMatListEvalY(std::vector<std::vector<std::string>> wedgeOrders, 
   }
 
   Rcpp::List output(numCoeffs);
- 
+
   arma::field<arma::cx_rowvec> coeffs(numCoeffs);
 
   RcppThread::parallelFor(0, numCoeffs, [&coeffs, &wedgeOrders, &y] (unsigned int i) {
@@ -209,7 +209,7 @@ Rcpp::List coeffMatListEvalY(std::vector<std::vector<std::string>> wedgeOrders, 
   },numThreads,0);
 
   output = Rcpp::wrap(coeffs);
-   
+
 
   return(output);
 }
@@ -225,7 +225,7 @@ Rcpp::List coeffMatListTipLabel(std::vector<std::vector<std::string>> wedgeOrder
 
   Rcpp::List output(numCoeffs);
 
-  
+
   arma::field<arma::cx_mat> coeffs(numCoeffs);
 
   RcppThread::parallelFor(0, numCoeffs, [&coeffs, &wedgeOrders, &tipLabA, &tipLabB] (unsigned int i) {

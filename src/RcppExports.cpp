@@ -138,26 +138,28 @@ BEGIN_RCPP
 END_RCPP
 }
 // lattDistance
-double lattDistance(const arma::mat& L1, const arma::mat& L2);
-RcppExport SEXP _treenomial_lattDistance(SEXP L1SEXP, SEXP L2SEXP) {
+double lattDistance(const arma::mat& L1, const arma::mat& L2, const double w);
+RcppExport SEXP _treenomial_lattDistance(SEXP L1SEXP, SEXP L2SEXP, SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type L1(L1SEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type L2(L2SEXP);
-    rcpp_result_gen = Rcpp::wrap(lattDistance(L1, L2));
+    Rcpp::traits::input_parameter< const double >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(lattDistance(L1, L2, w));
     return rcpp_result_gen;
 END_RCPP
 }
 // lattDistMat
-Rcpp::NumericMatrix lattDistMat(Rcpp::List lattList, int nThreads);
-RcppExport SEXP _treenomial_lattDistMat(SEXP lattListSEXP, SEXP nThreadsSEXP) {
+Rcpp::NumericMatrix lattDistMat(Rcpp::List lattList, double w, int nThreads);
+RcppExport SEXP _treenomial_lattDistMat(SEXP lattListSEXP, SEXP wSEXP, SEXP nThreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::List >::type lattList(lattListSEXP);
+    Rcpp::traits::input_parameter< double >::type w(wSEXP);
     Rcpp::traits::input_parameter< int >::type nThreads(nThreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(lattDistMat(lattList, nThreads));
+    rcpp_result_gen = Rcpp::wrap(lattDistMat(lattList, w, nThreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -237,8 +239,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_treenomial_coeffDistMat", (DL_FUNC) &_treenomial_coeffDistMat, 3},
     {"_treenomial_alignCoeffs_", (DL_FUNC) &_treenomial_alignCoeffs_, 1},
     {"_treenomial_setDiff", (DL_FUNC) &_treenomial_setDiff, 2},
-    {"_treenomial_lattDistance", (DL_FUNC) &_treenomial_lattDistance, 2},
-    {"_treenomial_lattDistMat", (DL_FUNC) &_treenomial_lattDistMat, 2},
+    {"_treenomial_lattDistance", (DL_FUNC) &_treenomial_lattDistance, 3},
+    {"_treenomial_lattDistMat", (DL_FUNC) &_treenomial_lattDistMat, 3},
     {"_treenomial_latticeList", (DL_FUNC) &_treenomial_latticeList, 5},
     {"_treenomial_juliaSet", (DL_FUNC) &_treenomial_juliaSet, 5},
     {"_treenomial_allBinaryTreeShapesReal", (DL_FUNC) &_treenomial_allBinaryTreeShapesReal, 1},

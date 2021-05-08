@@ -51,7 +51,7 @@ arma::field<arma::mat> alignCoeffs_(arma::field<arma::mat> coeffs){
 }
 
 
-inline arma::vec latticePositions(std::vector<std::string> wedgeOrder, std::vector<std::string> wedgeOrderNodes, arma::mat L, int numTips){
+arma::vec latticePositions(std::vector<std::string> wedgeOrder, std::vector<std::string> wedgeOrderNodes, arma::mat L, int numTips){
 
 
   vec latticePos = L.col(2);
@@ -186,11 +186,11 @@ inline arma::vec latticePositions(std::vector<std::string> wedgeOrder, std::vect
   mat A_poly;
   mat B_poly;
 
-  int h = max(dpt);
+  uword h = max(dpt);
 
-  for(int i = 0; i <= h; i++){
+  for(uword i = 0; i <= h; i++){
     uvec CLNodes = find(dpt == i);
-    for(int j = 0; j < CLNodes.n_elem; j++){
+    for(uword j = 0; j < CLNodes.n_elem; j++){
 
       int pnode = CLNodes[j] + 1;
       // std::cout << "pnode " << pnode << std::endl;
@@ -296,7 +296,7 @@ vec vecUnion(vec x, vec y){
 arma::vec setDiff(arma::vec x, arma::vec y){
   if(x.n_elem != 0 || y.n_elem != 0){
     uvec pos;
-    for(int i = 0; i < y.n_elem; i++){
+    for(uword i = 0; i < y.n_elem; i++){
         pos = find(x == y[i]);
         x.elem(pos) = zeros(pos.n_elem);
     }
@@ -318,7 +318,7 @@ int getNumSetDiff(vec &x, vec &y){
 
 
 // [[Rcpp::export]]
-double lattDistance(const arma::mat &L1, const arma::mat &L2){
+double lattDistance(const arma::mat &L1, const arma::mat &L2, const double w){
   // std::cout << "L1" << L1 << std::endl;
   // std::cout << "L2" << L2 << std::endl;
 
@@ -342,14 +342,14 @@ double lattDistance(const arma::mat &L1, const arma::mat &L2){
 
   int numSetDiff = getNumSetDiff(lPos1,lPos2);
   // std::cout << "numsetdiff " << numSetDiff << std::endl;
-  return((1/4.0)*numSetDiff + accu(abs(bl1 - bl2)/(bl1 + bl2) ));
+  return(w*numSetDiff + accu(abs(bl1 - bl2)/(bl1 + bl2) ));
 
 }
 
 
 
 // [[Rcpp::export]]
-Rcpp::NumericMatrix lattDistMat(Rcpp::List lattList, int nThreads = -1){
+Rcpp::NumericMatrix lattDistMat(Rcpp::List lattList, double w, int nThreads = -1){
 
   size_t numThreads = std::thread::hardware_concurrency();
   if(nThreads != -1){
@@ -362,9 +362,9 @@ Rcpp::NumericMatrix lattDistMat(Rcpp::List lattList, int nThreads = -1){
 
   // std::cout << distMat << std::endl;
 
-  RcppThread::parallelFor(0, listLength, [&distMat,&listLength,&latts] (unsigned int i) {
+  RcppThread::parallelFor(0, listLength, [&distMat,&listLength,&latts,&w] (unsigned int i) {
     for(int j = i+1; j < listLength; j++){
-      distMat(i,j) = lattDistance(latts[i],latts[j]);
+      distMat(i,j) = lattDistance(latts[i],latts[j], w);
     }
   }, numThreads,0);
 

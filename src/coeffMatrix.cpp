@@ -12,7 +12,7 @@ using namespace arma;
 
 // main function to convert a wedge order to a coefficient matrix
 // the complex and tip label version use similiar strategy using the different wedge versions
-inline mat coeffMatrixReal(std::vector<std::string> wedgeOrder){
+mat coeffMatrixReal(std::vector<std::string> wedgeOrder){
 
   long unsigned int j = 0;
   int subTreeNum = 2;
@@ -127,7 +127,7 @@ Rcpp::List coeffMatListDefault(std::vector<std::vector<std::string>> wedgeOrders
   },numThreads,0);
 
   output = Rcpp::wrap(coeffs);
-    
+
 
   return(output);
 }

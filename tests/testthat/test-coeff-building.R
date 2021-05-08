@@ -9,16 +9,6 @@ test_that("Test consistency of treeToPoly runs tips = 120", {
   expect_equal(treeToPoly(tree, numThreads = 0), treeToPoly(tree, numThreads = 0))
 })
 
-test_that("Test different order edge list", {
-  numTips <- 10
-  tree <- rtree(n = numTips)
-  test <- latticize(rmtree(100,10), numThreads = 0)
-  tree <- reorder.phylo(tree, "postorder")
-  treeToPoly(tree)
-  expect_silent(treeToPoly(tree))
-})
-
-
 ## tests on allTrees ##
 test_that("ensure that number of trees from allTrees match Wedderburn-Etherington numbers up to 13 tips", {
   wadNum <- c(1,1,1,2,3,6, 11, 23, 46, 98, 207, 451,983)
