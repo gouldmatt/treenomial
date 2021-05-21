@@ -51,12 +51,12 @@ arma::field<arma::mat> alignCoeffs_(arma::field<arma::mat> coeffs){
 }
 
 
-arma::vec latticePositions(std::vector<std::string> wedgeOrder, std::vector<std::string> wedgeOrderNodes, arma::mat L, int numTips){
+arma::mat latticePositions(std::vector<std::string> wedgeOrder, std::vector<std::string> wedgeOrderNodes, arma::mat L, int numTips){
 
 
   vec latticePos = L.col(2);
 
-  vec dpt = L.col(4);
+  vec dpt = L.col(3);
   vec pl = L.col(1);
 
   long unsigned int j = 0;
@@ -177,14 +177,13 @@ arma::vec latticePositions(std::vector<std::string> wedgeOrder, std::vector<std:
 
   }
 
-  // for(int i = 0; i < subCoeffMats.size(); i++){
-  //   std::cout << subCoeffMats[i] << std::endl;
-  // }
+
 
   A = 0;
   B = 0;
   mat A_poly;
   mat B_poly;
+
 
   uword h = max(dpt);
 
@@ -199,6 +198,14 @@ arma::vec latticePositions(std::vector<std::string> wedgeOrder, std::vector<std:
 
       if(children.n_elem != 0){
 
+        rowvec binX = L( pnode-1, span(4, 4+h));
+        // std::cout << "h " << h << std::endl;
+        // std::cout << "binx n_elem " << binX.n_elem << std::endl;
+        rowvec binA = shift(binX,1);
+        rowvec binB = shift(binX,1);
+        binB[0] = 1;
+
+
         int x = latticePos[pnode-1];
 
         int a = 2*x;
@@ -210,20 +217,34 @@ arma::vec latticePositions(std::vector<std::string> wedgeOrder, std::vector<std:
 
         if(A <= numTips && B <= numTips){
 
-          if(L(A-1,3) >=  L(B-1,3)){
-            latticePos[A-1] = a;
-            latticePos[B-1] = b;
+          if(L(A-1,2) >=  L(B-1,2)){
+            // latticePos[A-1] = a;
+            // latticePos[B-1] = b;
+
+            L(A-1, span(4, 4+h)) = binA;
+            L(B-1, span(4, 4+h)) = binB;
+
 
           } else {
 
-            latticePos[A-1] = b;
-            latticePos[B-1] = a;
+
+            L(A-1, span(4, 4+h)) = binB;
+            L(B-1, span(4, 4+h)) = binA;
+
+//
+//             latticePos[A-1] = b;
+//             latticePos[B-1] = a;
 
           }
 
         } else {
-          latticePos[A-1] = a;
-          latticePos[B-1] = b;
+          // latticePos[A-1] = a;
+          // latticePos[B-1] = b;
+
+          L(A-1, span(4, 4+h)) = binA;
+          L(B-1, span(4, 4+h)) = binB;
+
+
 
           int A_poly_index = subTreeNode.find(A)->second;
           int B_poly_index = subTreeNode.find(B)->second;
@@ -257,18 +278,24 @@ arma::vec latticePositions(std::vector<std::string> wedgeOrder, std::vector<std:
           // std::cout << A_poly - B_poly << std::endl;
           if(approx_equal(A_poly, B_poly, "absdiff", 0.1)){
             // std::cout << "A" << std::endl;
-            latticePos[A-1] = a;
-            latticePos[B-1] = b;
+            // latticePos[A-1] = a;
+            // latticePos[B-1] = b;
+            L(A-1, span(4, 4+h)) = binA;
+            L(B-1, span(4, 4+h)) = binB;
           } else {
 
             if(accu(A_poly - B_poly) >= 0){
               // std::cout << "B" << std::endl;
-              latticePos[A-1] = a;
-              latticePos[B-1] = b;
+              // latticePos[A-1] = a;
+              // latticePos[B-1] = b;
+              L(A-1, span(4, 4+h)) = binA;
+              L(B-1, span(4, 4+h)) = binB;
             } else {
               // std::cout << "C" << std::endl;
-              latticePos[A-1] = b;
-              latticePos[B-1] = a;
+              // latticePos[A-1] = b;
+              // latticePos[B-1] = a;
+              L(A-1, span(4, 4+h)) = binB;
+              L(B-1, span(4, 4+h)) = binA;
             }
 
           }
@@ -285,7 +312,7 @@ arma::vec latticePositions(std::vector<std::string> wedgeOrder, std::vector<std:
 
   }
 
-  return latticePos;
+  return L;
 }
 
 vec vecUnion(vec x, vec y){
@@ -326,24 +353,39 @@ double lattDistance(const arma::mat &L1, const arma::mat &L2, const double w){
   uvec iA;
   uvec iB;
 
-  vec lPos1 = L1.col(2);
-  vec lPos2 = L2.col(2);
+  // vec lPos1 = L1.col(2);
+  // vec lPos2 = L2.col(2);
 
-  intersect(CC, iA, iB, L1.col(2) ,L2.col(2) );
 
-  vec bl1 = L1.col(3);
-  vec bl2 = L2.col(3);
+  mat lPos1 = L1.cols(4, L1.n_cols-1);
+  mat lPos2 = L2.cols(4, L2.n_cols-1);
 
-  bl1 = bl1.elem(iA);
-  bl2 = bl2.elem(iB);
 
-  bl1 = bl1.rows( find(bl1 > 0));
-  bl2 = bl2.rows( find(bl2 > 0));
+  intersect(CC, iA, iB,lPos1,lPos2);
 
-  int numSetDiff = getNumSetDiff(lPos1,lPos2);
-  // std::cout << "numsetdiff " << numSetDiff << std::endl;
-  return(w*numSetDiff + accu(abs(bl1 - bl2)/(bl1 + bl2) ));
+  std::cout << "iA" << iA << std::endl;
+  std::cout << "iB" << iB << std::endl;
+  std::cout << "CC" << CC << std::endl;
 
+
+  // intersect(CC, iA, iB, L1.col(2) ,L2.col(2) );
+
+  vec bl1 = L1.col(2);
+  vec bl2 = L2.col(2);
+  //
+  // bl1 = bl1.elem(iA);
+  // bl2 = bl2.elem(iB);
+  //
+  // bl1 = bl1.rows( find(bl1 > 0));
+  // bl2 = bl2.rows( find(bl2 > 0));
+  //
+  // vec flat1 = lPos1.as_col();
+  // vec flat2 = lPos2.as_col();
+  //
+  // int numSetDiff = getNumSetDiff(flat1, flat2);
+  // // std::cout << "numsetdiff " << numSetDiff << std::endl;
+  // return(w*numSetDiff + accu(abs(bl1 - bl2)/(bl1 + bl2) ));
+  return 0;
 }
 
 
@@ -389,7 +431,7 @@ Rcpp::List latticeList(std::vector<std::vector<std::string>> wedgeOrders, std::v
   Rcpp::List output(listLength);
 
 
-  arma::field<arma::vec> lattices(listLength);
+  arma::field<arma::mat> lattices(listLength);
 
   RcppThread::parallelFor(0, listLength, [&lattices, &wedgeOrders, &wedgeOrdersNodes, &latList, &numTips] (unsigned int i) {
     lattices[i] = latticePositions(wedgeOrders[i], wedgeOrdersNodes[i], latList[i], numTips[i]);

@@ -22,6 +22,16 @@ lattDist <- function(L1,L2, w = 1/4){
 
   L2 <- as.matrix(unname(L2))
 
+
+  if(ncol(L1) > ncol(L2)){
+    L2 <- cbind(L2,matrix(0, nrow = nrow(L2),ncol = ncol(L1) - ncol(L2)))
+
+  } else if(ncol(L1) < ncol(L2)){
+    L1 <- cbind(L1,matrix(0, nrow = nrow(L1),ncol = ncol(L2) - ncol(L1)))
+
+  }
+
+
   return(lattDistance(L1,L2, w = w))
 
 }
@@ -134,17 +144,16 @@ treeToLattice <- function(trees, numThreads = -1) {
   })
 
 
-  lattPositions <- latticeList(wedgeOrders, wedgeOrdersNodes, latList, tips, nThreads = numThreads)
+  latList <- latticeList(wedgeOrders, wedgeOrdersNodes, latList, tips, nThreads = numThreads)
 
 
-  attributes(lattPositions) <- NULL
+  attributes(latList) <- NULL
 
 
   for (i in 1:length(latList)){
-    latList[[i]][,3] <- lattPositions[[i]]
-    colnames(latList[[i]]) <- c("node","pl","lattice","bl","depth")
+    # latList[[i]][,3] <- lattPositions[[i]]
+    colnames(latList[[i]]) <- c("node","pl","bl","depth",rep(" ",ncol(latList[[i]])-4))
   }
-
 
   if(!is.null(names(trees))){
     names(latList) <- names(trees)
@@ -207,7 +216,13 @@ allocateLattice <- function(tree, tips){
   pl <- pl[,2]
   L <- as.data.frame(cbind(ind,pl,pos,bl,dpt))
   L[L[,2]==0,3] <- 1
-  return(as.matrix(unname(L)))
+
+  BinPos <- matrix(0L, nrow = nodes, ncol = h+1)
+  BinL <- as.data.frame(cbind(ind,pl,bl,dpt,BinPos))
+
+  BinL[BinL[,2]==0,5:(5+h)] <- c(1,rep(0,h))
+
+  return(as.matrix(unname(BinL)))
 }
 
 
