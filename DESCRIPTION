@@ -31,7 +31,7 @@ Encoding: UTF-8
 Imports: Rcpp (>= 1.0.1),
          ape,
          methods
-LinkingTo: Rcpp, RcppArmadillo, RcppThread
+LinkingTo: Rcpp, RcppArmadillo, RcppThread (>= 2.1.3)
 RoxygenNote: 7.1.1
 Suggests: 
     knitr,
