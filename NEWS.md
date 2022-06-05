@@ -1,3 +1,7 @@
+# treenomial 1.1.4
+
+* Makevars portability adjustment
+
 # treenomial 1.1.3
 
 * Add the new default metric "fraction"
